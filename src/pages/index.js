@@ -7,7 +7,6 @@ import 'typeface-roboto';
 import 'typeface-roboto-slab';
 // pages for this product
 import Components from "./ComponentsPage/ComponentsPage.jsx";
-import PublicationsPage from "./PublicationsPage/publicationsPage.jsx";
 import mainPage from "./MainPage/mainPage"
 
 let hist = createMemoryHistory();
@@ -15,7 +14,6 @@ let hist = createMemoryHistory();
 export default () => (
   <Router history={hist}>
     <Switch>
-      <Route path="/publications-page" component={PublicationsPage} />
       <Route path="/components" component={Components} />
       <Route path="/" component={mainPage} />
     </Switch>

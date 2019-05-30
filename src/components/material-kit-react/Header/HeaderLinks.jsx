@@ -19,8 +19,6 @@ import Button from "components/material-kit-react/CustomButtons/Button.jsx"
 
 import headerLinksStyle from "assets/jss/material-kit-react/components/headerLinksStyle.jsx"
 
-import complexityPaper from "assets/papers/demo-paper.pdf"
-
 function HeaderLinks({ ...props }) {
   const { classes } = props
   return (
@@ -43,27 +41,6 @@ function HeaderLinks({ ...props }) {
             className={classes.navLink}
           >
             <FaGithub />
-          </Button>
-        </Tooltip>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Tooltip
-          id="paper"
-          title="Read the publications"
-          placement={
-            typeof window !== "undefined" && window.innerWidth > 959
-              ? "top"
-              : "left"
-          }
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <Button
-            href='/publications-page'
-            color="transparent"
-            target="_blank"
-            className={classes.navLink}
-          >
-            <Subject className={classes.icons} />
           </Button>
         </Tooltip>
       </ListItem>
