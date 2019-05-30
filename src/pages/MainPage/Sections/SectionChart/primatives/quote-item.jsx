@@ -30,22 +30,20 @@ const getBackgroundColor = (
 };
 
 const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
-  isDragging ? authorColors.hard : 'transparent';
+  isDragging ? authorColors.hard : 'red';
 
 const getHeight = (length: number) =>
-  length ? `${length}px` : `10px`;
+  length ? `${length * 3}px` : `10px`;
 
 const Container = styled.a`
   border-radius: ${borderRadius}px;
-  border: 2px solid transparent;
+  border: 1px solid red;
   border-color: ${props => getBorderColor(props.isDragging, props.colors)};
   background-color: ${props =>
     getBackgroundColor(props.isDragging, props.isGroupedOver, props.colors)};
   box-shadow: ${({ isDragging }) =>
     isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
   padding: ${grid}px;
-  min-height: 40px;
-  margin-bottom: ${grid}px;
   user-select: none;
   height: ${props => getHeight(props.length)};
 
