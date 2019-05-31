@@ -1,140 +1,132 @@
 import { colors } from '@atlaskit/theme';
-import type { Author, Quote, QuoteMap } from './types';
-import jakeImg from 'assets/jake.png';
-import finnImg from 'assets/finn.png';
-import bmoImg from 'assets/bmo.png';
-import princessImg from 'assets/princess.png';
+import type { Machine, Job, JobMap } from './types';
+import nurse1Img from 'assets/nurse1.png';
+import nurse3Img from 'assets/nurse3.png';
+import nurse2Img from 'assets/nurse2.png';
+import nurse4Img from 'assets/nurse4.png';
 
-const jake: Author = {
+const nurse1: Machine = {
   id: '1',
-  name: 'Jake',
-  url: 'http://adventuretime.wikia.com/wiki/Jake',
-  avatarUrl: jakeImg,
+  name: 'Nurse 1',
   colors: {
     soft: colors.Y50,
     hard: colors.Y200,
   },
 };
 
-const BMO: Author = {
+const nurse2: Machine = {
   id: '2',
-  name: 'BMO',
-  url: 'http://adventuretime.wikia.com/wiki/BMO',
-  avatarUrl: bmoImg,
+  name: 'Nurse 2',
   colors: {
     soft: colors.G50,
     hard: colors.G200,
   },
 };
 
-const finn: Author = {
+const nurse3: Machine = {
   id: '3',
-  name: 'Finn',
-  url: 'http://adventuretime.wikia.com/wiki/Finn',
-  avatarUrl: finnImg,
+  name: 'Nurse 3',
   colors: {
     soft: colors.B50,
     hard: colors.B200,
   },
 };
 
-const princess: Author = {
+const nurse4: Machine = {
   id: '4',
-  name: 'Princess bubblegum',
-  url: 'http://adventuretime.wikia.com/wiki/Princess_Bubblegum',
-  avatarUrl: princessImg,
+  name: 'Nurse 4',
   colors: {
     soft: colors.P50,
     hard: colors.P200,
   },
 };
 
-export const authors: Author[] = [jake, BMO, finn, princess];
+export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
 
-export const quotes: Quote[] = [
+export const jobs: Job[] = [
   {
     length: 10,
     id: '1',
     content: 'Sometimes life is scary and dark',
-    author: BMO,
+    machine: nurse2,
   },
   {
     length: 20,
     id: '2',
     content:
       'Sucking at something is the first step towards being sorta good at something.',
-    author: jake,
+    machine: nurse1,
   },
   {
     length: 30,
     id: '3',
     content: "You got to focus on what's real, man",
-    author: jake,
+    machine: nurse1,
   },
   {
     length: 60,
     id: '4',
     content: 'Is that where creativity comes from? From sad biz?',
-    author: finn,
+    machine: nurse3,
   },
   {
     length: 20,
     id: '5',
     content: 'Homies help homies. Always',
-    author: finn,
+    machine: nurse3,
   },
   {
     length: 20,
     id: '6',
     content: 'Responsibility demands sacrifice',
-    author: princess,
+    machine: nurse4,
   },
   {
     length: 20,
     id: '7',
     content: "That's it! The answer was so simple, I was too smart to see it!",
-    author: princess,
+    machine: nurse4,
   },
   {
     length: 80,
     id: '8',
     content: 'People make mistakes. It’s a part of growing up',
-    author: finn,
+    machine: nurse3,
   },
   {
     length: 100,
     id: '9',
-    content: "Don't you always call sweatpants 'give up on life pants,' Jake?",
-    author: finn,
+    content: "Don't you always call sweatpants 'give up on life pants,' nurse2?",
+    machine: nurse3,
   },
   {
     length: 20,
     id: '10',
     content: 'I should not have drunk that much tea!',
-    author: princess,
+    machine: nurse4,
   },
   {
     length: 20,
     id: '11',
     content: 'Please! I need the real you!',
-    author: princess,
+    machine: nurse4,
   },
   {
     length: 20,
     id: '12',
     content: "Haven't slept for a solid 83 hours, but, yeah, I'm good.",
-    author: princess,
+    machine: nurse4,
   },
 ];
 
 // So we do not have any clashes with our hardcoded ones
-let idCount: number = quotes.length + 1;
+let idCount: number = jobs.length + 1;
 
-export const getQuotes = (count: number): Quote[] =>
+export const getJobs = (count: number): Job[] =>
   Array.from({ length: count }, (v, k) => k).map(() => {
-    const random: Quote = quotes[Math.floor(Math.random() * quotes.length)];
+    const random: Job = jobs[Math.floor(Math.random() * jobs.length)];
 
-    const custom: Quote = {
+    const custom: Job = {
       ...random,
       id: `G${idCount++}`,
     };
@@ -142,34 +134,34 @@ export const getQuotes = (count: number): Quote[] =>
     return custom;
   });
 
-export const getAuthors = (count: number): Author[] =>
+export const getMachines = (count: number): Machine[] =>
   Array.from({ length: count }, (v, k) => k).map(() => {
-    const random: Author = authors[Math.floor(Math.random() * authors.length)];
+    const random: Machine = machines[Math.floor(Math.random() * machines.length)];
 
-    const custom: Author = {
+    const custom: Machine = {
       ...random,
-      id: `author-${idCount++}`,
+      id: `machine-${idCount++}`,
     };
 
     return custom;
   });
 
-const getByAuthor = (author: Author, items: Quote[]): Quote[] =>
-  items.filter((quote: Quote) => quote.author === author);
+const getByMachine = (machine: Machine, items: Job[]): Job[] =>
+  items.filter((job: Job) => job.machine === machine);
 
-export const authorQuoteMap: QuoteMap = authors.reduce(
-  (previous: QuoteMap, author: Author) => ({
+export const machineJobMap: JobMap = machines.reduce(
+  (previous: JobMap, machine: Machine) => ({
     ...previous,
-    [author.name]: getByAuthor(author, quotes),
+    [machine.name]: getByMachine(machine, jobs),
   }),
   {},
 );
 
-export const generateQuoteMap = (quoteCount: number): QuoteMap =>
-  authors.reduce(
-    (previous: QuoteMap, author: Author) => ({
+export const generateJobMap = (jobCount: number): JobMap =>
+  machines.reduce(
+    (previous: JobMap, machine: Machine) => ({
       ...previous,
-      [author.name]: getQuotes(quoteCount / authors.length),
+      [machine.name]: getJobs(jobCount / machines.length),
     }),
     {},
   );

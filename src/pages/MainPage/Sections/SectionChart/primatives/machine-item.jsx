@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { colors } from '@atlaskit/theme';
 import { grid } from '../constants';
 import type { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
-import type { Author } from '../types';
+import type { Machine } from '../types';
 
 const Avatar = styled.img`
   width: 60px;
@@ -28,14 +28,14 @@ const Avatar = styled.img`
 `;
 
 type Props = {|
-  author: Author,
+  machine: Machine,
   provided: DraggableProvided,
   snapshot: DraggableStateSnapshot,
 |};
 
-export default class AuthorItem extends Component<Props> {
+export default class MachineItem extends Component<Props> {
   render() {
-    const author: Author = this.props.author;
+    const machine: Machine = this.props.machine;
     const provided: DraggableProvided = this.props.provided;
     const snapshot: DraggableStateSnapshot = this.props.snapshot;
 
@@ -44,8 +44,7 @@ export default class AuthorItem extends Component<Props> {
         ref={ref => provided.innerRef(ref)}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
-        src={author.avatarUrl}
-        alt={author.name}
+        alt={machine.name}
         isDragging={snapshot.isDragging}
       />
     );

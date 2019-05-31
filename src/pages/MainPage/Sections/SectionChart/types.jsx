@@ -2,26 +2,24 @@
 
 export type Id = string;
 
-export type AuthorColors = {|
+export type MachineColors = {|
   soft: string,
   hard: string,
 |};
 
-export type Author = {|
+export type Machine = {|
   id: Id,
   name: string,
-  avatarUrl: string,
-  url: string,
-  colors: AuthorColors,
+  colors: MachineColors,
 |};
 
-export type Quote = {|
+export type Job = {|
   length: number,
   id: Id,
   content: string,
-  author: Author,
+  machine: Machine,
 |};
 
-export type QuoteMap = {
-  [key: string]: Quote[],
+export type JobMap = {
+  [key: string]: Job[],
 };

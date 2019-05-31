@@ -7,9 +7,9 @@ import type {
   DraggableLocation,
   DroppableProvided,
 } from 'react-beautiful-dnd/types';
-import type { QuoteMap, Quote } from './types';
+import type { JobMap, Job } from './types';
 import Column from './column';
-import reorder, { reorderQuoteMap } from './reorder';
+import reorder, { reorderJobMap } from './reorder';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const ParentContainer = styled.div`
@@ -27,14 +27,14 @@ const Container = styled.div`
 `;
 
 type Props = {|
-  initial: QuoteMap,
+  initial: JobMap,
   withScrollableColumns?: boolean,
   isCombineEnabled?: boolean,
   containerHeight?: string,
 |};
 
 type State = {|
-  columns: QuoteMap,
+  columns: JobMap,
   ordered: string[],
 |};
 
@@ -60,12 +60,12 @@ export default class Board extends Component<Props, State> {
         return;
       }
 
-      const column: Quote[] = this.state.columns[result.source.droppableId];
-      const withQuoteRemoved: Quote[] = [...column];
-      withQuoteRemoved.splice(result.source.index, 1);
-      const columns: QuoteMap = {
+      const column: Job[] = this.state.columns[result.source.droppableId];
+      const withJobRemoved: Job[] = [...column];
+      withJobRemoved.splice(result.source.index, 1);
+      const columns: JobMap = {
         ...this.state.columns,
-        [result.source.droppableId]: withQuoteRemoved,
+        [result.source.droppableId]: withJobRemoved,
       };
       this.setState({ columns });
       return;
@@ -102,19 +102,19 @@ export default class Board extends Component<Props, State> {
       return;
     }
 
-    const data = reorderQuoteMap({
-      quoteMap: this.state.columns,
+    const data = reorderJobMap({
+      jobMap: this.state.columns,
       source,
       destination,
     });
 
     this.setState({
-      columns: data.quoteMap,
+      columns: data.jobMap,
     });
   };
 
   render() {
-    const columns: QuoteMap = this.state.columns;
+    const columns: JobMap = this.state.columns;
     const ordered: string[] = this.state.ordered;
     const { containerHeight } = this.props;
 
@@ -133,7 +133,7 @@ export default class Board extends Component<Props, State> {
                 key={key}
                 index={index}
                 title={key}
-                quotes={columns[key]}
+                jobs={columns[key]}
                 isScrollable={this.props.withScrollableColumns}
                 isCombineEnabled={this.props.isCombineEnabled}
               />

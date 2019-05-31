@@ -3,11 +3,11 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { colors } from '@atlaskit/theme';
 import { borderRadius, grid } from '../constants';
-import type { Quote, AuthorColors } from '../types';
+import type { Job, MachineColors } from '../types';
 import type { DraggableProvided } from 'react-beautiful-dnd';
 
 type Props = {
-  quote: Quote,
+  job: Job,
   isDragging: boolean,
   provided: DraggableProvided,
   isGroupedOver?: boolean,
@@ -16,21 +16,21 @@ type Props = {
 const getBackgroundColor = (
   isDragging: boolean,
   isGroupedOver: boolean,
-  authorColors: AuthorColors,
+  machineColors: MachineColors,
 ) => {
   if (isDragging) {
-    return authorColors.soft;
+    return machineColors.soft;
   }
 
   if (isGroupedOver) {
     return colors.N30;
   }
 
-  return colors.N0;
+  return colors.G300;
 };
 
-const getBorderColor = (isDragging: boolean, authorColors: AuthorColors) =>
-  isDragging ? authorColors.hard : 'red';
+const getBorderColor = (isDragging: boolean, machineColors: MachineColors) =>
+  isDragging ? machineColors.hard : 'white';
 
 const getHeight = (length: number) =>
   length ? `${length * 3}px` : `10px`;
@@ -66,15 +66,6 @@ const Container = styled.a`
   display: flex;
 `;
 
-const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: ${grid}px;
-  flex-shrink: 0;
-  flex-grow: 0;
-`;
-
 const Content = styled.div`
   /* flex child */
   flex-grow: 1;
@@ -90,41 +81,12 @@ const Content = styled.div`
   flex-direction: column;
 `;
 
-const BlockQuote = styled.div`
-  &::before {
-    content: open-quote;
-  }
-
-  &::after {
-    content: close-quote;
-  }
-`;
-
 const Footer = styled.div`
   display: flex;
   margin-top: ${grid}px;
   align-items: center;
 `;
-
-const Author = styled.small`
-  flex-grow: 0;
-  margin: 0;
-  background-color: ${props => props.colors.soft};
-  border-radius: ${borderRadius}px;
-  font-weight: normal;
-  padding: ${grid / 2}px;
-`;
-
-const QuoteId = styled.small`
-  flex-grow: 1;
-  flex-shrink: 1;
-  margin: 0;
-  font-weight: normal;
-  text-overflow: ellipsis;
-  text-align: right;
-`;
-
-const QuoteLength = styled.small`
+const JobLength = styled.small`
   flex-grow: 1;
   flex-shrink: 1;
   margin: 0;
@@ -140,27 +102,26 @@ const QuoteLength = styled.small`
 // Need to be super sure we are not relying on PureComponent here for
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
-function QuoteItem(props: Props) {
-  const { quote, isDragging, isGroupedOver, provided } = props;
+function JobItem(props: Props) {
+  const { job, isDragging, isGroupedOver, provided } = props;
 
   return (
     <Container
-      href={quote.author.url}
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
-      colors={quote.author.colors}
+      colors={job.machine.colors}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      length={quote.length}
+      length={job.length}
     >
       <Content>
         <Footer>
-          <QuoteLength>{quote.length} mins</QuoteLength>
+          <JobLength>{job.length} mins</JobLength>
         </Footer>
       </Content>
     </Container>
   );
 }
 
-export default React.memo<Props>(QuoteItem);
+export default React.memo<Props>(JobItem);

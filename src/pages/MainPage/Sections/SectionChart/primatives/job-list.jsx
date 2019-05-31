@@ -3,10 +3,10 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { colors } from '@atlaskit/theme';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import QuoteItem from './quote-item';
+import JobItem from './job-item';
 import { grid } from '../constants';
 import Title from './title';
-import type { Quote } from '../types';
+import type { Job } from '../types';
 import type {
   DroppableProvided,
   DroppableStateSnapshot,
@@ -67,7 +67,7 @@ const Container = styled.div``;
 type Props = {|
   listId?: string,
   listType?: string,
-  quotes: Quote[],
+  jobs: Job[],
   title?: string,
   internalScroll?: boolean,
   scrollContainerStyle?: Object,
@@ -78,22 +78,22 @@ type Props = {|
   ignoreContainerClipping?: boolean,
 |};
 
-type QuoteListProps = {|
-  quotes: Quote[],
+type JobListProps = {|
+  jobs: Job[],
 |};
 
-const InnerQuoteList = React.memo(function InnerQuoteList(
-  props: QuoteListProps,
+const InnerJobList = React.memo(function InnerJobList(
+  props: JobListProps,
 ) {
-  return props.quotes.map((quote: Quote, index: number) => (
-    <Draggable key={quote.id} draggableId={quote.id} index={index}>
+  return props.jobs.map((job: Job, index: number) => (
+    <Draggable key={job.id} draggableId={job.id} index={index}>
       {(
         dragProvided: DraggableProvided,
         dragSnapshot: DraggableStateSnapshot,
       ) => (
-        <QuoteItem
-          key={quote.id}
-          quote={quote}
+        <JobItem
+          key={job.id}
+          job={job}
           isDragging={dragSnapshot.isDragging}
           isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
           provided={dragProvided}
@@ -105,26 +105,26 @@ const InnerQuoteList = React.memo(function InnerQuoteList(
 
 type InnerListProps = {|
   dropProvided: DroppableProvided,
-  quotes: Quote[],
+  jobs: Job[],
   title: ?string,
 |};
 
 function InnerList(props: InnerListProps) {
-  const { quotes, dropProvided } = props;
+  const { jobs, dropProvided } = props;
   const title = props.title ? <Title>{props.title}</Title> : null;
 
   return (
     <Container>
       {title}
       <DropZone ref={dropProvided.innerRef}>
-        <InnerQuoteList quotes={quotes} />
+        <InnerJobList jobs={jobs} />
         {dropProvided.placeholder}
       </DropZone>
     </Container>
   );
 }
 
-export default function QuoteList(props: Props) {
+export default function JobList(props: Props) {
   const {
     ignoreContainerClipping,
     internalScroll,
@@ -134,7 +134,7 @@ export default function QuoteList(props: Props) {
     listId = 'LIST',
     listType,
     style,
-    quotes,
+    jobs,
     title,
   } = props;
 
@@ -160,14 +160,14 @@ export default function QuoteList(props: Props) {
           {internalScroll ? (
             <ScrollContainer style={scrollContainerStyle}>
               <InnerList
-                quotes={quotes}
+                jobs={jobs}
                 title={title}
                 dropProvided={dropProvided}
               />
             </ScrollContainer>
           ) : (
             <InnerList
-              quotes={quotes}
+              jobs={jobs}
               title={title}
               dropProvided={dropProvided}
             />

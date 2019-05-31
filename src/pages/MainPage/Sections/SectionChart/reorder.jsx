@@ -1,5 +1,5 @@
 // @flow
-import type { Quote, QuoteMap } from './types';
+import type { Job, JobMap } from './types';
 import type { DraggableLocation } from '../../src/types';
 
 // a little function to help us with reordering the result
@@ -13,38 +13,38 @@ const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
 
 export default reorder;
 
-type ReorderQuoteMapArgs = {|
-  quoteMap: QuoteMap,
+type ReorderJobMapArgs = {|
+  jobMap: JobMap,
   source: DraggableLocation,
   destination: DraggableLocation,
 |};
 
-export type ReorderQuoteMapResult = {|
-  quoteMap: QuoteMap,
+export type ReorderJobMapResult = {|
+  jobMap: JobMap,
 |};
 
-export const reorderQuoteMap = ({
-                                  quoteMap,
+export const reorderJobMap = ({
+                                  jobMap,
                                   source,
                                   destination,
-                                }: ReorderQuoteMapArgs): ReorderQuoteMapResult => {
-  const current: Quote[] = [...quoteMap[source.droppableId]];
-  const next: Quote[] = [...quoteMap[destination.droppableId]];
-  const target: Quote = current[source.index];
+                                }: ReorderJobMapArgs): ReorderJobMapResult => {
+  const current: Job[] = [...jobMap[source.droppableId]];
+  const next: Job[] = [...jobMap[destination.droppableId]];
+  const target: Job = current[source.index];
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
-    const reordered: Quote[] = reorder(
+    const reordered: Job[] = reorder(
       current,
       source.index,
       destination.index,
     );
-    const result: QuoteMap = {
-      ...quoteMap,
+    const result: JobMap = {
+      ...jobMap,
       [source.droppableId]: reordered,
     };
     return {
-      quoteMap: result,
+      jobMap: result,
     };
   }
 
@@ -55,13 +55,13 @@ export const reorderQuoteMap = ({
   // insert into next
   next.splice(destination.index, 0, target);
 
-  const result: QuoteMap = {
-    ...quoteMap,
+  const result: JobMap = {
+    ...jobMap,
     [source.droppableId]: current,
     [destination.droppableId]: next,
   };
 
   return {
-    quoteMap: result,
+    jobMap: result,
   };
 };

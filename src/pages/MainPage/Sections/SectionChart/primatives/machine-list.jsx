@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { colors } from '@atlaskit/theme';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import Author from './author-item';
+import Machine from './machine-item';
 import { grid } from '../constants';
-import type { Quote } from '../types';
+import type { Job } from '../types';
 import type {
   DroppableProvided,
   DroppableStateSnapshot,
@@ -56,31 +56,31 @@ const Container = styled.div`
 `;
 
 type Props = {|
-  quotes: Quote[],
+  jobs: Job[],
   listId: string,
   listType?: string,
   internalScroll?: boolean,
   isCombineEnabled?: boolean,
 |};
 
-export default class AuthorList extends Component<Props> {
+export default class MachineList extends Component<Props> {
   static defaultProps = {
     isCombineEnabled: false,
   };
   renderBoard = (dropProvided: DroppableProvided) => {
-    const { quotes } = this.props;
+    const { jobs } = this.props;
 
     return (
       <Container>
         <DropZone ref={dropProvided.innerRef}>
-          {quotes.map((quote: Quote, index: number) => (
-            <Draggable key={quote.id} draggableId={quote.id} index={index}>
+          {jobs.map((job: Job, index: number) => (
+            <Draggable key={job.id} draggableId={job.id} index={index}>
               {(
                 dragProvided: DraggableProvided,
                 dragSnapshot: DraggableStateSnapshot,
               ) => (
-                <Author
-                  author={quote.author}
+                <Machine
+                  machine={job.machine}
                   provided={dragProvided}
                   snapshot={dragSnapshot}
                 />

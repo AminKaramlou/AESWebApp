@@ -20,8 +20,8 @@
     "@fortawesome/free-brands-svg-icons": "^5.7.2",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "@material-ui/core": "^3.9.2",
-    "@material-ui/icons": "^3.0.2",
+    "@material-ui/core": "^4.0.1",
+    "@material-ui/icons": "^4.0.1",
     "classnames": "^2.2.6",
     "core-js": "^2.6.5",
     "gatsby": "^2.1.24",
@@ -53,6 +53,7 @@
     "typeface-roboto-slab": "0.0.72"
   },
   "devDependencies": {
+    "clsx": "^1.0.4",
     "prettier": "^1.16.4"
   },
   "repository": {
