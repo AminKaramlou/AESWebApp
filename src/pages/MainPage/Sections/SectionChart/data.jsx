@@ -1,8 +1,10 @@
 import { colors } from '@atlaskit/theme';
 import type { Machine, Job, JobMap } from './types';
+const uuidv4 = require('uuid/v4');
+
 
 const nurse1: Machine = {
-  id: '1',
+  id: uuidv4(),
   name: 'Nurse 1',
   colors: {
     soft: colors.Y50,
@@ -11,7 +13,7 @@ const nurse1: Machine = {
 };
 
 const nurse2: Machine = {
-  id: '2',
+  id: uuidv4(),
   name: 'Nurse 2',
   colors: {
     soft: colors.Y50,
@@ -20,7 +22,7 @@ const nurse2: Machine = {
 };
 
 const nurse3: Machine = {
-  id: '3',
+  id: uuidv4(),
   name: 'Nurse 3',
   colors: {
     soft: colors.Y50,
@@ -29,7 +31,7 @@ const nurse3: Machine = {
 };
 
 const nurse4: Machine = {
-  id: '4',
+  id: uuidv4(),
   name: 'Nurse 4',
   colors: {
     soft: colors.Y50,
@@ -42,74 +44,74 @@ export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
 export const jobs: Job[] = [
   {
     length: 10,
-    id: '1',
+    id: uuidv4(),
     content: 'Sometimes life is scary and dark',
     machine: nurse2,
   },
   {
     length: 20,
-    id: '2',
+    id: uuidv4(),
     content:
       'Sucking at something is the first step towards being sorta good at something.',
     machine: nurse1,
   },
   {
     length: 30,
-    id: '3',
+    id: uuidv4(),
     content: "You got to focus on what's real, man",
     machine: nurse1,
   },
   {
     length: 60,
-    id: '4',
+    id: uuidv4(),
     content: 'Is that where creativity comes from? From sad biz?',
     machine: nurse3,
   },
   {
     length: 20,
-    id: '5',
+    id: uuidv4(),
     content: 'Homies help homies. Always',
     machine: nurse3,
   },
   {
     length: 20,
-    id: '6',
+    id: uuidv4(),
     content: 'Responsibility demands sacrifice',
     machine: nurse4,
   },
   {
     length: 20,
-    id: '7',
+    id: uuidv4(),
     content: "That's it! The answer was so simple, I was too smart to see it!",
     machine: nurse4,
   },
   {
     length: 80,
-    id: '8',
+    id: uuidv4(),
     content: 'People make mistakes. It’s a part of growing up',
     machine: nurse3,
   },
   {
     length: 100,
-    id: '9',
+    id: uuidv4(),
     content: "Don't you always call sweatpants 'give up on life pants,' nurse2?",
     machine: nurse3,
   },
   {
     length: 20,
-    id: '10',
+    id: uuidv4(),
     content: 'I should not have drunk that much tea!',
     machine: nurse4,
   },
   {
     length: 20,
-    id: '11',
+    id: uuidv4(),
     content: 'Please! I need the real you!',
     machine: nurse4,
   },
   {
     length: 20,
-    id: '12',
+    id: uuidv4(),
     content: "Haven't slept for a solid 83 hours, but, yeah, I'm good.",
     machine: nurse4,
   },
