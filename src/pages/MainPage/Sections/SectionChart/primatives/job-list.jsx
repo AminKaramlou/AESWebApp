@@ -13,6 +13,12 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
+import {makeStyles} from "@material-ui/core";
+import FormControl from "@material-ui/core/FormControl";
+import clsx from "clsx";
+import Input from "@material-ui/core/Input";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -124,6 +130,59 @@ function InnerList(props: InnerListProps) {
   );
 }
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  withoutLabel: {
+    marginTop: theme.spacing(3),
+  },
+  textField: {
+    flexBasis: 50,
+  },
+}));
+
+function NewJobInput() {
+  const classes = useStyles();
+  const [values, setValues] = React.useState({
+    jobLength: '',
+  });
+
+  const handleChange = prop => event => {
+    setValues({...values, [prop]: event.target.value});
+  };
+
+  return (
+    <FormControl
+      className={clsx(
+        classes.margin,
+        classes.withoutLabel,
+        classes.textField
+      )}
+      onMouseDown={e => e.stopPropagation()}
+    >
+      <Input
+        id="adornment-add-job"
+        value={values.newJobLength}
+        onChange={handleChange('jobLength')}
+        onMouseDown={e => e.stopPropagation()}
+        endAdornment={
+          <InputAdornment position="end">Mins</InputAdornment>
+        }
+        aria-describedby="add-job-helper-text"
+        inputProps={{
+          "aria-label": "Add job"
+        }}
+      />
+      <FormHelperText id="add-job-helper-text">Add job</FormHelperText>
+    </FormControl>
+  )
+}
+
 export default function JobList(props: Props) {
   const {
     ignoreContainerClipping,
@@ -172,6 +231,7 @@ export default function JobList(props: Props) {
               dropProvided={dropProvided}
             />
           )}
+          <NewJobInput/>
         </Wrapper>
       )}
     </Droppable>

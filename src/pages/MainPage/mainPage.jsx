@@ -7,9 +7,25 @@ import withStyles from "@material-ui/core/styles/withStyles";
 // @material-ui/icons
 
 import mainPageStyle from "assets/jss/material-kit-react/views/mainPage.jsx";
+
+import type {
+  DropResult,
+  DraggableLocation,
+  DroppableProvided
+} from "react-beautiful-dnd/types";
+
 import Board from "./Sections/SectionChart/SectionChart.jsx";
-import { machineJobMap } from "./Sections/SectionChart/data.jsx";
+import {
+  jobs,
+  machines,
+  machineJobMap
+} from "./Sections/SectionChart/data.jsx";
 import openSocket from "socket.io-client";
+import classNames from "classnames";
+import SectionControls from "./Sections/SectionControls";
+import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
+import { colors } from "@atlaskit/theme";
+import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 
 const socket = openSocket("http://localhost:5000");
 socket.on("message", message => {
@@ -20,75 +36,127 @@ class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newArgumentText: "Unnamed argument",
-      isTourOpen: false,
-      semantics: "preferred",
-      supportInterpretation: "deductive",
-      status: "Ready to solve debate"
+      jobs: jobs,
+      machines: machines,
+      machineJobMap: machineJobMap,
+      ordered: Object.keys(machineJobMap),
+      status: "Schedule is optimal"
     };
   }
 
-  handleSemanticsChange = event => {
-    this.setState({ semantics: event.target.value });
-  };
+  onDragEnd = (result: DropResult) => {
+    console.log("Here");
+    console.log(result)
+    if (result.combine) {
+      if (result.type === "COLUMN") {
+        const shallow: string[] = [...this.state.ordered];
+        shallow.splice(result.source.index, 1);
+        this.setState({ ordered: shallow });
+        return;
+      }
 
-  handleSupportInterpretationChange = event => {
-    this.setState({ supportInterpretation: event.target.value });
-  };
-
-  handleFileUpload = event => {
-    console.log(event.target.files);
-  };
-
-  closeTour = () => {
-    this.setState({ isTourOpen: false });
-  };
-
-  openTour = () => {
-    this.setState({ isTourOpen: true });
-  };
-
-  create_debate_string = () => {
-    const json = this.model.serializeDiagram();
-    let strings = [];
-    for (const node of json["nodes"]) {
-      strings.push(`arg(${node.argument}).`);
+      const column: Job[] = this.state.machineJobMap[result.source.droppableId];
+      const withJobRemoved: Job[] = [...column];
+      withJobRemoved.splice(result.source.index, 1);
+      const machineJobMap: JobMap = {
+        ...this.state.machineJobMap,
+        [result.source.droppableId]: withJobRemoved
+      };
+      this.setState({ machineJobMap:machineJobMap });
+      return;
     }
-    for (const link of json["links"]) {
-      let source_argument = "source argument not found";
-      let target_argument = "target argument not found";
-      for (const node of json["nodes"]) {
-        if (node["id"] === link["source"]) {
-          source_argument = node.argument;
-        }
-        if (node["id"] === link["target"]) {
-          target_argument = node.argument;
-        }
-      }
-      if (link["type"] === "attack") {
-        strings.push(`att(${source_argument}, ${target_argument}).`);
-      }
-      if (link["type"] === "support") {
-        strings.push(`sup(${source_argument}, ${target_argument}).`);
-      }
-    }
-    return strings.join("\n");
-  };
 
-  saveDiagram = () => {
-    const element = document.createElement("a");
-    const file = new Blob([this.create_debate_string()], {
-      type: "text/plain"
+    // dropped nowhere
+    if (!result.destination) {
+      return;
+    }
+
+    const source: DraggableLocation = result.source;
+    const destination: DraggableLocation = result.destination;
+
+    // did not move anywhere - can bail early
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    // reordering column
+    if (result.type === "COLUMN") {
+      const ordered: string[] = reorder(
+        this.state.ordered,
+        source.index,
+        destination.index
+      );
+
+      this.setState({
+        ordered
+      });
+
+      return;
+    }
+    const data = reorderJobMap({
+      jobMap: this.state.machineJobMap,
+      source,
+      destination
     });
-    element.href = URL.createObjectURL(file);
-    element.download = "debate.pl";
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
+
+    this.setState({
+      machineJobMap: data.jobMap
+    });
+  };
+
+  getByMachine = (machine: Machine, items: Job[]): Job[] =>
+    items.filter((job: Job) => job.machine === machine);
+
+  getMachineJobMap = () => {
+    return this.state.machines.reduce(
+      (previous: JobMap, machine: Machine) => ({
+        ...previous,
+        [machine.name]: this.getByMachine(machine, this.state.jobs)
+      }),
+      {}
+    );
+  };
+
+  addNewResource = () => {
+    const newMachine: Machine = {
+      id: `${this.state.ordered.length + 1}`,
+      name: `Nurse ${this.state.ordered.length + 1}`,
+      colors: {
+        soft: colors.Y50,
+        hard: colors.Y200
+      }
+    };
+    const machineJobMap = {
+      ...this.state.machineJobMap,
+      [newMachine.name]: []
+    };
+    this.setState({ machineJobMap: machineJobMap, ordered: Object.keys(machineJobMap)});
+    console.log(this.state.machineJobMap);
   };
 
   render() {
+    const { classes } = this.props;
     return (
-        <Board initial={machineJobMap} />
+      <div className={classNames(classes.content)}>
+        <SectionControls
+          status={this.state.status}
+          semantics={this.state.semantics}
+          supportInterpretation={this.state.supportInterpretation}
+          onFormChangeHandler={e => {
+            this.setState({ newArgumentText: e.target.value });
+          }}
+          onAddResourceButtonClick={e => this.addNewResource()}
+        />
+        <Board
+          machineJobMap={this.state.machineJobMap}
+          ordered={this.state.ordered}
+          onDragEnd={this.onDragEnd}
+        />
+        ;
+      </div>
     );
   }
 }

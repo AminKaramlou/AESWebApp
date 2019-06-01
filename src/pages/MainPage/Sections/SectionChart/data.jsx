@@ -1,9 +1,5 @@
 import { colors } from '@atlaskit/theme';
 import type { Machine, Job, JobMap } from './types';
-import nurse1Img from 'assets/nurse1.png';
-import nurse3Img from 'assets/nurse3.png';
-import nurse2Img from 'assets/nurse2.png';
-import nurse4Img from 'assets/nurse4.png';
 
 const nurse1: Machine = {
   id: '1',
@@ -18,8 +14,8 @@ const nurse2: Machine = {
   id: '2',
   name: 'Nurse 2',
   colors: {
-    soft: colors.G50,
-    hard: colors.G200,
+    soft: colors.Y50,
+    hard: colors.Y200,
   },
 };
 
@@ -27,8 +23,8 @@ const nurse3: Machine = {
   id: '3',
   name: 'Nurse 3',
   colors: {
-    soft: colors.B50,
-    hard: colors.B200,
+    soft: colors.Y50,
+    hard: colors.Y200,
   },
 };
 
@@ -36,8 +32,8 @@ const nurse4: Machine = {
   id: '4',
   name: 'Nurse 4',
   colors: {
-    soft: colors.P50,
-    hard: colors.P200,
+    soft: colors.Y50,
+    hard: colors.Y200,
   },
 };
 

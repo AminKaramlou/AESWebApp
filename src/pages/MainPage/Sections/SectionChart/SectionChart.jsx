@@ -27,7 +27,7 @@ const Container = styled.div`
 `;
 
 type Props = {|
-  initial: JobMap,
+  machineJobMap: JobMap,
   withScrollableColumns?: boolean,
   isCombineEnabled?: boolean,
   containerHeight?: string,
@@ -45,77 +45,19 @@ export default class Board extends Component<Props, State> {
   };
 
   state: State = {
-    columns: this.props.initial,
-    ordered: Object.keys(this.props.initial),
+    columns: this.props.machineJobMap,
+    ordered: Object.keys(this.props.machineJobMap),
   };
 
   boardRef: ?HTMLElement;
 
-  onDragEnd = (result: DropResult) => {
-    if (result.combine) {
-      if (result.type === 'COLUMN') {
-        const shallow: string[] = [...this.state.ordered];
-        shallow.splice(result.source.index, 1);
-        this.setState({ ordered: shallow });
-        return;
-      }
 
-      const column: Job[] = this.state.columns[result.source.droppableId];
-      const withJobRemoved: Job[] = [...column];
-      withJobRemoved.splice(result.source.index, 1);
-      const columns: JobMap = {
-        ...this.state.columns,
-        [result.source.droppableId]: withJobRemoved,
-      };
-      this.setState({ columns });
-      return;
-    }
 
-    // dropped nowhere
-    if (!result.destination) {
-      return;
-    }
-
-    const source: DraggableLocation = result.source;
-    const destination: DraggableLocation = result.destination;
-
-    // did not move anywhere - can bail early
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      return;
-    }
-
-    // reordering column
-    if (result.type === 'COLUMN') {
-      const ordered: string[] = reorder(
-        this.state.ordered,
-        source.index,
-        destination.index,
-      );
-
-      this.setState({
-        ordered,
-      });
-
-      return;
-    }
-
-    const data = reorderJobMap({
-      jobMap: this.state.columns,
-      source,
-      destination,
-    });
-
-    this.setState({
-      columns: data.jobMap,
-    });
-  };
 
   render() {
-    const columns: JobMap = this.state.columns;
-    const ordered: string[] = this.state.ordered;
+    console.log('Rendering board')
+    const columns: JobMap = this.props.machineJobMap;
+    const ordered: string[] = this.props.ordered;
     const { containerHeight } = this.props;
 
     const board = (
@@ -146,7 +88,7 @@ export default class Board extends Component<Props, State> {
 
     return (
       <React.Fragment>
-        <DragDropContext onDragEnd={this.onDragEnd}>
+        <DragDropContext onDragEnd={this.props.onDragEnd}>
           {containerHeight ? (
             <ParentContainer height={containerHeight}>{board}</ParentContainer>
           ) : (
