@@ -1,0 +1,35 @@
+\begin{center}
+\begin{tikzpicture}
+	\def\firstcircle{(0,0) circle (2cm)}
+	\def\secondcircle{(60:3cm) circle (2cm)}
+	\def\thirdcircle{(0:3cm) circle (2cm)}
+
+	\fill[red,opacity=0.2] \firstcircle;
+	\fill[green,opacity=0.2] \secondcircle;
+	\fill[blue,opacity=0.2] \thirdcircle;
+	\node at (0, 0){feasible};
+	\node at (60:3cm){$D$ is satisifed};
+	\node at (0:3cm) {efficient};
+	
+	\node[dot](a) at (-3, 4){};
+	\node[dot](b) at (-2,2.7){};
+	\node[dot](c) at (-1,2){};
+	\node[dot](d) at (-0.5,1.1){};
+	\node[dot](e) at (0.7,1.3){};
+	\node[dot](e1) at (0, 2.5){};
+	\node[dot](e2) at (2.2, -0.8){};
+	\node[dot](f) at (1.6,0.8){};
+	\node[dot](f1) at (1.7,2){};
+	
+	\draw[arrow](a)--(b);
+	\draw[arrow](b)--(c);
+	\draw[arrow](c)--(d);
+	\draw[arrow](d)--(e);
+	\draw[arrow](e)--(f);
+	
+	\draw[arrow, red](d)--(e1);
+	\draw[arrow, red](e)--(f1);
+	\draw[arrow, red](e2)--(d);
+	\draw[arrow, red](e)--(e2);
+\end{tikzpicture}
+\end{center}

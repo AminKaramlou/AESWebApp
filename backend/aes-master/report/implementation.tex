@@ -1,0 +1,713 @@
+\chapter{Design and Implementation}
+\label{implementation}
+
+In this chapter, we will describe and discuss the technical implementation of the tool. First, we discuss our practical implementation methodology. Secondly, we define our implemented algorithms, alongside some theorems to state their correctness.
+
+\section{Design Decisions}
+
+To select a programming language suitable for developing the tool, languages were compared with respect to possible challenges. The language should be compatible with popular optimisation solvers. To make efficient use of time, using an existing interface library between popular solvers is recommended. Interfaces are written for popular languages such as C++, Java and Python. Python was selected for its development speed and support for a wide range of libraries.
+\linespace
+There is a balance between program speed and development time. A tool written in C may be fast but time-consuming. The purpose is to demonstrate the concept of argumentation with schedules while allowing analysis of potential future directions and short-comings. Hence, the tool should be sufficiently fast to be responsive, but not necessarily fast as possible.
+\linespace
+There are many powerful and efficient solvers such as CPLEX and GLPK \cite{clp}. To solver large problems, users use commercial over open-source solvers for their superior speed. However, users may not have access to a commercial solver. To accommodate users, Pyomo is used to interface to many popular solvers.
+\linespace
+The tool features a GUI to aid its accessibility. Users such as hospital managers can often use a suitably-designed GUI without training of the tool. In practice, a GUI is easier to demonstrate than a CLI.
+
+\section{Structure}
+ 
+The tool is developed with many components, represents as individual Python files. 
+
+\begin{figure}[H]
+	\resizebox{\textwidth}{!}{
+	\begin{tikzpicture}
+		\fill[shaded](-1.7, -0.8) rectangle (11.2, 3);
+		\node at (3, 0){External libraries};
+		
+		\node[file](numpy) at (0, 0){NumPy};
+		\node[file](cplex) at (6, 0){CPLEX};
+		\node[file](glpk) at (10, 0){GLPK};
+		\node[file](matplotlib) at (0, 2){Matplotlib};
+		\node[file](tkinter) at (4, 2){Tkinter};		
+		\node[file](pyomo) at (8, 2){Pyomo};
+		\node[file](visualise) at (0, 4){\texttt{visualise.py}};
+		\node[file](graphical) at (4, 4){\texttt{graphical.py}};
+		\node[file](solver) at (8, 4){\texttt{solver.py}};
+		\node[file](schedule) at (0, 6){\texttt{schedule.py}};
+		\node[file](explainer) at (0, 8){\texttt{explainer.py}};
+		\node[file](interface) at (4, 8){\texttt{interface.py}};
+		\node[file](main) at (4, 10){\texttt{main.py}};
+		\draw[arrow, dashed](cplex) -- (pyomo);
+		\draw[arrow, dashed](glpk) -- (pyomo);
+		\draw[arrow](numpy) -- (matplotlib);
+		\draw[arrow](matplotlib) -- (visualise);
+		\draw[arrow](visualise) -- (schedule);
+		\draw[arrow](pyomo) -- (solver);
+		\draw[arrow](tkinter) -- (graphical);
+		\draw[arrow](visualise) -- (graphical);
+		\draw[arrow](graphical) -- (interface);
+		\draw[arrow](solver) -- (interface);
+		\draw[arrow](explainer) -- (interface);
+		\draw[arrow](schedule) -- (interface);
+		\draw[arrow](schedule) -- (explainer);
+		\draw[arrow](interface) -- (main);
+	\end{tikzpicture}}
+
+	\caption{The graph illustrates the functional dependency between modules in the code-base of the tool. A solver is required for full functionality of the tool. This could be CPLEX or GLPK.}
+\end{figure}
+
+
+\section{Algorithms}
+
+\subsection{Notation}
+
+The tool uses Boolean tensors as data structures to store schedules and argumentation constructs. We will use the below operators in computing conflict-freeness, stability and aggregating explanations. The definitions below share notions with linear algebra over matrices.
+\begin{definition}	
+	Let $\mathbf{0}^{d_1, ..., d_n}$ be the zero-valued tensor. The dimensions may be omitted if clear.
+		
+	For example:
+	\begin{align*}
+	\mathbf{0}^{2\times 2}&=
+	\begin{bmatrix}
+	0&0\\
+	0&0\\
+	\end{bmatrix}
+	\end{align*}
+\end{definition}
+
+\begin{definition}
+	\label{tensornot}
+	
+	Let $\incircbin{\neg}$ be the element-wise logical negation operator over a Boolean tensor. Formally, $\incircbin{\neg}$ is a prefix unary function such that $\incircbin{\neg}\mathbf{x}=\mathbf{y}$ iff $\forall i_1\in\intset{1,d_1}...\forall i_n\in\intset{1,d_n}\ x_{i_1,...,i_n}=1-y_{i_1,...,i_n}$ where $\mathbf{x}$ and $\mathbf{y}$ have the same dimensions $d_1,...d_n$.
+	\linespace
+	For example:
+	\begin{align*}
+		\incircbin{\neg}
+		\begin{bmatrix}
+		1&0\\
+		0&1\\
+		\end{bmatrix}&=
+		\begin{bmatrix}
+			0&1\\
+			1&0\\
+		\end{bmatrix}
+	\end{align*}
+\end{definition}
+
+\begin{definition}
+	\label{tensorand}
+	
+	Let $\incircbin{\land}$ be the element-wise logical and operator over Boolean tensors. Formally, $\incircbin{\land}$ is a infix binary function such that $\mathbf{x}\incircbin{\land}\mathbf{y}=\mathbf{z}$ iff $\forall i_1\in\intset{1,d_1}...\forall i_n\in\intset{1,d_n}\ x_{i_1,...,i_n}\times y_{i_1,...,i_n}=z_{i_1,...,i_n}$ where $\mathbf{x}$, $\mathbf{y}$ and $\mathbf{z}$ have the same dimensions $d_1,...,d_n$.
+	\linespace
+	For example:
+	\begin{align*}
+	\begin{bmatrix}
+	0&0\\
+	1&1\\
+	\end{bmatrix}
+	\incircbin{\land}
+	\begin{bmatrix}
+	0&1\\
+	0&1\\
+	\end{bmatrix}
+	&=
+	\begin{bmatrix}
+	0&0\\
+	0&1\\
+	\end{bmatrix}
+	\end{align*}
+	\linespace
+	$\incircbin{\land}$ can be interpreted as the Boolean tensor adaptation of the Hadamard product.
+\end{definition}
+
+\begin{definition}
+	\label{tensoror}
+	
+	Let $\incircbin{\lor}$ be the element-wise logical or operator over Boolean tensors. Formally, $\incircbin{\lor}$ is a infix binary function such that $\mathbf{x}\incircbin{\lor}\mathbf{y}=\mathbf{z}$ iff $\forall i_1\in\intset{1,d_1}...\forall i_n\in\intset{1,d_n}\ x_{i_1,...,i_n}-x_{i_1,...,i_n}\times y_{i_1,...,i_n}+y_{i_1,...,i_n}=z_{i_1,...,i_n}$ where $\mathbf{x}$, $\mathbf{y}$ and $\mathbf{z}$ have the same dimensions $d_1,...,d_n$.
+	\linespace
+	For example:
+	\begin{align*}
+	\begin{bmatrix}
+	0&0\\
+	1&1\\
+	\end{bmatrix}
+	\incircbin{\lor}
+	\begin{bmatrix}
+	0&1\\
+	0&1\\
+	\end{bmatrix}
+	&=
+	\begin{bmatrix}
+	0&1\\
+	1&1\\
+	\end{bmatrix}
+	\end{align*}
+\end{definition}
+
+\subsection{Summary}
+
+\begin{figure}[H]
+	\resizebox{\textwidth}{!}{
+	\begin{tikzpicture}
+		\node[node](start) at (0, 12){Start};
+		\node[file, align=center](fpe) at (0, 6){
+			\textsc{Full-Precomputation-Explain}
+			\\\\
+			\tikz{
+				\node[file](cf) at (2.5, 8){\textsc{Construct-}\\\textsc{Feasibility}};
+				\node[file](ce) at (4, 6){\textsc{Construct-}\\\textsc{Efficiency}};
+				\node[file](cs) at (8, 6){\textsc{Construct-}\\\textsc{Satisfaction}};
+				\node[file](sf) at (0, 4){\textsc{Explain-}\\\textsc{Stability}};
+				\node[file](se) at (4, 4){\textsc{Explain-}\\\textsc{Stability}};
+				\node[file](ss) at (8, 4){\textsc{Explain-}\\\textsc{Stability}};
+				\node[file](ef) at (0, 2){\textsc{Explain-}\\\textsc{Feasibility}};
+				\node[file](ee) at (4, 2){\textsc{Explain-}\\\textsc{Efficiency}};
+				\node[file](es) at (8, 2){\textsc{Explain-}\\\textsc{Satisfaction}};
+				\draw[arrow](cf) -- (sf);
+				\draw[arrow](cf) -- (ce);
+				\draw[arrow](cf) -- (cs);
+				\draw[arrow](ce) -- (se);
+				\draw[arrow](cs) -- (ss);
+				\draw[arrow](sf) -- (ef);
+				\draw[arrow](se) -- (ee);
+				\draw[arrow](ss) -- (es);
+			};
+		};
+		\node[node](end) at (0, 0){End};
+		\draw[arrow](start) -- (fpe);
+		\draw[arrow](fpe) -- (end);
+	\end{tikzpicture}}
+	\caption{The graph summaries the required execution order of sub-functions in the \textsc{Full-Precomputation-Explain} algorithm. Nested rectangles denote nested function calls.}
+\end{figure}
+
+\begin{figure}[H]
+	\resizebox{\textwidth}{!}{
+		\begin{tikzpicture}
+		\node[node](start) at (0, 24) {Start};
+		\node[file, align=center](fpe) at (0, 12){
+			\textsc{Partial-Precomputation-Explain}
+			\\\\
+			\tikz{
+				\node[file](cf) at (2.5, 14){
+					\textsc{Compute-}\\\textsc{Unattacked}
+					\\\\
+					\tikz{
+						\node[file]{\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Feasibility}};
+					}
+				};
+				\node[file](ce) at (5, 9){
+					\textsc{Compute-}\\\textsc{Unattacked}
+					\\\\
+					\tikz{
+						\node[file]{\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Efficiency}};
+					}
+				};
+				\node[file](cs) at (10, 9){
+					\textsc{Compute-}\\\textsc{Unattacked}
+					\\\\
+					\tikz{
+						\node[file]{\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Satisfaction}};
+					}
+				};
+				\node[file](sf) at (0, 3.5){
+					\textsc{Explain-}\\\textsc{Feasibility}
+					\\\\
+					\tikz{
+						\node[file]{
+							\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Conflicts}
+							\\\\
+							\tikz{
+								\node[file]{
+									\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Feasibility}
+								};
+							}
+						};
+					}
+				};
+				\node[file](se) at (5, 1){
+					\textsc{Explain-}\\\textsc{Efficiency}
+					\\\\
+					\tikz{
+						\node[file](ccf) at (0, 5){
+							\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Conflicts}
+							\\\\
+							\tikz{
+								\node[file]{
+									\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Feasibility}
+								};
+							}
+						};
+						\node[file](cce) at (0, 0){
+							\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Conflicts}
+							\\\\
+							\tikz{
+								\node[file]{
+									\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Efficiency}
+								};
+							}
+						};
+						\draw[arrow](ccf) -- (cce);
+					}
+				};
+				\node[file](ss) at (10, 1){
+					\textsc{Explain-}\\\textsc{Satisfaction}
+					\\\\
+					\tikz{
+						\node[file](ccf) at (0, 5){
+							\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Conflicts}
+							\\\\
+							\tikz{
+								\node[file]{
+									\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Feasibility}
+								};
+							}
+						};
+						\node[file](ccs) at (0, 0){
+							\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Conflicts}
+							\\\\
+							\tikz{
+								\node[file]{
+									\textsc{Compute-}\\\textsc{Partial-}\\\textsc{Satisfaction}
+								};
+							}
+						};
+						\draw[arrow](ccf) -- (ccs);
+					}
+				};
+				\draw[arrow](cf) -- (sf);
+				\draw[arrow](cf) -- (ce);
+				\draw[arrow](cf) -- (cs);
+				\draw[arrow](ce) -- (se);
+				\draw[arrow](cs) -- (ss);
+			};
+		};
+		\node[node](end) at (0, 0){End};
+		\draw[arrow](start) -- (fpe);
+		\draw[arrow](fpe) -- (end);
+		\end{tikzpicture}}
+	\caption{The graph summaries the required execution order of sub-functions in the \textsc{Partial-Precomputation-Explain} algorithm.}
+\end{figure}
+
+\subsection{Framework Construction}
+\label{frameworkconstruction}
+
+The AAFs are constructed using similar definitions in paper \cite{aes}. The definitions are reprinted for feasibility and fixed decisions only. Take arbitrary $i_1,i_2\in\mathcal{M}$ and $j_1,j_2\in\mathcal{J}$. For the following framework definitions, let $Args=\mathcal{M}\times\mathcal{J}$.
+
+\begin{definition}
+	\label{feasibilityframework}
+	
+	The feasibility framework $\pair{Args}{\rightsquigarrow_F}$ is defined such that $\pair{i_1}{j_1}\rightsquigarrow_F\pair{i_2}{j_2}$ iff $i_1\neq i_2\land j_1=j_2$.
+\end{definition}
+
+\begin{definition}
+	\label{efficiencyframework}
+
+	The efficiency framework $\pair{Args}{\rightsquigarrow_S}$ is defined such that $\pair{i_1}{j_1}\rightsquigarrow_S\pair{ i_2}{j_2}$ iff $\pair{i_1}{j_1}\rightsquigarrow_F\pair{i_2}{j_2}\land\neg\text{FDASEP}(i_1,i_2,j_1)\lor\text{FDAPEP}(i_1,i_2,j_1,j_2)$ where:
+	\begin{itemize}
+		\item Fixed decision aware single exchange property: $\text{FDASEP}(i_1,i_2,j_1, D)$ iff
+			\begin{align*}
+				&C_{i_1}=C_{\max}\\
+				\land\ &x_{i_1,j_1}=1\\
+				\land\ &C_{i_1}>C_{i_2}+p_{j_1}\\
+				\land\ &\pair{i_1}{j_1}\not\in D^+\\
+				\land\ &\pair{i_2}{j_1}\not\in D^-
+			\end{align*}
+		\item Fixed decision aware pair-wise exchange property: $\text{FDAPEP}(i_1,i_2,j_1,j_2, D)$ iff
+			\begin{align*}
+				&C_{i_1}=C_{\max}\\
+				\land\ &x_{i_1,j_1}=1\\
+				\land\ &x_{i_2,j_2}=1\\
+				\land\ &i_1\neq i_2\\
+				\land\ &j_1\neq j_2\\
+				\land\ &p_{j_1}>p_{j_2}\\
+				\land\ &C_{i_1}+p_{j_2}>C_{i_2}+p_{j_1}\\
+				\land\ &\pair{i_1}{j_1}\not\in D^+\\
+				\land\ &\pair{i_2}{j_2}\not\in D^+\\
+				\land\ &\pair{i_2}{j_1}\not\in D^-\\
+				\land\ &\pair{i_1}{j_2}\not\in D^-
+			\end{align*}
+	\end{itemize}
+\end{definition}
+
+The paper \cite{aes} defines $\rightsquigarrow_S$ as an optimality framework. This report refers to $\rightsquigarrow_S$ as an efficiency framework, as its stability is determined by necessary but not sufficient conditions for optimality. In addition, the paper does considers efficiency and satisfaction to fixed decisions independently, we extend the notion of efficiency to respect these decisions. With the paper's naive definition of efficiency, the tool would recommend exchanges which violate fixed decisions. Definition \ref{efficiencyframework} distinguishes FDASEP with SEP (definition \ref{sep}) and FDAPEP with PEP (definition \ref{pep}).
+
+\begin{definition}
+	\label{fixeddecisionframework}
+	
+	The user fixed decision framework $\pair{Args}{\rightsquigarrow_D}$ is defined such that $\pair{i_1}{j_1}\rightsquigarrow_S\pair{ i_2}{j_2}$ iff $\pair{i_1}{j_1}\rightsquigarrow_F\pair{i_2}{j_2}\land\neg\text{DP}^+(i_1,i_2,j_1,j_2)\lor\text{DP}^-(i_1,i_2,j_1,j_2)$ where:
+	\begin{itemize}
+		\item Positive decision property: $\text{DP}^+(i_1,i_2,j_1,j_2)$ iff $\langle i_2, j_2\rangle\in D^+$
+		\item Negative decision property: $\text{DP}^-(i_1,i_2,j_1,j_2)$ iff $\langle i_1, j_1\rangle\in D^-\land i_1=i_2\land j_1=j_2$.
+	\end{itemize}
+\end{definition}
+
+The attack relations $\rightsquigarrow_F$, $\rightsquigarrow_S$ and $\rightsquigarrow_D$ are defined on $Args^2$. In practice, the tool uses a Boolean tensor representation of these attacks.
+
+\begin{definition}
+	\label{tensorfeasiblityframework}
+	
+	Let $\twoheadrightarrow_F$ be the data structure to store $\rightsquigarrow_F$ such iff $\pair{i_1}{j_1}\rightsquigarrow_F\pair{i_2}{j_2}\iff\twoheadrightarrow_{F\ i_1,j_1,i_2,j_2}=1$.
+\end{definition}
+
+\begin{definition}
+	\label{tensorefficiencyframework}
+	
+	Let $\twoheadrightarrow_S$ be the data structure to store $\rightsquigarrow_S$ such iff $\pair{i_1}{j_1}\rightsquigarrow_S\pair{i_2}{j_2}\iff\twoheadrightarrow_{S\ i_1,j_1,i_2,j_2}=1$.
+\end{definition}
+
+\begin{definition}
+	\label{tensorfixeddecisionframework}
+	
+	Let $\twoheadrightarrow_D$ be the data structure to store $\rightsquigarrow_D$ such iff $\pair{i_1}{j_1}\rightsquigarrow_D\pair{i_2}{j_2}\iff\twoheadrightarrow_{D\ i_1,j_1,i_2,j_2}=1$.
+\end{definition}
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Construct-Feasibility}{$m$, $n$}
+			\State $\twoheadrightarrow_F$ $\gets$ $\mathbf{0}^{(m\times n)^2}$
+			\For{$j\in\mathcal{J},i_1,i_2\in\mathcal{M}$}
+				\If{$i_1\neq i_2$}
+					\State ${\twoheadrightarrow_F}_{i_1,j,i_2,j}$ $\gets$ 1
+				\EndIf
+			\EndFor
+			\State \Return $\twoheadrightarrow_F$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+$\twoheadrightarrow_F$ can be constructed trivially in a dense data structure in $\mathcal{O}(m^2n^2)$ computational complexity, because of the complexity of zero-initialising $\twoheadrightarrow_F$. This can be constructed in $\mathcal{O}(m^2n)$ space complexity using a sparse data structure, but results worse computational complexity.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Construct-Efficiency}{$m$, $n$, $\mathbf{p}$, $\mathbf{x}$, $D$, $\twoheadrightarrow_F$}
+			\State $\mathbf{C}$ $\gets$ $\mathbf{x}\cdot\mathbf{p}$
+			\State $C_{\max}$ $\gets$ $\max(\mathbf{C})$
+			\State $\twoheadrightarrow_S$ $\gets$ $\twoheadrightarrow_F$
+			\For{$i_1\in\mathcal{M}$}
+				\If{$C_{i_1}=C_{\max}$}
+					\For{$j_1\in\mathcal{J}$}
+						\If{$x_{i_1,j_1}=1$}
+							\For{$i_2\in\mathcal{M}$}
+								\If{$\text{FDASEP}(i_1,j_1,i_2,D)$}
+									\State ${\twoheadrightarrow_S}_{i_1,j_1,i_2,j_1}$ $\gets$ 0
+								\EndIf
+								\For{$j_2\in\mathcal{J}$}
+									\If{$\text{FDAPEP}(i_1,j_1,i_2,j_2,D)$}
+										\State ${\twoheadrightarrow_S}_{i_1,j_2,i_2,j_2}$ $\gets$ 1
+									\EndIf
+								\EndFor
+							\EndFor
+						\EndIf
+					\EndFor
+				\EndIf
+			\EndFor
+			\State \Return $\pair{\twoheadrightarrow_S}{\mathbf{C}}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The construction of $\twoheadrightarrow_S$ is expensive because of the explicit for-loops to iterate over the $\mathcal{M}^2\mathcal{J}^2$ space to compute the edges that satisfy PEP and to copy $\twoheadrightarrow_F$. An optimisation by computing SEP outside of the $j_2$ loop, because PEP is invariant of $j_2$. We return the value of $\mathbf{C}$ because it will be used later, rather an recompute its value when necessary
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Construct-Satisfaction}{$m$, $n$, $D$, $\twoheadrightarrow_F$}
+			\State $\twoheadrightarrow_D$ $\gets$ $\twoheadrightarrow_F$
+			\For{$\langle i,j\rangle\in D^-$}
+				\State ${\twoheadrightarrow_S}_{i,j,i,j}$ $\gets$ 1
+			\EndFor
+			\For{$\langle i_1,j_1\rangle\in D^+$}
+				\For{$i_2\in\mathcal{M},j_2\in\mathcal{J}$}
+					\State ${\twoheadrightarrow_D}_{i_2,j_2,i_1,j_1}$ $\gets$ 0				
+				\EndFor
+			\EndFor
+			\State \Return $\twoheadrightarrow_D$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+If $D$ is assumed to be satisfiable, then $D^+$ has at most $n$ decisions while $D^-$ has at most $(m-1)n$ decisions. However, if $D$ is not necessarily satisfiable to account for poorly-formulated user problems, so in general $D^+$ and $D^-$ has at most $mn$ decisions.
+
+\subsection{Verifying Stability}
+\label{verifyingstability}
+
+Stability can be computed by checking whether $E$ exists within a set of all possible stable extensions of some $\pair{Args}{\twoheadrightarrow}$. However, a schedule cannot be reasoned on without understanding whether $E$ may be stable on $\langle Args, \twoheadrightarrow\rangle$. Existing solutions require a complication pipeline using answer set solvers. To make the implementation of the tool easier, we adapt the stability computation to schedules into a concise algorithm.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Explain-Stability}{$\mathbf{x}$, $\twoheadrightarrow$, $\bar{\mathbf{u}}$, $\bar{\mathbf{c}}$}
+			\State $\mathbf{u}$ $\gets$ \textsc{Compute-Unattacked}($\mathbf{x}$, $\twoheadrightarrow$, $\bar{\mathbf{u}}$)
+			\For{$i\in\mathcal{M},j\in\mathcal{J}$}
+				\State $c_{i,j}$ $\gets$ \textsc{Compute-Partial-Conflicts}($\mathbf{x}$, $\twoheadrightarrow_{i,j}$, $\bar{c}_{i,j}$)
+			\EndFor			
+			\State \Return $\pair{\mathbf{u}}{\mathbf{c}}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Compute-Unattacked}{$\mathbf{x}$, $\twoheadrightarrow$, $\bar{\mathbf{u}}$}
+			\State $\mathbf{u}$ $\gets\incircbin{\neg}$ $\mathbf{x}$
+			\For{$i\in\mathcal{M},j\in\mathcal{J}$}
+				\If{$x_{i,j}=1$}
+					\State $\mathbf{u}$ $\gets$ $\mathbf{u}$ $\incircbin{\land}$ $\incircbin{\neg}\twoheadrightarrow_{i,j}$
+				\EndIf
+			\EndFor
+			\State $\mathbf{u}$ $\gets$ $\mathbf{u}$ $\incircbin{\land}$ $\incircbin{\neg}$ $\bar{\mathbf{u}}$
+			\State \Return $\mathbf{u}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Compute-Partial-Conflicts}{$\mathbf{x}$, $\twoheadrightarrow_{i, j}$, $\bar{c}_{i,j}$}
+			\State $c_{i,j}$ $\gets\mathbf{0}^{m\times n}$
+			\If{$x_{i,j}=1$}
+				\State $c_{i,j}$ $\gets$ $\mathbf{x}$ $\incircbin{\land}$ $\twoheadrightarrow_{i,j}$ 
+			\EndIf
+			\State $c_{i,j}$ $\gets$ $c_{i,j}$ $\incircbin{\land}$ $\incircbin{\neg}$ $\bar{c}_{i,j}$
+			\State \Return $c_{i,j}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The function \textsc{Explain-Stability} returns two tensors, $\mathbf{u}$ encode the unattacked nodes and $\mathbf{c}$ encode the edges are not conflict-free. $\bar{\mathbf{u}}$ and $\bar{\mathbf{c}}$ represent node and edges to ignore from returned values respectively, which are useful in tailoring explanations to particular constraints. By default, $\bar{\mathbf{u}}$ $=\mathbf{0}$ and $\bar{\mathbf{c}}$ $=\mathbf{0}$. The function uses $\mathbf{x}$ rather than its equivalent representation $E$ because $\mathbf{x}$ can be manipulated directly from an optimiser in its tensor form unlike $E$. This results in improved performance. In addition, it is assumed that $E\subseteq Args$ so $Args$ does not need to be a parameter.
+\linespace
+The auxiliary functions \textsc{Compute-Unattacked} and \textsc{Compute-Partial-Conflicts} are defined such that at most $\mathcal{O}(mn)$ memory is allocated. This will be discussed in the following subsections. We state that these algorithms are correct, their proofs are in Appendix \ref{stabilityproof}.
+
+\begin{lemma}[\textsc{Compute-Unattacked} is correct]
+	\label{computeunattacked}
+	
+	If \textsc{Compute-Unattacked}$(\mathbf{x}$, $\twoheadrightarrow$, $\bar{\mathbf{u}}$)$\ =\mathbf{u}$, then
+	\begin{align*}
+		\forall k\in\mathcal{M}\ \forall\ell\in\mathcal{J}\ \bar{u}_{k,\ell}=0\implies\Big(u_{k,\ell}=1\iff&\neg\exists k'\in\mathcal{M}\ \exists\ell'\in\mathcal{J}\\
+		&x_{k,\ell}=0\\
+		\land\ &x_{k',\ell'}=1\\
+		\land\ &\twoheadrightarrow_{k',\ell',k,\ell}=1\Big)\\
+		\land\ \bar{u}_{k,\ell}=1\implies&u_{k,\ell}=0
+	\end{align*}
+\end{lemma}
+	
+\begin{lemma}[\textsc{Compute-Partial-Conflicts} is correct]
+	\label{computepartialconflicts}
+	
+	If \textsc{Compute-Partial-Conflicts}$(\mathbf{x}$, $\twoheadrightarrow_{i,j}$, $\bar{\mathbf{c}}_{i,j}$)$\ =c_{i,j}$, then
+	\begin{align*}
+		\forall k\in\mathcal{M}\ \forall\ell\in\mathcal{J}\ c_{i,j,k,\ell}=1\iff&x_{i,j}=1\\
+		\land\ &x_{k,\ell}=1\\
+		\land\ &\twoheadrightarrow_{i,j,k,\ell}\ =1\\
+		\land\ &\bar{c}_{i,j,k,\ell}=0
+	\end{align*}
+\end{lemma}
+
+\begin{theorem}[\textsc{Compute-Stability} is correct]
+	\label{computestability}
+
+	Let $E$ be an extension on $Args$ that represents a schedule $S$ such that $E\approx S$, with an assignment matrix $\mathbf{x}$.
+	\linespace
+	If \textsc{Compute-Stability}$(\mathbf{x}$, $\twoheadrightarrow$, $\bar{\mathbf{u}}$, $\bar{\mathbf{c}})=\pair{\mathbf{u}}{\mathbf{c}}$, then $\mathbf{u}$ encodes the non-ignored unattacked arguments and $\mathbf{c}$ encode the non-ignored conflicting attacks.
+	\linespace
+	Formally, 
+	\begin{align*}
+		\Big(&\forall\pair{k_1}{\ell_1}\in Args\setminus E\\
+		&\bar{u}_{k_1,\ell_1}=0\implies\big(\exists\pair{k_2}{\ell_2}\in E\ \pair{k_2}{\ell_2}\rightsquigarrow\pair{k_1}{\ell_1}\iff u_{k_1,\ell_1}=0\big)\\
+		\land\ &\bar{u}_{k_1,\ell_1}=1\implies u_{k_1,\ell_1}=0\Big)\\
+		\Big(&\forall\pair{k_1}{\ell_1},\pair{k_2}{\ell_2}\in E\\
+		&\bar{c}_{k_1,\ell_1,k_2,\ell_2}=0\implies\big(\pair{k_1}{\ell_1}\rightsquigarrow\pair{k_2}{\ell_2}\iff c_{k_1,\ell_1,k_2,\ell_2}=1\big)\\
+		\land\ &\bar{c}_{k_1,\ell_1,k_2,\ell_2}=1\implies c_{k_1,\ell_1,k_2,\ell_2}=1\Big)
+\end{align*}
+\end{theorem}
+
+\begin{corollary}[\textsc{Compute-Stability} computes stability]\ \\
+	If \textsc{Compute-Stability}$(\mathbf{x}$, $\twoheadrightarrow$, $\mathbf{0}$, $\mathbf{0})=\pair{\mathbf{0}}{\mathbf{0}}$ iff $E$ is stable on $\pair{Args}{\rightsquigarrow}$
+	
+	\begin{proof}
+		The result holds trivially from Theorem \ref{computestability}, with $\bar{\mathbf{u}}=\mathbf{0}$ and $\bar{\mathbf{c}}=\mathbf{0}$. 
+	\end{proof}
+\end{corollary}
+
+\subsection{Explanation}
+
+Explanations are given in italics. Implementation of algorithms use Python's \verb|print()| to collect explanations over all algorithms in the tool's output.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Explain-Feasibility}{$\mathbf{u}$, $\mathbf{c}$}
+			\If{$m=0$}
+				\If{$n=0$}
+					\State \emph{There are no jobs, the schedule is trivially feasible.}
+				\Else
+					\State \emph{There are no machines to allocate to jobs.}
+				\EndIf
+			\Else
+				\State $\mathbf{y}$ $\gets$ $\mathbf{0}^n$
+				\State $\mathbf{z}$ $\gets$ $\mathbf{0}^{n\times m}$
+				\For{$i_1,i_2\in\mathcal{M},j\in\mathcal{J}$}
+					\If{$c_{i_1,j,i_2,j}=1$}
+						\State $y_j$ $\gets$ $1$
+						\State $z_{j,i_1}$ $\gets$ $1$
+						\State $z_{j,i_2}$ $\gets$ $1$
+					\EndIf
+				\EndFor
+				\If{$u^T_0=\mathbf{0}\land\mathbf{y}=\mathbf{0}$}
+					\State \emph{All jobs are allocated to exactly one machine.}
+				\Else
+					\For{$j\in\mathcal{J}$}
+						\If{$u_{0,j}=1$}
+							\State \emph{Job $j$ is not allocated to any machine.}
+						\EndIf
+						\If{$y_j\neq\mathbf{0}$}
+							\State \emph{Job $j$ is over-allocated to machines $\{i\ |\ i\in\mathcal{M}, z_{j,i}=1\}$.}
+						\EndIf
+					\EndFor
+				\EndIf
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The paper \cite{aes} does not state explanations for trivial cases when $m=0$ or $n=0$. The above algorithm handles these cases with additional explanations. A problem with the naive implementation of generating an explanation for each conflict in $\mathbf{c_F}$ results in $k^2$ explanations for $k$ conflicting machines for a job. This results in superfluous text for the user. To summarise these explanations, the algorithm constructs a pseudo-schedule $\mathbf{z}$ which can be interpreted as $\mathbf{x}$ transposed and rows filtered if $\sum_{i\in\mathcal{M}}x_{i,j}>1$ for all jobs $j$. Afterwards, the algorithm prints the non-zero indices of $\mathbf{c}'$, which refer to the machines that causes over-allocation.
+\linespace
+The algorithm features two optimisations. The variable $\mathbf{y}$ represent over-allocated jobs. $y_j=\mathbf{0}$ is faster to compute than its equivalent $z_j=\mathbf{0}$ because $y_j$ is an scalar aggregate over conflicting machines, unlike the vector $z_j$. Likewise, by the construction of $\mathbf{u_F}$, we can exploit $u^T_0=\mathbf{0}\iff\mathbf{u}=\mathbf{0}$ because $u^T_0=\frac{1}{m}\mathbf{u}^T\cdot\mathbf{1}^m$.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Explain-Efficiency}{$\mathbf{p}$, $\mathbf{C}$, $\mathbf{u}$, $\mathbf{c}$}				\State $i_1$ $\gets$ first argmax of $\mathbf{C}$
+			\State reasons $\gets$ empty list
+			\For{$i_2\in\mathcal{M},j_1\in\mathcal{J}$}
+				\If{$u_{i_2,j_1}=1$}
+					\State reason $\gets$ \emph{Job $j_1$ can be allocated to machine $i_2$.}
+					\State append reason to reasons
+				\EndIf
+				\For{$j_2\in\mathcal{J}$}
+					\If{$c_{i_1,j_1,i_2,j_2}=1$}
+						\State reason $\gets$ \emph{Job $j_1$ and $j_2$ can be swapped with machines $i_1$ and $i_2$.}
+						\State append reason to reasons
+					\EndIf
+				\EndFor
+			\EndFor
+			\State sort reasons by $\langle$reduction, processing time$\rangle$
+			\If{reasons is empty}
+				\State\emph{All jobs satisfy single and pairwise exchange properties.}
+			\Else
+				\State\emph{Output reasons}
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The algorithm has $\mathcal{O}(mn^2\log(mn^2))$ computational complexity, arising from sorting the reasons generated. Explanation of efficiency results in at most $m^2n^2$ lines, which  grows quickly for large schedules. To make this easier for the user to understand, we sort the explanations by its reduction, the amount the total completion time will reduce when an  single or pairwise exchange occurs. This will highlight the most significant improvements for the user. This justifies the increased complexity with the logarithmic factor.
+\linespace
+A key limitation with sorting by reduction, is in the cases of multiple critical machines. In this case, all reductions are zero. This is because single or pairwise exchange results in local optimisations of the same objective value. To find a strictly more optimal schedule, we need to look $k$ steps ahead, where $k$ is the number of critical machines. To solve this, the tool will need to generate instructions of $k$ actions, of single and pair-wise exchanges. For an arbitrary large schedule, this will cause an exponential explosion in $k$ of the explanation length. We continue the assumption that exponential tractable complexity is not feasible, so therefore, an explanation for a strictly more efficient schedule is not feasible.
+\linespace
+An alternative solution is to restrict the explanation space by giving local explanations. Hence in the algorithm, we consider only one critical machine, as in line 2. This reduces the computational complexity by a factor of $m$, which is significant because efficiency is the most expensive schedule property to explain.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Explain-Satisfaction}{$D$, $\mathbf{u}$, $\mathbf{c}$}
+			\For{$j\in\mathcal{J}$}
+				\If{$\exists i\in\mathcal{M}\ \pair{i}{j}\not\in D^-$}
+					\State\emph{Job $j$ cannot be allocated to any machine.}
+				\EndIf
+				\If{$D^-$ and $D^+$ are not disjoint}
+					\State\emph{Job $j$ subject to conflicting negative and positive fixed decisions.}
+				\EndIf
+				\If{$|\{i\in\mathcal{M}\ |\ \pair{i}{j}\in D^+\}|>1$}
+					\State\emph{Job $j$ cannot be allocated to multiple machines.}	
+				\EndIf
+			\EndFor
+			\State $\mathbf{y}$ $\gets$ $\mathbf{0}^{m\times n}$
+			\For{$i\in\mathcal{M}$}
+				\For{$j\in\mathcal{J}$}
+					\State $\mathbf{y}$ $\gets$ $\mathbf{y}$ $\incircbin{\lor}$ $c_{i,j}$
+				\EndFor
+			\EndFor
+			\If{$\mathbf{u}=\mathbf{0}\land\mathbf{y}=\mathbf{0}$}
+				\State\emph{All jobs satisfy user fixed decisions.}
+			\Else
+				\For{$i\in\mathcal{M},j\in\mathcal{J}$}
+					\If{$u_{i,j}$}
+						\State\emph{Job $j$ must be allocated to machine $i$.}
+					\EndIf
+					\If{$y_{i,j}$}
+						\State\emph{Job $j$ must not be allocated to machine $i$.}
+					\EndIf			
+				\EndFor
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The variable $\mathbf{y}$ refers to allocations not satisfying $D^+$. Because of the relaxation that $D$ is not assumed to be satisfiable, we must check the sufficient conditions for this, and generate their explanations if necessary.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Full-Precomputation-Explain}{$m$, $n$, $\mathbf{p}$, $D$, $\mathbf{x}$}
+			\State $\twoheadrightarrow_F$ $\gets$ \textsc{Construct-Feasibility}($m$, $n$)
+			\State $\pair{\mathbf{u_F}}{\mathbf{c_F}}$ $\gets$ \textsc{Explain-Stability}($\mathbf{x}$, $\twoheadrightarrow_F$, $\mathbf{0}$, $\mathbf{0}$)
+			\State\textsc{Explain-Feasibility}($\mathbf{u_F}$, $\mathbf{c_F}$)
+
+			\State $\pair{\twoheadrightarrow_S}{\mathbf{C}}$ $\gets$ \textsc{Construct-Efficiency}($m$, $n$, $\mathbf{p}$, $\mathbf{x}$, $D$, $\twoheadrightarrow_F$)
+			\State $\pair{\mathbf{u_S}}{\mathbf{c_S}}$ $\gets$ \textsc{Explain-Stability}($\mathbf{x}$, $\twoheadrightarrow_S$, $\mathbf{u_F}$, $\mathbf{c_F}$)
+			\State\textsc{Explain-Efficiency}($\mathbf{p}$, $\mathbf{C}$, $\mathbf{u_S}$, $\mathbf{c_S}$)
+
+			\State $\twoheadrightarrow_D$ $\gets$ \textsc{Construct-Satisfaction}($m$, $n$, $\mathbf{x}$, $\twoheadrightarrow_F$)
+			\State $\pair{\mathbf{u_D}}{\mathbf{c_D}}$ $\gets$ \textsc{Explain-Stability}($\mathbf{x}$, $\twoheadrightarrow_D$, $\mathbf{u_F}$, $\mathbf{c_F}$)
+			\State\textsc{Explain-Satisfaction}($\mathbf{u_D}$, $\mathbf{c_D}$)
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+The above high-level algorithm generates explanations for feasibility, efficiency and satisfaction while summarising the interaction of construction, stability and explanation functions. The function is named with full precomputation because all frameworks are fully constructed before explanations.
+
+\subsection{Memory Limitations}
+
+A full framework requires at least $m^2n^2$ bytes space in memory. For, $m=n=256$ this requires 4GiB. One solution is not to construct frameworks and compute their stability in sequence, but rather inline partial framework construction into frameworks. This reduces the memory complexity to $\mathcal{O}(mn)$, while keeping the same computational complexity. This obviously will be slower to compute, but this method is more scalable. Therefore, we need to modify any function requiring a data object of size $m^2n^2$ such as $\mathbf{c}$ and $\mathbf{x}$.
+\linespace
+The framework construction functions are modified to compute a sub-graph from a node, given its indices. For example, \textsc{Construct-Feasibility} is replaced by \textsc{Construct-Partial-Feasibility}.
+
+\begin{algorithm}[H]
+	\caption{}
+	\begin{algorithmic}[1]
+		\Function{Partial-Precomputation-Explain}{$m$, $n$, $\mathbf{p}$, $D$, $\mathbf{x}$}
+			\Function{$\twoheadrightarrow'_F$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Feasibility}($m$, $n$, $i$, $j$)
+			\EndFunction
+			\Function{$\mathbf{c'_F}$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Conflicts}($\mathbf{x}$, $\twoheadrightarrow'_F$, $\mathbf{0}$)
+			\EndFunction
+			\Function{$\twoheadrightarrow'_S$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Efficiency}($m$, $n$, $\mathbf{p}$, $\mathbf{x}$, $D$, $i$, $j$)
+			\EndFunction
+			\Function{$\mathbf{c'_S}$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Conflicts}($\mathbf{x}$, $\twoheadrightarrow'_S$, $\twoheadrightarrow'_F$)
+			\EndFunction
+			\Function{$\twoheadrightarrow'_D$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Satisfaction}($m$, $n$, $D$, $i$, $j$)
+			\EndFunction
+			\Function{$\mathbf{c'_D}$}{$i$, $j$}
+				\State \Return \textsc{Construct-Partial-Conflicts}($\mathbf{x}$, $\twoheadrightarrow'_D$, $\twoheadrightarrow'_F$)
+			\EndFunction
+			\State $\mathbf{u_F}$ $\gets$ \textsc{Computed-Unattacked}($\mathbf{x}$, $\twoheadrightarrow'_F$, $\mathbf{0}$)
+			\State \textsc{Explain-Feasibility}($\mathbf{u_F}$, $\mathbf{c'_F}$)
+			\State $\mathbf{u_S}$ $\gets$ \textsc{Computed-Unattacked}($\mathbf{x}$, $\twoheadrightarrow'_S$, $\mathbf{u_F}$)
+			\State \textsc{Explain-Efficiency}($\mathbf{u_S}$, $\mathbf{c'_S}$)
+			\State $\mathbf{u_D}$ $\gets$ \textsc{Computed-Unattacked}($\mathbf{x}$, $\twoheadrightarrow'_D$, $\mathbf{u_F}$)
+			\State \textsc{Explain-Satisfaction}($\mathbf{u_D}$, $\mathbf{c'_D}$)
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\section{Testability}
+
+To ensure the the tool is robust, we used unit tests and regression tests to verify code quality. The unit tests were implemented with \texttt{pytest}, a commonly used Python library. Although it would be ideal to automate testing of the GUI, this is beyond the scope of this academic project. We have setup typical problem and schedule data sets, including non-well defined and defined problems. Due to the nature of mathematical optimisation, it is impossible to test every schedule, so we select the data sets to be representative of the tool's explanation features. An advantage to using regression tests, is that we can automate the comparison of different approaches: full-precomputation, partial-computation and naive. This will allow us to prove that the non-argumentative and argumentative approaches are functionally equivalent.

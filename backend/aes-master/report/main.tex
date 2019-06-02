@@ -1,0 +1,46 @@
+\documentclass[10pt, a4paper]{report}
+
+\input{definitions}
+
+\begin{document}
+	
+	\input{titlepage}
+	
+	\begin{abstract}
+		\input{abstract}
+	\end{abstract}
+	
+	\setcounter{tocdepth}{1}
+	\pagenumbering{roman}
+	\tableofcontents 
+	\vspace{\baselineskip}
+	This report and the full source-code of the tool can be found at \url{github.com/mylestunglee/aes}.
+	
+	\cleardoublepage
+	\pagenumbering{arabic}
+
+	\input{introduction}	
+	\input{background}
+	\input{implementation}
+	\input{interval}
+	\input{evaluation}
+	\input{conclusion}
+	
+	\begin{appendices}
+		\input{notation}
+		\input{stability}
+		\input{userguide}
+		%\input{diagram}
+
+		% no chapter sectioning
+		\unchapter{Questionnare}
+		\includepdf[pages=-]{questionnaire.pdf}
+		\input{data}
+	\end{appendices}
+
+	% warning, set when needed
+	%\setcounter{page}{68}
+	\bibliography{bibliography}
+	\addcontentsline{toc}{chapter}{Bibliography}
+	\bibliographystyle{ieeetr}
+\end{document}
