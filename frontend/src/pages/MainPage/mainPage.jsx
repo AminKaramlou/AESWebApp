@@ -126,18 +126,21 @@ class MainPage extends React.Component {
     this.updateExplanation();
   };
 
-  addNewJob = length => {
+  addNewJob = (length, assignee) => {
+    const machine = this.state.machines.find(element => {
+      return element.name === assignee
+    })
     const newJob: Job = {
       length: length,
       id: uuidv4(),
       content: "Sometimes life is scary and dark",
-      machine: this.state.machines[1]
+      machine: machine
     };
     const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {
       ...this.state.machineJobMap,
-      [this.state.ordered[1]]: [
-        ...this.state.machineJobMap[this.state.ordered[1]],
+      [machine.name]: [
+        ...this.state.machineJobMap[machine.name],
         newJob
       ]
     };
@@ -176,14 +179,9 @@ class MainPage extends React.Component {
     return (
       <div className={classNames(classes.content)}>
         <SectionControls
-          status={this.state.status}
-          semantics={this.state.semantics}
-          supportInterpretation={this.state.supportInterpretation}
-          onFormChangeHandler={e => {
-            this.setState({ newArgumentText: e.target.value });
-          }}
           onAddResourceButtonClick={e => this.addNewResource()}
           onAddJobButtonClick={this.addNewJob}
+          machines={this.state.machines}
         />
         <Board
           machineJobMap={this.state.machineJobMap}

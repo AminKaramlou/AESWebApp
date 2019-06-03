@@ -135,6 +135,7 @@ def random_schedule(m_text, p_text, nfd_text, pfd_text):
 	return True, format_schedule(S)
 
 def explain(m_text, p_text, nfd_text, pfd_text, S_text, options):
+	print(p_text)
 	success, result = parse_problem_schedule(m_text, p_text, nfd_text,
 		pfd_text, S_text)
 	if not success:

@@ -13,7 +13,8 @@ CORS(app)
 @socketio.on('get-explanation')
 def handle_message(schedule_information):
   m_text = str(len(schedule_information['machines']))
-  p_text = "\n".join(['A' + ": " + str(job['length']) for job in schedule_information['jobs']])
+  p_text = "\n".join([job['id'] + ": " + str(job['length']) for job in schedule_information['jobs']])
+  p_text = "A: 20\nB: 10"
   nfd_text = ""
   pfd_text = ""
 
