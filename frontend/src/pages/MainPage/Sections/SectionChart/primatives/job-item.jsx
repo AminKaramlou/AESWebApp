@@ -114,6 +114,9 @@ function JobItem(props: Props) {
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       length={job.length}
+      resizable={{
+        edges: { left: false, right: false, bottom: true, top: true },
+      }}
     >
       <Content>
         <Footer>

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "prettier": "^1.17.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-resizable": "^1.8.0",
+    "reactablejs": "^0.1.3"
+  }
+}

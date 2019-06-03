@@ -28,7 +28,6 @@ import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 
-
 const uuidv4 = require("uuid/v4");
 const socket = openSocket("http://localhost:5000");
 socket.on("message", message => {
@@ -45,11 +44,27 @@ class MainPage extends React.Component {
       ordered: Object.keys(machineJobMap),
       status: "Schedule is optimal"
     };
+    socket.on("explanation", explanation => {
+      console.log(explanation);
+      this.forceUpdate();
+    });
+  }
+
+  componentDidMount(): void {
+    this.updateExplanation()
+  }
+
+  updateExplanation() {
+    socket.emit('get-explanation',
+      {
+        'machines': this.state.machines,
+        'jobs': this.state.jobs,
+        'machineJobMap': this.state.machineJobMap
+      }
+    )
   }
 
   onDragEnd = (result: DropResult) => {
-    console.log("Here");
-    console.log(result);
     if (result.combine) {
       if (result.type === "COLUMN") {
         const shallow: string[] = [...this.state.ordered];
@@ -108,17 +123,17 @@ class MainPage extends React.Component {
     this.setState({
       machineJobMap: data.jobMap
     });
+    this.updateExplanation();
   };
 
   addNewJob = length => {
-    console.log('Herreeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
     const newJob: Job = {
       length: length,
       id: uuidv4(),
       content: "Sometimes life is scary and dark",
       machine: this.state.machines[1]
     };
-    const jobs = [...this.state.jobs, newJob]
+    const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {
       ...this.state.machineJobMap,
       [this.state.ordered[1]]: [
@@ -131,6 +146,7 @@ class MainPage extends React.Component {
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap)
     });
+    this.updateExplanation();
   };
 
   addNewResource = () => {
@@ -142,7 +158,7 @@ class MainPage extends React.Component {
         hard: colors.Y200
       }
     };
-    const machines = [...this.state.machines, newMachine]
+    const machines = [...this.state.machines, newMachine];
     const machineJobMap = {
       ...this.state.machineJobMap,
       [newMachine.name]: []
@@ -152,7 +168,7 @@ class MainPage extends React.Component {
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap)
     });
-    console.log(this.state.machineJobMap);
+    this.updateExplanation();
   };
 
   render() {
