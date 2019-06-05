@@ -42,26 +42,25 @@ class MainPage extends React.Component {
       machines: machines,
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap),
-      status: "Schedule is optimal"
+      explanation: "Generating explanation..."
     };
     socket.on("explanation", explanation => {
-      console.log(explanation);
+      this.setState({explanation:explanation});
       this.forceUpdate();
     });
   }
 
   componentDidMount(): void {
-    this.updateExplanation()
+    this.updateExplanation();
   }
 
   updateExplanation() {
-    socket.emit('get-explanation',
-      {
-        'machines': this.state.machines,
-        'jobs': this.state.jobs,
-        'machineJobMap': this.state.machineJobMap
-      }
-    )
+    console.log("updating explanation")
+    socket.emit("get-explanation", {
+      machines: this.state.machines,
+      jobs: this.state.jobs,
+      machineJobMap: this.state.machineJobMap
+    });
   }
 
   onDragEnd = (result: DropResult) => {
@@ -120,41 +119,42 @@ class MainPage extends React.Component {
       destination
     });
 
-    this.setState({
-      machineJobMap: data.jobMap
-    });
-    this.updateExplanation();
+    this.setState(
+      {
+        machineJobMap: data.jobMap
+      },
+      this.updateExplanation
+    );
   };
-
   addNewJob = (length, assignee) => {
     const machine = this.state.machines.find(element => {
-      return element.name === assignee
-    })
+      return element.name === assignee;
+    });
+    console.log(machine);
     const newJob: Job = {
       length: length,
-      id: uuidv4(),
+      id: String.fromCharCode(65 + this.state.jobs.length),
       content: "Sometimes life is scary and dark",
       machine: machine
     };
     const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {
       ...this.state.machineJobMap,
-      [machine.name]: [
-        ...this.state.machineJobMap[machine.name],
-        newJob
-      ]
+      [machine.name]: [...this.state.machineJobMap[machine.name], newJob]
     };
-    this.setState({
-      jobs: jobs,
-      machineJobMap: machineJobMap,
-      ordered: Object.keys(machineJobMap)
-    });
-    this.updateExplanation();
+    this.setState(
+      {
+        jobs: jobs,
+        machineJobMap: machineJobMap,
+        ordered: Object.keys(machineJobMap)
+      },
+      this.updateExplanation
+    );
   };
 
   addNewResource = () => {
     const newMachine: Machine = {
-      id: uuidv4(),
+      id: this.state.ordered.length + 1,
       name: `Nurse ${this.state.ordered.length + 1}`,
       colors: {
         soft: colors.Y50,
@@ -166,12 +166,14 @@ class MainPage extends React.Component {
       ...this.state.machineJobMap,
       [newMachine.name]: []
     };
-    this.setState({
-      machines: machines,
-      machineJobMap: machineJobMap,
-      ordered: Object.keys(machineJobMap)
-    });
-    this.updateExplanation();
+    this.setState(
+      {
+        machines: machines,
+        machineJobMap: machineJobMap,
+        ordered: Object.keys(machineJobMap)
+      },
+      this.updateExplanation
+    );
   };
 
   render() {
@@ -188,7 +190,6 @@ class MainPage extends React.Component {
           ordered={this.state.ordered}
           onDragEnd={this.onDragEnd}
         />
-        ;
       </div>
     );
   }
