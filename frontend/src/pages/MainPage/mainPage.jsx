@@ -45,7 +45,7 @@ class MainPage extends React.Component {
       explanation: "Generating explanation..."
     };
     socket.on("explanation", explanation => {
-      this.setState({explanation:explanation});
+      this.setState({ explanation: explanation });
       this.forceUpdate();
     });
   }
@@ -55,7 +55,7 @@ class MainPage extends React.Component {
   }
 
   updateExplanation() {
-    console.log("updating explanation")
+    console.log("updating explanation");
     socket.emit("get-explanation", {
       machines: this.state.machines,
       jobs: this.state.jobs,
@@ -130,12 +130,15 @@ class MainPage extends React.Component {
     const machine = this.state.machines.find(element => {
       return element.name === assignee;
     });
-    console.log(machine);
     const newJob: Job = {
       length: length,
       id: String.fromCharCode(65 + this.state.jobs.length),
       content: "Sometimes life is scary and dark",
-      machine: machine
+      machine: machine,
+      colors: {
+        soft: colors.Y50,
+        hard: colors.Y200
+      }
     };
     const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {
@@ -155,11 +158,7 @@ class MainPage extends React.Component {
   addNewResource = () => {
     const newMachine: Machine = {
       id: this.state.ordered.length + 1,
-      name: `Nurse ${this.state.ordered.length + 1}`,
-      colors: {
-        soft: colors.Y50,
-        hard: colors.Y200
-      }
+      name: `Nurse ${this.state.ordered.length + 1}`
     };
     const machines = [...this.state.machines, newMachine];
     const machineJobMap = {

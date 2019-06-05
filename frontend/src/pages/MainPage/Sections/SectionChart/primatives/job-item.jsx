@@ -109,7 +109,7 @@ function JobItem(props: Props) {
     <Container
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
-      colors={job.machine.colors}
+      colors={job.colors}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
