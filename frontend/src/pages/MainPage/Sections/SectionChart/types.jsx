@@ -18,6 +18,7 @@ export type Job = {|
   id: Id,
   content: string,
   machine: Machine,
+  status: string,
 |};
 
 export type JobMap = {

@@ -1,22 +1,89 @@
 // @flow
-import React from 'react';
-import styled from '@emotion/styled';
-import { colors } from '@atlaskit/theme';
-import { borderRadius, grid } from '../constants';
-import type { Job, MachineColors } from '../types';
-import type { DraggableProvided } from 'react-beautiful-dnd';
+import React from "react";
+import styled from "@emotion/styled";
+import { colors } from "@atlaskit/theme";
+import { borderRadius, grid } from "../constants";
+import type { Job, MachineColors } from "../types";
+import type { DraggableProvided } from "react-beautiful-dnd";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import red from "@material-ui/core/colors/red";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import ShareIcon from "@material-ui/icons/Share";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import injectionImg from "assets/img/injection.png";
+import {green} from "@material-ui/core/colors";
+
+const useStyles = makeStyles(theme => ({
+  card: props => ({
+    width: 250,
+    height: props.length * 3,
+    borderColor: props.isDragging ? props.colors.hard : "white",
+    backgroundColor: props.isDragging ? props.colors.soft : "green",
+
+  }),
+  media: {
+    height: 0,
+    paddingTop: "56.25%" // 16:9
+  },
+  avatar: props => ({
+    backgroundColor: props.isDragging ? red[500] : green[500],
+  })
+}));
+
+function JobCard(props) {
+  const classes = useStyles(props);
+
+  return (
+    <div>
+      <Card className={classes.card}>
+        <CardHeader
+          avatar={
+            <Avatar aria-label="Recipe" className={classes.avatar}>
+            </Avatar>
+          }
+          action={
+            <IconButton>
+              <MoreVertIcon />
+            </IconButton>
+          }
+          title="Injection"
+        />
+        <CardMedia
+          className={classes.media}
+          image={injectionImg}
+          title="Injection"
+        />
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {props.length} mins
+          </Typography>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 type Props = {
   job: Job,
   isDragging: boolean,
   provided: DraggableProvided,
-  isGroupedOver?: boolean,
+  isGroupedOver?: boolean
 };
 
 const getBackgroundColor = (
   isDragging: boolean,
   isGroupedOver: boolean,
-  machineColors: MachineColors,
+  machineColors: MachineColors
 ) => {
   if (isDragging) {
     return machineColors.soft;
@@ -30,40 +97,11 @@ const getBackgroundColor = (
 };
 
 const getBorderColor = (isDragging: boolean, machineColors: MachineColors) =>
-  isDragging ? machineColors.hard : 'white';
+  isDragging ? machineColors.hard : "white";
 
-const getHeight = (length: number) =>
-  length ? `${length * 3}px` : `10px`;
-
-const Container = styled.a`
-  border-radius: ${borderRadius}px;
-  border: 1px solid red;
-  border-color: ${props => getBorderColor(props.isDragging, props.colors)};
-  background-color: ${props =>
-    getBackgroundColor(props.isDragging, props.isGroupedOver, props.colors)};
-  box-shadow: ${({ isDragging }) =>
-    isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
-  padding: ${grid}px;
-  user-select: none;
-  height: ${props => getHeight(props.length)};
-
-  /* anchor overrides */
-  color: ${colors.N900};
-
-  &:hover,
-  &:active {
-    color: ${colors.N900};
-    text-decoration: none;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${props => props.colors.hard};
-    box-shadow: none;
-  }
-
-  /* flexbox */
-  display: flex;
+const Container = styled.div`
+  border: 1px solid transparent;
+  background-color: transparent;
 `;
 
 const Content = styled.div`
@@ -110,19 +148,17 @@ function JobItem(props: Props) {
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
       colors={job.colors}
+      length={job.length}
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      length={job.length}
-      resizable={{
-        edges: { left: false, right: false, bottom: true, top: true },
-      }}
     >
-      <Content>
-        <Footer>
-          <JobLength>{job.length} mins</JobLength>
-        </Footer>
-      </Content>
+      <JobCard
+        isDragging={isDragging}
+        isGroupedOver={isGroupedOver}
+        colors={job.colors}
+        length={job.length}
+      />
     </Container>
   );
 }
