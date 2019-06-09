@@ -27,7 +27,7 @@ export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
 
 export const jobs: Job[] = [
   {
-    length: 1000,
+    length: 10,
     actions: ["Test1"],
     id: "A",
     content: 'Sometimes life is scary and dark',

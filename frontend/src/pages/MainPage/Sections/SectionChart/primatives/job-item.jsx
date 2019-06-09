@@ -25,7 +25,7 @@ import {green} from "@material-ui/core/colors";
 const useStyles = makeStyles(theme => ({
   card: props => ({
     width: 250,
-    height: props.length * 5,
+    height: props.length * 20,
     borderColor: props.isDragging ? props.colors.hard : "white",
   }),
   media: {
@@ -33,13 +33,12 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "56.25%" // 16:9
   },
   avatar: props => ({
-    backgroundColor: props.isDragging ? red[500] : green[500],
+    backgroundColor: props.actions.length === 0 ? green[500] : red[500],
   })
 }));
 
 function JobCard(props) {
   const classes = useStyles(props);
-
   return (
     <div>
       <Card className={classes.card}>
@@ -53,7 +52,7 @@ function JobCard(props) {
               <MoreVertIcon />
             </IconButton>
           }
-          title="Injection"
+          title= {props.id}
         />
         <CardMedia
           className={classes.media}

@@ -60,7 +60,6 @@ function FormDialog(props) {
   });
 
   const handleChange = prop => event => {
-    console.log(values.jobLength);
     setValues({ ...values, [prop]: event.target.value });
   };
 

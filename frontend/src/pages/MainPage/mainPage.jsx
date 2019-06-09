@@ -44,8 +44,10 @@ class MainPage extends React.Component {
     };
     socket.on("explanation", explanation => {
       this.setState({ explanation: explanation });
-      console.log(explanation);
       let newJobs = this.state.jobs;
+      newJobs.forEach((job, index) => {
+        job.actions = [];
+      });
       explanation.forEach((item, index) => {
         item['actions'].forEach((action, i) => {
           if (action['type']==='swap') {
@@ -60,9 +62,7 @@ class MainPage extends React.Component {
           }
         })
       });
-      this.setState({jobs: newJobs});
-      console.log(newJobs);
-      this.forceUpdate();
+      this.setState({jobs: newJobs}, this.forceUpdate);
     });
   }
 
@@ -142,6 +142,8 @@ class MainPage extends React.Component {
       this.updateExplanation
     );
   };
+
+
   addNewJob = (length, assignee) => {
     const machine = this.state.machines.find(element => {
       return element.name === assignee;
@@ -154,7 +156,8 @@ class MainPage extends React.Component {
       colors: {
         soft: colors.Y50,
         hard: colors.Y200
-      }
+      },
+      actions: [],
     };
     const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {

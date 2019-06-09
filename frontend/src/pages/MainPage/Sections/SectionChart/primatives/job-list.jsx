@@ -87,7 +87,7 @@ type JobListProps = {|
   jobs: Job[],
 |};
 
-const InnerJobList = React.memo(function InnerJobList(
+const InnerJobList = function InnerJobList(
   props: JobListProps,
 ) {
   return props.jobs.map((job: Job, index: number) => (
@@ -106,7 +106,7 @@ const InnerJobList = React.memo(function InnerJobList(
       )}
     </Draggable>
   ));
-});
+};
 
 type InnerListProps = {|
   dropProvided: DroppableProvided,
