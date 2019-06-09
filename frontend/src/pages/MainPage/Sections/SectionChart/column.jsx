@@ -54,8 +54,8 @@ export default class Column extends Component<Props> {
               <Title
                 isDragging={snapshot.isDragging}
                 {...provided.dragHandleProps}
+                title={this.props.title}
               >
-                {title}
               </Title>
             </Header>
             <JobList

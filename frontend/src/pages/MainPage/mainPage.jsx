@@ -12,7 +12,6 @@ import mainPageStyle from "assets/jss/material-kit-react/views/mainPage.jsx";
 import type {
   DropResult,
   DraggableLocation,
-  DroppableProvided
 } from "react-beautiful-dnd/types";
 
 import Board from "./Sections/SectionChart/SectionChart.jsx";
@@ -28,7 +27,6 @@ import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 
-const uuidv4 = require("uuid/v4");
 const socket = openSocket("http://localhost:5000");
 socket.on("message", message => {
   console.log(message);
@@ -46,6 +44,24 @@ class MainPage extends React.Component {
     };
     socket.on("explanation", explanation => {
       this.setState({ explanation: explanation });
+      console.log(explanation);
+      let newJobs = this.state.jobs;
+      explanation.forEach((item, index) => {
+        item['actions'].forEach((action, i) => {
+          if (action['type']==='swap') {
+            const job1Index = this.state.jobs.findIndex(x => x.id ===action['job1']);
+            const job2Index = this.state.jobs.findIndex(x => x.id ===action['job2']);
+            newJobs[job1Index].actions.push(item['reason']);
+            newJobs[job2Index].actions.push(item['reason']);
+          }
+          if (action['type']==='move') {
+            const jobIndex = this.state.jobs.findIndex(x => x.id ===action['job']);
+            newJobs[jobIndex].actions.push(item['reason']);
+          }
+        })
+      });
+      this.setState({jobs: newJobs});
+      console.log(newJobs);
       this.forceUpdate();
     });
   }
@@ -180,7 +196,6 @@ class MainPage extends React.Component {
     return (
       <div className={classNames(classes.content)}>
         <SectionControls
-          onAddResourceButtonClick={e => this.addNewResource()}
           onAddJobButtonClick={this.addNewJob}
           machines={this.state.machines}
         />
@@ -188,6 +203,7 @@ class MainPage extends React.Component {
           machineJobMap={this.state.machineJobMap}
           ordered={this.state.ordered}
           onDragEnd={this.onDragEnd}
+          onAddResourceButtonClick={e => this.addNewResource()}
         />
       </div>
     );

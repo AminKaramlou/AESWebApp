@@ -11,6 +11,9 @@ import type { JobMap, Job } from './types';
 import Column from './column';
 import reorder, { reorderJobMap } from './reorder';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import Tooltip from "@material-ui/core/Tooltip";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 const ParentContainer = styled.div`
   height: ${({ height }) => height};
@@ -81,6 +84,20 @@ export default class Board extends Component<Props, State> {
               />
             ))}
             {provided.placeholder}
+            <Tooltip
+              title="Add Resource"
+              placement="bottom"
+            >
+              <Fab
+                color="primary"
+                aria-label="Add"
+                onClick={e => {
+                  this.props.onAddResourceButtonClick();
+                }}
+              >
+                <AddIcon />
+              </Fab>
+            </Tooltip>
           </Container>
         )}
       </Droppable>

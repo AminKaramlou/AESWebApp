@@ -1,10 +1,7 @@
 import React from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 
 import controlsStyle from "assets/jss/material-kit-react/views/mainPageSections/controlsStyle.jsx";
-import Tooltip from "@material-ui/core/Tooltip";
 import FormControl from "@material-ui/core/FormControl";
 import clsx from "clsx";
 import Input from "@material-ui/core/Input";
@@ -21,7 +18,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import Column from "./SectionChart/column";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -172,22 +168,6 @@ class SectionControls extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classes.fabDiv}>
-        <Tooltip
-          title="Add Resource"
-          classes={{ tooltip: classes.tooltip }}
-          placement="bottom"
-        >
-          <Fab
-            color="primary"
-            aria-label="Add"
-            className={classes.fab}
-            onClick={e => {
-              this.props.onAddResourceButtonClick();
-            }}
-          >
-            <AddIcon />
-          </Fab>
-        </Tooltip>
         <FormDialog
           onAddJobButtonClick={this.props.onAddJobButtonClick}
           machines={this.props.machines}

@@ -6,19 +6,18 @@ import { borderRadius, grid } from "../constants";
 import type { Job, MachineColors } from "../types";
 import type { DraggableProvided } from "react-beautiful-dnd";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import red from "@material-ui/core/colors/red";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ListSubheader from '@material-ui/core/ListSubheader';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import injectionImg from "assets/img/injection.png";
 import {green} from "@material-ui/core/colors";
@@ -26,10 +25,8 @@ import {green} from "@material-ui/core/colors";
 const useStyles = makeStyles(theme => ({
   card: props => ({
     width: 250,
-    height: props.length * 3,
+    height: props.length * 5,
     borderColor: props.isDragging ? props.colors.hard : "white",
-    backgroundColor: props.isDragging ? props.colors.soft : "green",
-
   }),
   media: {
     height: 0,
@@ -67,6 +64,20 @@ function JobCard(props) {
           <Typography variant="body2" color="textSecondary" component="p">
             {props.length} mins
           </Typography>
+          <List
+            subheader={
+              <ListSubheader component="div" id="list-subheader">
+                Actions
+              </ListSubheader>
+            }
+            className={classes.root}
+          >
+            {props.actions.map((key: string, index: number) => (
+              <ListItem button>
+                <ListItemText primary={key}/>
+              </ListItem>
+            ))}
+          </List>
         </CardContent>
       </Card>
     </div>
@@ -158,6 +169,8 @@ function JobItem(props: Props) {
         isGroupedOver={isGroupedOver}
         colors={job.colors}
         length={job.length}
+        actions={job.actions}
+        id={job.id}
       />
     </Container>
   );

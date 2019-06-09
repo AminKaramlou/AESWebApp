@@ -19,6 +19,7 @@ export type Job = {|
   content: string,
   machine: Machine,
   status: string,
+  actions: [],
 |};
 
 export type JobMap = {
