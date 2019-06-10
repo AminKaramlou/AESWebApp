@@ -15,6 +15,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
+
 const ParentContainer = styled.div`
   height: ${({ height }) => height};
   overflow-x: hidden;
@@ -52,13 +53,13 @@ export default class Board extends Component<Props, State> {
     ordered: Object.keys(this.props.machineJobMap),
   };
 
-  boardRef: ?HTMLElement;
+  boardRef: ?HTMLElement;z
 
 
 
 
   render() {
-    console.log('Rendering board')
+    console.log('Rendering board');
     const columns: JobMap = this.props.machineJobMap;
     const ordered: string[] = this.props.ordered;
     const { containerHeight } = this.props;
@@ -79,6 +80,7 @@ export default class Board extends Component<Props, State> {
                 index={index}
                 title={key}
                 jobs={columns[key]}
+                allJobs={this.props.jobs}
                 isScrollable={this.props.withScrollableColumns}
                 isCombineEnabled={this.props.isCombineEnabled}
               />

@@ -26,7 +26,7 @@ import SectionControls from "./Sections/SectionControls";
 import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
-
+import Autocomplete from "./Sections/SectionChart/Autocomplete";
 const socket = openSocket("http://localhost:5000");
 socket.on("message", message => {
   console.log(message);
@@ -43,6 +43,7 @@ class MainPage extends React.Component {
       explanation: "Generating explanation..."
     };
     socket.on("explanation", explanation => {
+      console.log(explanation);
       this.setState({ explanation: explanation });
       let newJobs = this.state.jobs;
       newJobs.forEach((job, index) => {
@@ -71,7 +72,6 @@ class MainPage extends React.Component {
   }
 
   updateExplanation() {
-    console.log("updating explanation");
     socket.emit("get-explanation", {
       machines: this.state.machines,
       jobs: this.state.jobs,
@@ -203,6 +203,7 @@ class MainPage extends React.Component {
           machines={this.state.machines}
         />
         <Board
+          jobs={this.state.jobs}
           machineJobMap={this.state.machineJobMap}
           ordered={this.state.ordered}
           onDragEnd={this.onDragEnd}

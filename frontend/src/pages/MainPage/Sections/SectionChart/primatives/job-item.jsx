@@ -18,20 +18,17 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import DeleteIcon from "@material-ui/icons/Delete";
 import injectionImg from "assets/img/injection.png";
 import {green} from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   card: props => ({
     width: 250,
-    height: props.length * 20,
+    height: props.length * 7,
     borderColor: props.isDragging ? props.colors.hard : "white",
+    overflow: 'scroll'
   }),
-  media: {
-    height: 0,
-    paddingTop: "56.25%" // 16:9
-  },
   avatar: props => ({
     backgroundColor: props.actions.length === 0 ? green[500] : red[500],
   })
@@ -44,20 +41,15 @@ function JobCard(props) {
       <Card className={classes.card}>
         <CardHeader
           avatar={
-            <Avatar aria-label="Recipe" className={classes.avatar}>
-            </Avatar>
+            <Avatar alt="injection" src={injectionImg} className={classes.avatar} />
+
           }
           action={
             <IconButton>
-              <MoreVertIcon />
+              <DeleteIcon />
             </IconButton>
           }
           title= {props.id}
-        />
-        <CardMedia
-          className={classes.media}
-          image={injectionImg}
-          title="Injection"
         />
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
@@ -65,8 +57,8 @@ function JobCard(props) {
           </Typography>
           <List
             subheader={
-              <ListSubheader component="div" id="list-subheader">
-                Actions
+              <ListSubheader component="div" id="list-subheader" disableSticky={true}>
+                Suggested Actions
               </ListSubheader>
             }
             className={classes.root}

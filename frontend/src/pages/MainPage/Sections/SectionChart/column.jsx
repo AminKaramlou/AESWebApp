@@ -11,11 +11,17 @@ import type {
 import JobList from "./primatives/job-list";
 import Title from "./primatives/title";
 import type { Job } from "./types";
+import Autocomplete from "./Autocomplete";
+import Divider from "@material-ui/core/Divider";
+import Grid from "@material-ui/core/Grid";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
+  width: 270px;
+  max-width: 270px;
 `;
 
 const Header = styled.div`
@@ -40,23 +46,60 @@ type Props = {|
   isCombineEnabled?: boolean
 |};
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    height: 140,
+    width: 100,
+  },
+  control: {
+    padding: theme.spacing(2),
+  },
+}));
+
+
 export default class Column extends Component<Props> {
 
   render() {
     const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
+    const gridStyle = {
+      flexGrow: 1
+    }
+    const gridItemStyle = {
+      height: 0,
+      paddingBottom: 100,
+      display:"flex",
+      flexGrow: 1
+    };
+
+
     return (
       <Draggable draggableId={title} index={index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <Container ref={provided.innerRef} {...provided.draggableProps}>
             <Header isDragging={snapshot.isDragging}>
-              <Title
-                isDragging={snapshot.isDragging}
-                {...provided.dragHandleProps}
-                title={this.props.title}
-              >
-              </Title>
+              <div className={gridStyle}>
+                <Grid container>
+                  <Grid item xs={12} s={12} style={gridItemStyle}>
+                    <Autocomplete
+                      suggestions={this.props.allJobs.map(job => ({
+                        value: job.id,
+                        label: job.id
+                      }))}
+                    />
+                  </Grid>
+                  <Grid item xs={12} s={12} />
+                  <Title
+                    isDragging={snapshot.isDragging}
+                    {...provided.dragHandleProps}
+                    title={this.props.title}
+                  />
+                </Grid>
+              </div>
             </Header>
             <JobList
               listId={title}
