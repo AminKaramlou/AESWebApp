@@ -22,6 +22,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 270px;
   max-width: 270px;
+  z-index: 1000;
 `;
 
 const Header = styled.div`
@@ -30,12 +31,8 @@ const Header = styled.div`
   justify-content: center;
   border-top-left-radius: ${borderRadius}px;
   border-top-right-radius: ${borderRadius}px;
-  background-color: ${({ isDragging }) =>
-    isDragging ? colors.G50 : colors.N30};
+  background-color: #20948b;
   transition: background-color 0.2s ease;
-  &:hover {
-    background-color: ${colors.G50};
-  }
 `;
 
 type Props = {|
@@ -105,7 +102,7 @@ export default class Column extends Component<Props> {
               listId={title}
               listType="QUOTE"
               style={{
-                backgroundColor: snapshot.isDragging ? colors.G50 : null
+                backgroundColor: "#20948b"
               }}
               jobs={jobs}
               internalScroll={this.props.isScrollable}

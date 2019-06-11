@@ -23,7 +23,7 @@ const ParentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  background-color: ${colors.B100};
+  background-color: #F4cc70;
   min-height: 100vh;
   /* like display:flex but will allow bleeding over the window width */
   min-width: 100vw;
@@ -86,20 +86,6 @@ export default class Board extends Component<Props, State> {
               />
             ))}
             {provided.placeholder}
-            <Tooltip
-              title="Add Resource"
-              placement="bottom"
-            >
-              <Fab
-                color="primary"
-                aria-label="Add"
-                onClick={e => {
-                  this.props.onAddResourceButtonClick();
-                }}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
           </Container>
         )}
       </Droppable>
@@ -117,7 +103,7 @@ export default class Board extends Component<Props, State> {
         <Global
           styles={css`
             body {
-              background: ${colors.B200};
+              background: #F4CC70;
             }
           `}
         />

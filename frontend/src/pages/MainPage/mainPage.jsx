@@ -198,10 +198,6 @@ class MainPage extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classNames(classes.content)}>
-        <SectionControls
-          onAddJobButtonClick={this.addNewJob}
-          machines={this.state.machines}
-        />
         <Board
           jobs={this.state.jobs}
           machineJobMap={this.state.machineJobMap}
