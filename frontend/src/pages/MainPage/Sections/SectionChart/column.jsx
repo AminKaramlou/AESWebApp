@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import { colors } from "@atlaskit/theme";
 import { grid, borderRadius } from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
@@ -12,7 +11,6 @@ import JobList from "./primatives/job-list";
 import Title from "./primatives/title";
 import type { Job } from "./types";
 import Autocomplete from "./Autocomplete";
-import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -94,6 +92,7 @@ export default class Column extends Component<Props> {
                     isDragging={snapshot.isDragging}
                     {...provided.dragHandleProps}
                     title={this.props.title}
+                    image={this.props.avatar}
                   />
                 </Grid>
               </div>

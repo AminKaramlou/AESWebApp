@@ -5,12 +5,8 @@ import { grid } from "../constants";
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
-import NurseImg from "assets/img/nurse-avatar.png";
 
 const useStyles = makeStyles({
-  avatar: {
-    margin: 10
-  },
   bigAvatar: {
     margin: 10,
     width: 150,
@@ -24,10 +20,10 @@ function Title(props) {
   const classes = useStyles();
 
   return (
-    <h4>
-      <Avatar alt="Nurse" src={NurseImg} className={classes.bigAvatar} />
+    <div>
+      <Avatar alt="Nurse" src={props.image} className={classes.bigAvatar} />
       {props.title}
-    </h4>
+    </div>
   );
 }
 

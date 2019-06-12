@@ -3,24 +3,33 @@ import type { Machine, Job, JobMap } from './types';
 const uuidv4 = require('uuid/v4');
 
 
+
 const nurse1: Machine = {
   id: 1,
   name: 'Nurse 1',
+  state: 'neutral',
+  completionTime: 0
 };
 
 const nurse2: Machine = {
   id: 2,
   name: 'Nurse 2',
+  state: 'neutral',
+  completionTime: 0
 };
 
 const nurse3: Machine = {
   id: 3,
   name: 'Nurse 3',
+  state: 'neutral',
+  completionTime: 0
 };
 
 const nurse4: Machine = {
   id: 4,
   name: 'Nurse 4',
+  state: 'neutral',
+  completionTime: 0
 };
 
 export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
@@ -28,7 +37,7 @@ export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
 export const jobs: Job[] = [
   {
     length: 10,
-    actions: ["Test1"],
+    actions: [],
     id: "A",
     content: 'Sometimes life is scary and dark',
     machine: nurse2,

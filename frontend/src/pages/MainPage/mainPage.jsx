@@ -40,7 +40,7 @@ class MainPage extends React.Component {
       machines: machines,
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap),
-      explanation: "Generating explanation..."
+      explanation: "Generating explanation...",
     };
     socket.on("explanation", explanation => {
       console.log(explanation);
@@ -68,7 +68,12 @@ class MainPage extends React.Component {
   }
 
   componentDidMount(): void {
+    this.updateAllInformation();
+  }
+
+  updateAllInformation() {
     this.updateExplanation();
+    this.updateMachineStates();
   }
 
   updateExplanation() {
@@ -77,6 +82,32 @@ class MainPage extends React.Component {
       jobs: this.state.jobs,
       machineJobMap: this.state.machineJobMap
     });
+  }
+
+  updateMachineStates() {
+    let completion_times = [];
+    let machines = this.state.machines;
+    machines.forEach((machine, index) => {
+      let completion_time = 0;
+      this.state.machineJobMap[machine.name].forEach((job, index) => {
+        completion_time += job.length;
+      });
+      machine.completionTime = completion_time;
+      completion_times.push(completion_time);
+    });
+    const average_time = completion_times.reduce( ( p, c ) => p + c, 0 ) / completion_times.length;
+    machines.forEach((machine, index) => {
+      if (machine.completionTime >= 1.5 * average_time) {
+        machine.state = 'sad'
+      }
+      else if (machine.completionTime <= 0.5 * average_time) {
+        machine.state = 'happy'
+      }
+      else {
+        machine.state = 'neutral'
+      }
+    });
+    this.setState({machines: machines})
   }
 
   onDragEnd = (result: DropResult) => {
@@ -139,7 +170,7 @@ class MainPage extends React.Component {
       {
         machineJobMap: data.jobMap
       },
-      this.updateExplanation
+      this.updateAllInformation
     );
   };
 
@@ -170,7 +201,7 @@ class MainPage extends React.Component {
         machineJobMap: machineJobMap,
         ordered: Object.keys(machineJobMap)
       },
-      this.updateExplanation
+      this.updateAllInformation
     );
   };
 
@@ -190,7 +221,7 @@ class MainPage extends React.Component {
         machineJobMap: machineJobMap,
         ordered: Object.keys(machineJobMap)
       },
-      this.updateExplanation
+      this.updateAllInformation
     );
   };
 
@@ -200,6 +231,7 @@ class MainPage extends React.Component {
       <div className={classNames(classes.content)}>
         <Board
           jobs={this.state.jobs}
+          machines={this.state.machines}
           machineJobMap={this.state.machineJobMap}
           ordered={this.state.ordered}
           onDragEnd={this.onDragEnd}
