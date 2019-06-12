@@ -1,7 +1,7 @@
 import numpy as np
-import schedule
-import action
-import formatter
+import src.schedule as schedule
+import src.action as action
+import src.formatter as formatter
 
 # Creates an argumentation framework representing feasibility as an adjacency matrix
 def construct_feasibility_framework(m, n):

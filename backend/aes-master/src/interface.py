@@ -1,12 +1,12 @@
 import re
 import matplotlib.pyplot as plt
 import numpy as np
-import schedule
-import visualiser
-import explainer
-import action as act
-import solver
-import formatter
+import src.schedule
+import src.visualiser
+import src.explainer
+import src.action as act
+import src.solver
+import src.formatter as formatter
 
 delimiter = ';\n'
 integer_pattern = re.compile(r'^[0-9]+$')
@@ -119,7 +119,7 @@ def optimal_schedule(m_text, p_text, nfd_text, pfd_text, solver_name, time_limit
 
 	(m, n, p, nfd, pfd) = result
 
-	success, result = solver.optimal_schedule(m, p, nfd, pfd, solver_name, time_limit)
+	success, result = src.solver.optimal_schedule(m, p, nfd, pfd, solver_name, time_limit)
 
 	if success:
 		return success, format_schedule(result)
@@ -131,7 +131,7 @@ def random_schedule(m_text, p_text, nfd_text, pfd_text):
 	if not success:
 		return success, result
 	(m, n, _, nfd, pfd) = result
-	S = schedule.random_schedule(m, n, nfd, pfd)
+	S = src.schedule.random_schedule(m, n, nfd, pfd)
 	return True, format_schedule(S)
 
 def explain(m_text, p_text, nfd_text, pfd_text, S_text, options):
@@ -146,9 +146,9 @@ def explain(m_text, p_text, nfd_text, pfd_text, S_text, options):
 	# Draw schedule
 	if options['graphical']:
 		plt.gcf().clear()
-		visualiser.draw_schedule(p, S)
+		src.visualiser.draw_schedule(p, S)
 
-	return True, explainer.explain(m, n, p, nfd, pfd, S, options)
+	return True, src.explainer.explain(m, n, p, nfd, pfd, S, options)
 
 def apply(m_text, p_text, nfd_text, pfd_text, S_text, action, options):
 	success, result = parse_problem_schedule(m_text, p_text, nfd_text,
@@ -172,7 +172,7 @@ def apply(m_text, p_text, nfd_text, pfd_text, S_text, action, options):
 	# Draw schedule
 	if options['graphical'] and not S_better is None:
 		plt.gcf().clear()
-		visualiser.draw_schedule(p, S_better, S)
+		src.visualiser.draw_schedule(p, S_better, S)
 
 	return True, (nfd_text, pfd_text, S_text)
 

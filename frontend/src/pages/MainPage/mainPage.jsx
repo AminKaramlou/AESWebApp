@@ -27,6 +27,7 @@ import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 import Autocomplete from "./Sections/SectionChart/Autocomplete";
+
 const socket = openSocket("http://localhost:5000");
 socket.on("message", message => {
   console.log(message);

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import schedule
+import src.schedule as schedule
 import formatter
 
 # Generates a column chart of jobs against machines

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from flask_socketio import SocketIO,send, emit
-from interface import explain
+from src.interface import explain
 from string import ascii_uppercase
 import json
 
