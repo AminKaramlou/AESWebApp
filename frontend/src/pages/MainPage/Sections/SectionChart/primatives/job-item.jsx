@@ -195,6 +195,8 @@ const getBorderColor = (isDragging: boolean, machineColors: MachineColors) =>
 const Container = styled.div`
   border: 1px solid transparent;
   background-color: transparent;
+  borderColor: props.isDragging ? props.colors.hard : "white"
+
 `;
 
 const Content = styled.div`

@@ -20,7 +20,6 @@ const Container = styled.div`
   flex-direction: column;
   width: 420px;
   max-width: 420px;
-  z-index: 1000;
 `;
 
 const Header = styled.div`

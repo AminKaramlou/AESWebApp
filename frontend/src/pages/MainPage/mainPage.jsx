@@ -173,10 +173,23 @@ class MainPage extends React.Component {
       }
     })
     machineJobMap[machine2.name] = newJobs
-    this.setState({ machineJobMap: machineJobMap }, this.updateAllInformation);
+
+    newJobs = []
+    this.state.jobs.forEach((job, index) => {
+      if (job.id == job1Id) {
+        job.machine = machine2
+      }
+      if (job.id == job2Id) {
+        job.machine = machine1
+      }
+      newJobs.push(job)
+    })
+    console.log(newJobs)
+    this.setState({ machineJobMap: machineJobMap, jobs:newJobs }, this.updateAllInformation);
   };
 
   performMoveAction = (machine1Id, machine2Id, jobId) => {
+    console.log(machine1Id)
     const machine1 = this.state.machines.find(element => {
       return element.id === machine1Id;
     });
@@ -197,7 +210,16 @@ class MainPage extends React.Component {
     })
     machineJobMap[machine1.name] = newJobs;
     machineJobMap[machine2.name].unshift(job);
-    this.setState({ machineJobMap: machineJobMap }, this.updateAllInformation);
+    newJobs = []
+    this.state.jobs.forEach((j, index) => {
+      if (j.id == jobId) {
+        j.machine = machine2
+      }
+      newJobs.push(j)
+
+    })
+    console.log(newJobs)
+    this.setState({ machineJobMap: machineJobMap, jobs:newJobs }, this.updateAllInformation);
   };
 
   onDragEnd = (result: DropResult) => {
