@@ -26,10 +26,6 @@ import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 import Autocomplete from "./Sections/SectionChart/Autocomplete";
 
 const socket = openSocket("http://localhost:5000");
-socket.on("message", message => {
-  console.log(message);
-});
-
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -167,8 +163,6 @@ class MainPage extends React.Component {
       }
     })
     machineJobMap[machine1.name] = newJobs
-    console.log(machineJobMap[machine1])
-    console.log(machineJobMap)
     newJobs= []
     machineJobMap[machine2.name].forEach((job, index) => {
       if (job.id === job2Id) {
@@ -182,9 +176,28 @@ class MainPage extends React.Component {
     this.setState({ machineJobMap: machineJobMap }, this.updateAllInformation);
   };
 
-  performMoveAction = () => {
-    console.log(this);
-    console.log("Move");
+  performMoveAction = (machine1Id, machine2Id, jobId) => {
+    const machine1 = this.state.machines.find(element => {
+      return element.id === machine1Id;
+    });
+    const machine2 = this.state.machines.find(element => {
+      return element.id === machine2Id;
+    });
+    const job = this.state.jobs.find(element => {
+      return element.id === jobId;
+    });
+
+    let newJobs = []
+    machineJobMap[machine1.name].forEach((j, index) => {
+      if (j.id === jobId) {
+      }
+      else {
+        newJobs.push(j)
+      }
+    })
+    machineJobMap[machine1.name] = newJobs;
+    machineJobMap[machine2.name].unshift(job);
+    this.setState({ machineJobMap: machineJobMap }, this.updateAllInformation);
   };
 
   onDragEnd = (result: DropResult) => {

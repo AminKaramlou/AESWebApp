@@ -90,7 +90,7 @@ function ActionListItem(props) {
   if (props.action.type === "move") {
     return (
       <Tooltip title={props.action.reason}>
-        <ListItem className={classes.listItem} onClick={props.performMoveAction}>
+        <ListItem className={classes.listItem} onClick={() => props.performMoveAction(props.machine.id, props.action.targetMachine.id, props.id)}>
           <IconButton aria-label="Delete">
             <ArrowRightAlt />
           </IconButton>
