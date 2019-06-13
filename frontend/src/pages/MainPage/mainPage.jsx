@@ -44,7 +44,6 @@ class MainPage extends React.Component {
       explanation: "Generating explanation...",
     };
     socket.on("explanation", explanation => {
-      console.log(explanation);
       this.setState({ explanation: explanation });
       let newJobs = this.state.jobs;
       newJobs.forEach((job, index) => {
@@ -55,12 +54,21 @@ class MainPage extends React.Component {
           if (action['type']==='swap') {
             const job1Index = this.state.jobs.findIndex(x => x.id ===action['job1']);
             const job2Index = this.state.jobs.findIndex(x => x.id ===action['job2']);
-            newJobs[job1Index].actions.push(item['reason']);
-            newJobs[job2Index].actions.push(item['reason']);
+
+            const machine2 = this.state.machines.find(element => { return element.id === action['machine2']});
+            const personalisedAction1 = {'type': 'swap', 'targetMachine': machine2, 'targetJob': action['job2']};
+            newJobs[job1Index].actions.push(personalisedAction1);
+
+            const machine1 = this.state.machines.find(element => { return element.id === action['machine1']});
+            const personalisedAction2 = {'type': 'swap', 'targetMachine': machine1, 'targetJob': action['job1']};
+            newJobs[job2Index].actions.push(personalisedAction2);
           }
           if (action['type']==='move') {
             const jobIndex = this.state.jobs.findIndex(x => x.id ===action['job']);
-            newJobs[jobIndex].actions.push(item['reason']);
+            const machine = this.state.machines.find(element => { return element.id === action['end-machine']});
+            console.log(machine);
+            const personalisedAction = {'type': 'move', 'targetMachine': machine};
+            newJobs[jobIndex].actions.push(personalisedAction);
           }
         })
       });

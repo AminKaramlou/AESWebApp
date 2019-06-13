@@ -14,7 +14,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/core/SvgIcon/SvgIcon";
-import stateAvatars from "./Sections/SectionChart/avatars"
+import stateAvatars from "./avatars.jsx"
 
 
 
