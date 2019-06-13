@@ -60,7 +60,6 @@ export default class Board extends Component<Props, State> {
   z;
 
   render() {
-    console.log("Rendering board");
     const columns: JobMap = this.props.machineJobMap;
     const ordered: string[] = this.props.ordered;
     const { containerHeight } = this.props;
@@ -85,6 +84,8 @@ export default class Board extends Component<Props, State> {
                 isScrollable={this.props.withScrollableColumns}
                 isCombineEnabled={this.props.isCombineEnabled}
                 avatar={stateAvatars[this.props.machines[index].state][index]}
+                performSwapAction={this.props.performSwapAction}
+                performMoveAction={this.props.performMoveAction}
               />
             ))}
             {provided.placeholder}

@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO,send, emit
 from src.interface import explain
 from string import ascii_uppercase
-import json
+import re
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -37,10 +37,13 @@ def handle_message(schedule_information):
   {'graphical': False, 'naive': False, 'fixed': False, 'partial': False})
 
   result = []
+  regex = '.*reduce by ([+-]?[0-9]*)'
   for reason, actions in explanation:
     interpretable_actions = []
+    time_improvement_match = re.match(regex, reason)
+    time_improvement = time_improvement_match.group(1) if time_improvement_match else 0
     for action_text, (action_type, sequence) in actions:
-      interpretable_action = {'type': action_type, 'text':action_text}
+      interpretable_action = {'type': action_type, 'text':action_text, 'time-improvement': time_improvement}
       if action_type == 'move':
         interpretable_action['start-machine'] = int(sequence[0] + 1)
         interpretable_action['end-machine'] = int(sequence[1] + 1)

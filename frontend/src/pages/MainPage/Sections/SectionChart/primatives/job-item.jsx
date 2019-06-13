@@ -20,64 +20,96 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
+import TrendingDown from "@material-ui/icons/TrendingDown";
+
 import DeleteIcon from "@material-ui/icons/Delete";
+import AlarmIcon from "@material-ui/icons/Alarm";
 
 import injectionImg from "assets/img/injection.png";
 import { green } from "@material-ui/core/colors";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import stateAvatars from "../avatars";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles(theme => ({
   card: props => ({
-    width: 250,
-    height: props.length * 5,
-    borderColor: props.isDragging ? props.colors.hard : "white",
-    overflow: "scroll"
+    width: 400,
+    height: props.length * 20,
+    borderColor: props.isDragging ? props.colors.hard : "white"
   }),
   avatar: props => ({
     backgroundColor: props.actions.length === 0 ? green[500] : red[500]
-  })
+  }),
+  header: {
+    paddingBottom: 0
+  },
+  content: {
+    height: "100%",
+    overflow: "scroll",
+    padding: 0
+  }
+}));
+
+const ActionItemStyles = makeStyles(theme => ({
+  listItem: {
+    padding: 0,
+    height: 60
+  }
 }));
 
 function ActionListItem(props) {
-  if (props.action.type === 'swap') {
+  const classes = ActionItemStyles(props);
+  if (props.action.type === "swap") {
     return (
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar src={stateAvatars[props.action.targetMachine.state][props.action.targetMachine.id - 1]}>
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={`(Job ${props.action.targetJob})`}
-        />
-        <ListItemSecondaryAction>
+      <Tooltip title={props.action.reason}>
+        <ListItem className={classes.listItem} onClick={() => props.performSwapAction(props.machine.id, props.action.targetMachine.id, props.id, props.action.targetJob)}>
           <IconButton aria-label="Delete">
-            <SwapHorizIcon/>
+            <SwapHorizIcon />
           </IconButton>
-        </ListItemSecondaryAction>
-        <ListItemSecondaryAction>
-          <IconButton aria-label="Delete">
-            <SwapHorizIcon/>
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+          <ListItemAvatar>
+            <Avatar
+              src={
+                stateAvatars[props.action.targetMachine.state][
+                  props.action.targetMachine.id - 1
+                ]
+              }
+            />
+          </ListItemAvatar>
+          <ListItemText primary={`(Job ${props.action.targetJob})`} />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="Delete">
+              <TrendingDown /> {props.action.timeImprovement}
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </Tooltip>
     );
   }
 
-  if (props.action.type === 'move') {
+  if (props.action.type === "move") {
     return (
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar src={stateAvatars[props.action.targetMachine.state][props.action.targetMachine.id - 1]}>
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemSecondaryAction>
+      <Tooltip title={props.action.reason}>
+        <ListItem className={classes.listItem} onClick={props.performMoveAction}>
           <IconButton aria-label="Delete">
-            <ArrowRightAlt/>
+            <ArrowRightAlt />
           </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+          <ListItemAvatar>
+            <Avatar
+              src={
+                stateAvatars[props.action.targetMachine.state][
+                  props.action.targetMachine.id - 1
+                ]
+              }
+            />
+          </ListItemAvatar>
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="Delete">
+              <TrendingDown /> {props.action.timeImprovement}
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </Tooltip>
     );
   }
 }
@@ -88,6 +120,7 @@ function JobCard(props) {
     <div>
       <Card className={classes.card}>
         <CardHeader
+          className={classes.header}
           avatar={
             <Avatar
               alt="injection"
@@ -98,15 +131,14 @@ function JobCard(props) {
           action={
             <IconButton>
               <DeleteIcon />
+              <AlarmIcon /> {props.length}
             </IconButton>
           }
           title={props.id}
         />
-        <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {props.length} mins
-          </Typography>
-          <List dense={"dense"}
+        <CardContent className={classes.content}>
+          <List
+            dense={"dense"}
             subheader={
               <ListSubheader
                 component="div"
@@ -119,8 +151,13 @@ function JobCard(props) {
             className={classes.root}
           >
             {props.actions.map((key: string, index: number) => (
-              <ActionListItem action={key} machine={props.machine}>
-              </ActionListItem>
+              <ActionListItem
+                action={key}
+                performSwapAction={props.performSwapAction}
+                performMoveAction={props.performMoveAction}
+                id={props.id}
+                machine={props.machine}
+              />
             ))}
           </List>
         </CardContent>
@@ -217,6 +254,8 @@ function JobItem(props: Props) {
         actions={job.actions}
         id={job.id}
         machine={job.machine}
+        performSwapAction={props.performSwapAction}
+        performMoveAction={props.performMoveAction}
       />
     </Container>
   );

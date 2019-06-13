@@ -18,8 +18,8 @@ const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
-  width: 270px;
-  max-width: 270px;
+  width: 420px;
+  max-width: 420px;
   z-index: 1000;
 `;
 
@@ -106,6 +106,8 @@ export default class Column extends Component<Props> {
               jobs={jobs}
               internalScroll={this.props.isScrollable}
               isCombineEnabled={Boolean(this.props.isCombineEnabled)}
+              performSwapAction={this.props.performSwapAction}
+              performMoveAction={this.props.performMoveAction}
             />
           </Container>
         )}

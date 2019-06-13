@@ -1,28 +1,29 @@
 // @flow
-import React from 'react';
-import styled from '@emotion/styled';
-import { colors } from '@atlaskit/theme';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
-import JobItem from './job-item';
-import { grid } from '../constants';
-import Title from './title';
-import type { Job } from '../types';
+import React from "react";
+import styled from "@emotion/styled";
+import { colors } from "@atlaskit/theme";
+import { Droppable, Draggable } from "react-beautiful-dnd";
+import JobItem from "./job-item";
+import { grid } from "../constants";
+import Title from "./title";
+import type { Job } from "../types";
 import type {
   DroppableProvided,
   DroppableStateSnapshot,
   DraggableProvided,
-  DraggableStateSnapshot,
-} from 'react-beautiful-dnd';
-import {makeStyles} from "@material-ui/core";
+  DraggableStateSnapshot
+} from "react-beautiful-dnd";
+import { makeStyles } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import clsx from "clsx";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import Column from "../column";
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
-  isDraggingFrom: boolean,
+  isDraggingFrom: boolean
 ): string => {
   if (isDraggingOver) {
     return colors.R50;
@@ -38,7 +39,7 @@ const Wrapper = styled.div`
     getBackgroundColor(props.isDraggingOver, props.isDraggingFrom)};
   display: flex;
   flex-direction: column;
-  opacity: ${({ isDropDisabled }) => (isDropDisabled ? 0.5 : 'inherit')};
+  opacity: ${({ isDropDisabled }) => (isDropDisabled ? 0.5 : "inherit")};
   padding: ${grid}px;
   border: ${grid}px;
   padding-bottom: 0;
@@ -80,21 +81,19 @@ type Props = {|
   isCombineEnabled?: boolean,
   style?: Object,
   // may not be provided - and might be null
-  ignoreContainerClipping?: boolean,
+  ignoreContainerClipping?: boolean
 |};
 
 type JobListProps = {|
-  jobs: Job[],
+  jobs: Job[]
 |};
 
-const InnerJobList = function InnerJobList(
-  props: JobListProps,
-) {
+const InnerJobList = function InnerJobList(props: JobListProps) {
   return props.jobs.map((job: Job, index: number) => (
     <Draggable key={job.id} draggableId={job.id} index={index}>
       {(
         dragProvided: DraggableProvided,
-        dragSnapshot: DraggableStateSnapshot,
+        dragSnapshot: DraggableStateSnapshot
       ) => (
         <JobItem
           key={job.id}
@@ -102,6 +101,8 @@ const InnerJobList = function InnerJobList(
           isDragging={dragSnapshot.isDragging}
           isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
           provided={dragProvided}
+          performSwapAction={props.performSwapAction}
+          performMoveAction={props.performMoveAction}
         />
       )}
     </Draggable>
@@ -111,7 +112,7 @@ const InnerJobList = function InnerJobList(
 type InnerListProps = {|
   dropProvided: DroppableProvided,
   jobs: Job[],
-  title: ?string,
+  title: ?string
 |};
 
 function InnerList(props: InnerListProps) {
@@ -122,15 +123,16 @@ function InnerList(props: InnerListProps) {
     <Container>
       {title}
       <DropZone ref={dropProvided.innerRef}>
-        <InnerJobList jobs={jobs} />
+        <InnerJobList
+          jobs={jobs}
+          performSwapAction={props.performSwapAction}
+          performMoveAction={props.performMoveAction}
+        />
         {dropProvided.placeholder}
       </DropZone>
     </Container>
   );
 }
-
-
-
 
 export default function JobList(props: Props) {
   const {
@@ -139,11 +141,11 @@ export default function JobList(props: Props) {
     scrollContainerStyle,
     isDropDisabled,
     isCombineEnabled,
-    listId = 'LIST',
+    listId = "LIST",
     listType,
     style,
     jobs,
-    title,
+    title
   } = props;
 
   return (
@@ -156,7 +158,7 @@ export default function JobList(props: Props) {
     >
       {(
         dropProvided: DroppableProvided,
-        dropSnapshot: DroppableStateSnapshot,
+        dropSnapshot: DroppableStateSnapshot
       ) => (
         <Wrapper
           style={style}
@@ -171,6 +173,8 @@ export default function JobList(props: Props) {
                 jobs={jobs}
                 title={title}
                 dropProvided={dropProvided}
+                performSwapAction={props.performSwapAction}
+                performMoveAction={props.performMoveAction}
               />
             </ScrollContainer>
           ) : (
@@ -178,6 +182,8 @@ export default function JobList(props: Props) {
               jobs={jobs}
               title={title}
               dropProvided={dropProvided}
+              performSwapAction={props.performSwapAction}
+              performMoveAction={props.performMoveAction}
             />
           )}
         </Wrapper>

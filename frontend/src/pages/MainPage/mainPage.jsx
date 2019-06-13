@@ -9,10 +9,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 
 import mainPageStyle from "assets/jss/material-kit-react/views/mainPage.jsx";
 
-import type {
-  DropResult,
-  DraggableLocation,
-} from "react-beautiful-dnd/types";
+import type { DropResult, DraggableLocation } from "react-beautiful-dnd/types";
 
 import Board from "./Sections/SectionChart/SectionChart.jsx";
 import {
@@ -41,7 +38,7 @@ class MainPage extends React.Component {
       machines: machines,
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap),
-      explanation: "Generating explanation...",
+      explanation: "Generating explanation..."
     };
     socket.on("explanation", explanation => {
       this.setState({ explanation: explanation });
@@ -50,29 +47,57 @@ class MainPage extends React.Component {
         job.actions = [];
       });
       explanation.forEach((item, index) => {
-        item['actions'].forEach((action, i) => {
-          if (action['type']==='swap') {
-            const job1Index = this.state.jobs.findIndex(x => x.id ===action['job1']);
-            const job2Index = this.state.jobs.findIndex(x => x.id ===action['job2']);
+        item["actions"].forEach((action, i) => {
+          if (action["type"] === "swap") {
+            const job1Index = this.state.jobs.findIndex(
+              x => x.id === action["job1"]
+            );
+            const job2Index = this.state.jobs.findIndex(
+              x => x.id === action["job2"]
+            );
 
-            const machine2 = this.state.machines.find(element => { return element.id === action['machine2']});
-            const personalisedAction1 = {'type': 'swap', 'targetMachine': machine2, 'targetJob': action['job2']};
+            const machine2 = this.state.machines.find(element => {
+              return element.id === action["machine2"];
+            });
+            const personalisedAction1 = {
+              type: "swap",
+              targetMachine: machine2,
+              targetJob: action["job2"],
+              timeImprovement: action["time-improvement"],
+              reason: item["reason"]
+            };
             newJobs[job1Index].actions.push(personalisedAction1);
 
-            const machine1 = this.state.machines.find(element => { return element.id === action['machine1']});
-            const personalisedAction2 = {'type': 'swap', 'targetMachine': machine1, 'targetJob': action['job1']};
+            const machine1 = this.state.machines.find(element => {
+              return element.id === action["machine1"];
+            });
+            const personalisedAction2 = {
+              type: "swap",
+              targetMachine: machine1,
+              targetJob: action["job1"],
+              timeImprovement: action["time-improvement"],
+              reason: item["reason"]
+            };
             newJobs[job2Index].actions.push(personalisedAction2);
           }
-          if (action['type']==='move') {
-            const jobIndex = this.state.jobs.findIndex(x => x.id ===action['job']);
-            const machine = this.state.machines.find(element => { return element.id === action['end-machine']});
-            console.log(machine);
-            const personalisedAction = {'type': 'move', 'targetMachine': machine};
+          if (action["type"] === "move") {
+            const jobIndex = this.state.jobs.findIndex(
+              x => x.id === action["job"]
+            );
+            const machine = this.state.machines.find(element => {
+              return element.id === action["end-machine"];
+            });
+            const personalisedAction = {
+              type: "move",
+              targetMachine: machine,
+              timeImprovement: action["time-improvement"],
+              reason: item["reason"]
+            };
             newJobs[jobIndex].actions.push(personalisedAction);
           }
-        })
+        });
       });
-      this.setState({jobs: newJobs}, this.forceUpdate);
+      this.setState({ jobs: newJobs }, this.forceUpdate);
     });
   }
 
@@ -104,20 +129,63 @@ class MainPage extends React.Component {
       machine.completionTime = completion_time;
       completion_times.push(completion_time);
     });
-    const average_time = completion_times.reduce( ( p, c ) => p + c, 0 ) / completion_times.length;
+    const average_time =
+      completion_times.reduce((p, c) => p + c, 0) / completion_times.length;
     machines.forEach((machine, index) => {
       if (machine.completionTime >= 1.5 * average_time) {
-        machine.state = 'sad'
-      }
-      else if (machine.completionTime <= 0.5 * average_time) {
-        machine.state = 'happy'
-      }
-      else {
-        machine.state = 'neutral'
+        machine.state = "sad";
+      } else if (machine.completionTime <= 0.5 * average_time) {
+        machine.state = "happy";
+      } else {
+        machine.state = "neutral";
       }
     });
-    this.setState({machines: machines})
+    this.setState({ machines: machines });
   }
+
+  performSwapAction = (machine1Id, machine2Id, job1Id, job2Id) => {
+    const machine1 = this.state.machines.find(element => {
+      return element.id === machine1Id;
+    });
+    const machine2 = this.state.machines.find(element => {
+      return element.id === machine2Id;
+    });
+    const job1 = this.state.jobs.find(element => {
+      return element.id === job1Id;
+    });
+    const job2 = this.state.jobs.find(element => {
+      return element.id === job2Id;
+    });
+    let machineJobMap = this.state.machineJobMap;
+    let newJobs= []
+    machineJobMap[machine1.name].forEach((job, index) => {
+      if (job.id === job1Id) {
+        newJobs.push(job2);
+      }
+      else {
+        newJobs.push(job)
+      }
+    })
+    machineJobMap[machine1.name] = newJobs
+    console.log(machineJobMap[machine1])
+    console.log(machineJobMap)
+    newJobs= []
+    machineJobMap[machine2.name].forEach((job, index) => {
+      if (job.id === job2Id) {
+        newJobs.push(job1);
+      }
+      else {
+        newJobs.push(job)
+      }
+    })
+    machineJobMap[machine2.name] = newJobs
+    this.setState({ machineJobMap: machineJobMap }, this.updateAllInformation);
+  };
+
+  performMoveAction = () => {
+    console.log(this);
+    console.log("Move");
+  };
 
   onDragEnd = (result: DropResult) => {
     if (result.combine) {
@@ -183,7 +251,6 @@ class MainPage extends React.Component {
     );
   };
 
-
   addNewJob = (length, assignee) => {
     const machine = this.state.machines.find(element => {
       return element.name === assignee;
@@ -197,7 +264,7 @@ class MainPage extends React.Component {
         soft: colors.Y50,
         hard: colors.Y200
       },
-      actions: [],
+      actions: []
     };
     const jobs = [...this.state.jobs, newJob];
     const machineJobMap = {
@@ -245,6 +312,8 @@ class MainPage extends React.Component {
           ordered={this.state.ordered}
           onDragEnd={this.onDragEnd}
           onAddResourceButtonClick={e => this.addNewResource()}
+          performSwapAction={this.performSwapAction}
+          performMoveAction={this.performMoveAction}
         />
       </div>
     );
