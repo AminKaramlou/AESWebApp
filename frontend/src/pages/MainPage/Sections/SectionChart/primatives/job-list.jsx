@@ -13,13 +13,11 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
-import { makeStyles } from "@material-ui/core";
-import FormControl from "@material-ui/core/FormControl";
-import clsx from "clsx";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Column from "../column";
+import Grid from "@material-ui/core/Grid";
+import TimePicker from "rc-time-picker/es/TimePicker";
+import Button from "@material-ui/core/Button"
+import moment from "moment";
+
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -34,9 +32,14 @@ const getBackgroundColor = (
   return colors.N30;
 };
 
+const disabledMinutes = () => {
+  return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+};
+
+
 const Wrapper = styled.div`
   background-color: ${props =>
-    getBackgroundColor(props.isDraggingOver, props.isDraggingFrom)};
+  getBackgroundColor(props.isDraggingOver, props.isDraggingFrom)};
   display: flex;
   flex-direction: column;
   opacity: ${({ isDropDisabled }) => (isDropDisabled ? 0.5 : "inherit")};
@@ -103,6 +106,7 @@ const InnerJobList = function InnerJobList(props: JobListProps) {
           provided={dragProvided}
           performSwapAction={props.performSwapAction}
           performMoveAction={props.performMoveAction}
+          performAllocateAction={props.performAllocateAction}
         />
       )}
     </Draggable>
@@ -127,6 +131,8 @@ function InnerList(props: InnerListProps) {
           jobs={jobs}
           performSwapAction={props.performSwapAction}
           performMoveAction={props.performMoveAction}
+          performAllocateAction={props.performAllocateAction}
+
         />
         {dropProvided.placeholder}
       </DropZone>
@@ -175,6 +181,8 @@ export default function JobList(props: Props) {
                 dropProvided={dropProvided}
                 performSwapAction={props.performSwapAction}
                 performMoveAction={props.performMoveAction}
+                performAllocateAction={props.performAllocateAction}
+
               />
             </ScrollContainer>
           ) : (
@@ -184,8 +192,29 @@ export default function JobList(props: Props) {
               dropProvided={dropProvided}
               performSwapAction={props.performSwapAction}
               performMoveAction={props.performMoveAction}
+              performAllocateAction={props.performAllocateAction}
+
             />
           )}
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <TimePicker
+                defaultValue={moment().minute(10)}
+                showHour={false}
+                showSecond={false}
+                disabledMinutes={disabledMinutes}
+                minuteStep={5}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                size="small"
+                color="primary"
+              >
+                Add job
+              </Button>
+            </Grid>
+          </Grid>
         </Wrapper>
       )}
     </Droppable>

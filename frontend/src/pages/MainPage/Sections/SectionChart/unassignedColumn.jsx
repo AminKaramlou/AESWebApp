@@ -8,9 +8,9 @@ import type {
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
 import JobList from "./primatives/job-list";
-import Title from "./primatives/title";
 import type { Job } from "./types";
-import Autocomplete from "./Autocomplete";
+import TimePicker from "rc-time-picker";
+import "rc-time-picker/assets/index.css";
 import Grid from "@material-ui/core/Grid";
 
 const Container = styled.div`
@@ -40,50 +40,17 @@ type Props = {|
 |};
 
 
-export default class Column extends Component<Props> {
-
+export default class UnassignedColumn extends Component<Props> {
   render() {
-    const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
-    const gridStyle = {
-      flexGrow: 1
-    }
-    const gridItemStyle = {
-      height: 0,
-      paddingBottom: 100,
-      display:"flex",
-      flexGrow: 1
-    };
-
 
     return (
-      <Draggable draggableId={title} index={index}>
+      <Draggable draggableId={this.props.title} index={index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <Container ref={provided.innerRef} {...provided.draggableProps}>
-            <Header isDragging={snapshot.isDragging}>
-              <div className={gridStyle}>
-                <Grid container>
-                  <Grid item xs={12} s={12} style={gridItemStyle}>
-                    <Autocomplete
-                      suggestions={this.props.allJobs.map(job => ({
-                        value: job.id,
-                        label: job.id
-                      }))}
-                    />
-                  </Grid>
-                  <Grid item xs={12} s={12} />
-                  <Title
-                    isDragging={snapshot.isDragging}
-                    {...provided.dragHandleProps}
-                    title={this.props.title}
-                    image={this.props.avatar}
-                  />
-                </Grid>
-              </div>
-            </Header>
             <JobList
-              listId={title}
+              listId="unassigned"
               listType="QUOTE"
               style={{
                 backgroundColor: "#20948b"
@@ -94,7 +61,6 @@ export default class Column extends Component<Props> {
               performSwapAction={this.props.performSwapAction}
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
-
             />
           </Container>
         )}

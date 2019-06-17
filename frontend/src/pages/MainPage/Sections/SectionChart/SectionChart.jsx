@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import styled from "@emotion/styled";
 import { Global, css } from "@emotion/core";
-import { colors } from "@atlaskit/theme";
 import type {
-  DropResult,
-  DraggableLocation,
   DroppableProvided
 } from "react-beautiful-dnd/types";
-import type { JobMap, Job } from "./types";
+import type { JobMap } from "./types";
 import Column from "./column";
-import reorder, { reorderJobMap } from "./reorder";
+import UnassignedColumn from "./unassignedColumn"
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import Tooltip from "@material-ui/core/Tooltip";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/core/SvgIcon/SvgIcon";
+
 import stateAvatars from "./avatars.jsx"
 
 
@@ -63,6 +58,7 @@ export default class Board extends Component<Props, State> {
     const columns: JobMap = this.props.machineJobMap;
     const ordered: string[] = this.props.ordered;
     const { containerHeight } = this.props;
+    const unassignedJobs = this.props.unassignedJobs;
 
     const board = (
       <Droppable
@@ -74,6 +70,19 @@ export default class Board extends Component<Props, State> {
       >
         {(provided: DroppableProvided) => (
           <Container ref={provided.innerRef} {...provided.droppableProps}>
+            <UnassignedColumn
+              key="unassigned"
+              index={0}
+              title="unassigned"
+              jobs={unassignedJobs}
+              allJobs={this.props.jobs}
+              isScrollable={this.props.withScrollableColumns}
+              isCombineEnabled={this.props.isCombineEnabled}
+              avatar={stateAvatars[this.props.machines[0].state][0]}
+              performSwapAction={this.props.performSwapAction}
+              performMoveAction={this.props.performMoveAction}
+              performAllocateAction={this.props.performAllocateAction}
+            />
             {ordered.map((key: string, index: number) => (
               <Column
                 key={key}
@@ -86,8 +95,10 @@ export default class Board extends Component<Props, State> {
                 avatar={stateAvatars[this.props.machines[index].state][index]}
                 performSwapAction={this.props.performSwapAction}
                 performMoveAction={this.props.performMoveAction}
+                performAllocateAction={this.props.performAllocateAction}
               />
             ))}
+
             {provided.placeholder}
           </Container>
         )}

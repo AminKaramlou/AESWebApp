@@ -11,7 +11,6 @@ socketio = SocketIO(app)
 
 CORS(app)
 
-
 @socketio.on('get-explanation')
 def handle_message(schedule_information):
   m_text = str(len(schedule_information['machines']))
@@ -41,7 +40,7 @@ def handle_message(schedule_information):
   for reason, actions in explanation:
     interpretable_actions = []
     time_improvement_match = re.match(regex, reason)
-    time_improvement = time_improvement_match.group(1) if time_improvement_match else 0
+    time_improvement = time_improvement_match.group(1) if time_improvement_match else ""
     for action_text, (action_type, sequence) in actions:
       interpretable_action = {'type': action_type, 'text':action_text, 'time-improvement': time_improvement}
       if action_type == 'move':
@@ -49,7 +48,7 @@ def handle_message(schedule_information):
         interpretable_action['end-machine'] = int(sequence[1] + 1)
         interpretable_action['job'] = ascii_uppercase[sequence[2]]
       if action_type == 'unallocated':
-        interpretable_action['machine'] = int(sequence[0] - 1)
+        interpretable_action['machine'] = int(sequence[0] + 1)
         interpretable_action['job'] = ascii_uppercase[sequence[1]]
       if action_type == 'swap':
         interpretable_action['machine1'] = int(sequence[0] + 1)

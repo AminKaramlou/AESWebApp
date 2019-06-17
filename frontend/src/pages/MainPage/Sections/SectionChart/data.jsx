@@ -1,6 +1,5 @@
 import { colors } from '@atlaskit/theme';
 import type { Machine, Job, JobMap } from './types';
-const uuidv4 = require('uuid/v4');
 
 
 
@@ -25,44 +24,13 @@ const nurse3: Machine = {
   completionTime: 0
 };
 
-const nurse4: Machine = {
-  id: 4,
-  name: 'Nurse 4',
-  state: 'neutral',
-  completionTime: 0
-};
-
-export const machines: Machine[] = [nurse1, nurse2, nurse3, nurse4];
+export const machines: Machine[] = [nurse1, nurse2, nurse3];
 
 export const jobs: Job[] = [
   {
-    length: 10,
+    length: 20,
     actions: [],
     id: "A",
-    content: 'Sometimes life is scary and dark',
-    machine: nurse2,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "B",
-    actions: [],
-    content:
-      'Sucking at something is the first step towards being sorta good at something.',
-    machine: nurse1,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 30,
-    id: "C",
-    actions: [],
-    content: "You got to focus on what's real, man",
     machine: nurse1,
     colors: {
       soft: colors.Y50,
@@ -71,103 +39,33 @@ export const jobs: Job[] = [
   },
   {
     length: 60,
+    id: "B",
+    actions: [],
+    machine: "unassigned",
+    colors: {
+      soft: colors.Y50,
+      hard: colors.Y200,
+    },
+  },
+  {
+    length: 60,
+    id: "C",
+    actions: [],
+    machine: "unassigned",
+    colors: {
+      soft: colors.Y50,
+      hard: colors.Y200,
+    },
+  },
+  {
+    length: 40,
     id: "D",
     actions: [],
-    content: 'Is that where creativity comes from? From sad biz?',
     machine: nurse3,
     colors: {
       soft: colors.Y50,
       hard: colors.Y200,
     },
-  },
-  {
-    length: 20,
-    id: "E",
-    actions: [],
-    content: 'Homies help homies. Always',
-    machine: nurse3,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "F",
-    actions: [],
-    content: 'Responsibility demands sacrifice',
-    machine: nurse4,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "G",
-    actions: [],
-    content: "That's it! The answer was so simple, I was too smart to see it!",
-    machine: nurse4,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 80,
-    id: "H",
-    actions: [],
-    content: 'People make mistakes. It’s a part of growing up',
-    machine: nurse3,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 100,
-    id: "I",
-    actions: [],
-    content: "Don't you always call sweatpants 'give up on life pants,' nurse2?",
-    machine: nurse3,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "J",
-    actions: [],
-    content: 'I should not have drunk that much tea!',
-    machine: nurse4,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "K",
-    actions: [],
-    content: 'Please! I need the real you!',
-    machine: nurse4,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-  },
-  {
-    length: 20,
-    id: "L",
-    actions: [],
-    content: "Haven't slept for a solid 83 hours, but, yeah, I'm good.",
-    machine: nurse4,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200,
-    },
-
   },
 ];
 

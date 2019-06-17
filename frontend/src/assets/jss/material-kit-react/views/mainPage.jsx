@@ -1,5 +1,4 @@
 import { container } from "assets/jss/material-kit-react.jsx"
-import grey from "@material-ui/core/es/colors/grey"
 import blueGrey from "@material-ui/core/es/colors/blueGrey"
 
 const mainPageStyle = theme => ({

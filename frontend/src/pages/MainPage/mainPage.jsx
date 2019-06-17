@@ -19,11 +19,9 @@ import {
 } from "./Sections/SectionChart/data.jsx";
 import openSocket from "socket.io-client";
 import classNames from "classnames";
-import SectionControls from "./Sections/SectionControls";
 import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
-import Autocomplete from "./Sections/SectionChart/Autocomplete";
 
 const socket = openSocket("http://localhost:5000");
 class MainPage extends React.Component {
@@ -34,7 +32,10 @@ class MainPage extends React.Component {
       machines: machines,
       machineJobMap: machineJobMap,
       ordered: Object.keys(machineJobMap),
-      explanation: "Generating explanation..."
+      explanation: "Generating explanation...",
+      unassignedJobs: jobs.filter(element => {
+        return element.machine === "unassigned";
+      })
     };
     socket.on("explanation", explanation => {
       this.setState({ explanation: explanation });
@@ -51,7 +52,6 @@ class MainPage extends React.Component {
             const job2Index = this.state.jobs.findIndex(
               x => x.id === action["job2"]
             );
-
             const machine2 = this.state.machines.find(element => {
               return element.id === action["machine2"];
             });
@@ -87,6 +87,21 @@ class MainPage extends React.Component {
               type: "move",
               targetMachine: machine,
               timeImprovement: action["time-improvement"],
+              reason: item["reason"]
+            };
+            newJobs[jobIndex].actions.push(personalisedAction);
+          }
+          if (action["type"] === "unallocated") {
+            console.log(action);
+            const jobIndex = this.state.jobs.findIndex(
+              x => x.id === action["job"]
+            );
+            const machine = this.state.machines.find(element => {
+              return element.id === action["machine"];
+            });
+            const personalisedAction = {
+              type: "allocate",
+              targetMachine: machine,
               reason: item["reason"]
             };
             newJobs[jobIndex].actions.push(personalisedAction);
@@ -153,43 +168,43 @@ class MainPage extends React.Component {
       return element.id === job2Id;
     });
     let machineJobMap = this.state.machineJobMap;
-    let newJobs= []
+    let newJobs = [];
     machineJobMap[machine1.name].forEach((job, index) => {
       if (job.id === job1Id) {
         newJobs.push(job2);
+      } else {
+        newJobs.push(job);
       }
-      else {
-        newJobs.push(job)
-      }
-    })
-    machineJobMap[machine1.name] = newJobs
-    newJobs= []
+    });
+    machineJobMap[machine1.name] = newJobs;
+    newJobs = [];
     machineJobMap[machine2.name].forEach((job, index) => {
       if (job.id === job2Id) {
         newJobs.push(job1);
+      } else {
+        newJobs.push(job);
       }
-      else {
-        newJobs.push(job)
-      }
-    })
-    machineJobMap[machine2.name] = newJobs
+    });
+    machineJobMap[machine2.name] = newJobs;
 
-    newJobs = []
+    newJobs = [];
     this.state.jobs.forEach((job, index) => {
-      if (job.id == job1Id) {
-        job.machine = machine2
+      if (job.id === job1Id) {
+        job.machine = machine2;
       }
-      if (job.id == job2Id) {
-        job.machine = machine1
+      if (job.id === job2Id) {
+        job.machine = machine1;
       }
-      newJobs.push(job)
-    })
-    console.log(newJobs)
-    this.setState({ machineJobMap: machineJobMap, jobs:newJobs }, this.updateAllInformation);
+      newJobs.push(job);
+    });
+    console.log(newJobs);
+    this.setState(
+      { machineJobMap: machineJobMap, jobs: newJobs },
+      this.updateAllInformation
+    );
   };
 
   performMoveAction = (machine1Id, machine2Id, jobId) => {
-    console.log(machine1Id)
     const machine1 = this.state.machines.find(element => {
       return element.id === machine1Id;
     });
@@ -200,26 +215,59 @@ class MainPage extends React.Component {
       return element.id === jobId;
     });
 
-    let newJobs = []
+    let machineJobMap = this.state.machineJobMap;
+    let newJobs = [];
     machineJobMap[machine1.name].forEach((j, index) => {
       if (j.id === jobId) {
+      } else {
+        newJobs.push(j);
       }
-      else {
-        newJobs.push(j)
-      }
-    })
+    });
     machineJobMap[machine1.name] = newJobs;
     machineJobMap[machine2.name].unshift(job);
-    newJobs = []
+    newJobs = [];
     this.state.jobs.forEach((j, index) => {
-      if (j.id == jobId) {
-        j.machine = machine2
+      if (j.id === jobId) {
+        j.machine = machine2;
       }
-      newJobs.push(j)
+      newJobs.push(j);
+    });
+    console.log(newJobs);
+    this.setState(
+      { machineJobMap: machineJobMap, jobs: newJobs },
+      this.updateAllInformation
+    );
+  };
 
+  performAllocateAction = (machineId, jobId) => {
+    console.log(machineId)
+    console.log(jobId)
+    const machine = this.state.machines.find(element => {
+      return element.id === machineId;
+    });
+    const job = this.state.jobs.find(element => {
+      return element.id === jobId;
+    });
+
+    let machineJobMap = this.state.machineJobMap;
+    let newJobs = [];
+    this.state.jobs.forEach((j, index) => {
+      if (j.id === jobId) {
+        j.machine = machine;
+      }
+      newJobs.push(j);
+    });
+    machineJobMap[machine.name].unshift(job);
+    let unassignedJobs = [];
+    this.state.unassignedJobs.forEach((j, index) => {
+      if (j.id !== jobId) {
+        unassignedJobs.push(j)
+      }
     })
-    console.log(newJobs)
-    this.setState({ machineJobMap: machineJobMap, jobs:newJobs }, this.updateAllInformation);
+    this.setState(
+      { machineJobMap: machineJobMap, jobs: newJobs , unassignedJobs: unassignedJobs},
+      this.updateAllInformation
+    );
   };
 
   onDragEnd = (result: DropResult) => {
@@ -272,11 +320,13 @@ class MainPage extends React.Component {
 
       return;
     }
+    console.log(this.state.machineJobMap);
     const data = reorderJobMap({
       jobMap: this.state.machineJobMap,
       source,
       destination
     });
+    console.log(data.jobMap);
 
     this.setState(
       {
@@ -342,6 +392,7 @@ class MainPage extends React.Component {
       <div className={classNames(classes.content)}>
         <Board
           jobs={this.state.jobs}
+          unassignedJobs={this.state.unassignedJobs}
           machines={this.state.machines}
           machineJobMap={this.state.machineJobMap}
           ordered={this.state.ordered}
@@ -349,6 +400,7 @@ class MainPage extends React.Component {
           onAddResourceButtonClick={e => this.addNewResource()}
           performSwapAction={this.performSwapAction}
           performMoveAction={this.performMoveAction}
+          performAllocateAction={this.performAllocateAction}
         />
       </div>
     );

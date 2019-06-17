@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "clsx": "^1.0.4",
+    "moment": "^2.24.0",
     "prettier": "^1.17.1",
+    "rc-time-picker": "^3.7.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-resizable": "^1.8.0",
