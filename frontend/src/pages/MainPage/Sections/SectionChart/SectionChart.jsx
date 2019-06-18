@@ -93,6 +93,7 @@ export default class Board extends Component<Props, State> {
                 isScrollable={this.props.withScrollableColumns}
                 isCombineEnabled={this.props.isCombineEnabled}
                 avatar={stateAvatars[this.props.machines[index].state][index]}
+                machineState={this.props.machines[index].state}
                 performSwapAction={this.props.performSwapAction}
                 performMoveAction={this.props.performMoveAction}
                 performAllocateAction={this.props.performAllocateAction}

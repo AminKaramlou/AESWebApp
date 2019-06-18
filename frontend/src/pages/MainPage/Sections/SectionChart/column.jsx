@@ -78,6 +78,8 @@ export default class Column extends Component<Props> {
                     {...provided.dragHandleProps}
                     title={this.props.title}
                     image={this.props.avatar}
+                    machineState={this.props.machineState}
+                    jobs={this.props.jobs}
                   />
                 </Grid>
               </div>

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.16",
     "clsx": "^1.0.4",
     "moment": "^2.24.0",
     "prettier": "^1.17.1",

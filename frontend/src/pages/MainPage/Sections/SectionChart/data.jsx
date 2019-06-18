@@ -41,7 +41,7 @@ export const jobs: Job[] = [
     length: 60,
     id: "B",
     actions: [],
-    machine: "unassigned",
+    machine: nurse2,
     colors: {
       soft: colors.Y50,
       hard: colors.Y200,

@@ -203,7 +203,7 @@ export default function JobList(props: Props) {
                 showHour={false}
                 showSecond={false}
                 disabledMinutes={disabledMinutes}
-                minuteStep={5}
+                minuteStep={5}f
               />
             </Grid>
             <Grid item xs={6}>
