@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import styled from "@emotion/styled";
 import { Global, css } from "@emotion/core";
-import type {
-  DroppableProvided
-} from "react-beautiful-dnd/types";
+import type { DroppableProvided } from "react-beautiful-dnd/types";
 import type { JobMap } from "./types";
 import Column from "./column";
-import UnassignedColumn from "./unassignedColumn"
+import UnassignedColumn from "./unassignedColumn";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import stateAvatars from "./avatars.jsx"
-
-
-
+import stateAvatars from "./avatars.jsx";
+import Grid from "@material-ui/core/Grid";
+import TimePicker from "rc-time-picker/es/TimePicker";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 const ParentContainer = styled.div`
   height: ${({ height }) => height};
@@ -21,7 +20,7 @@ const ParentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  background-color: #f4cc70;
+  background-color: #dac3b3;
   min-height: 100vh;
   /* like display:flex but will allow bleeding over the window width */
   min-width: 100vw;
@@ -97,10 +96,31 @@ export default class Board extends Component<Props, State> {
                 performSwapAction={this.props.performSwapAction}
                 performMoveAction={this.props.performMoveAction}
                 performAllocateAction={this.props.performAllocateAction}
+                addNewJob={this.props.addNewJob}
               />
             ))}
 
             {provided.placeholder}
+            <Grid container>
+              <Grid item xs={9}>
+                <TextField
+                  id="standard-machine"
+                  label="machine"
+                  placeholder="New nurse name"
+                  margin="normal"
+                  inputProps={{ maxLength: 50 }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <Button
+                  size="large"
+                  color="primary"
+                >
+                  Add job
+                </Button>
+              </Grid>
+            </Grid>
+
           </Container>
         )}
       </Droppable>

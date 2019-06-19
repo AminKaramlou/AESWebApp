@@ -16,10 +16,10 @@ export type Machine = {|
 export type Job = {|
   length: number,
   id: Id,
-  content: string,
   machine: Machine,
   status: string,
   actions: [],
+  name: string,
 |};
 
 export type JobMap = {

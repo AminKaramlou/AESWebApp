@@ -30,7 +30,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles(theme => ({
   card: props => ({
-    width: 400,
+    width: 800,
     height: props.length * 20,
     borderColor: props.isDragging ? props.colors.hard : "white"
   }),
@@ -59,7 +59,7 @@ function ActionListItem(props) {
   if (props.action.type === "swap") {
     return (
       <Tooltip title={props.action.reason}>
-        <ListItem className={classes.listItem} onClick={() => props.performSwapAction(props.machine.id, props.action.targetMachine.id, props.id, props.action.targetJob)}>
+        <ListItem className={classes.listItem} onClick={() => props.performSwapAction(props.machine.id, props.action.targetMachine.id, props.id, props.action.targetJobId)}>
           <IconButton aria-label="Delete">
             <SwapHorizIcon />
           </IconButton>
@@ -72,7 +72,7 @@ function ActionListItem(props) {
               }
             />
           </ListItemAvatar>
-          <ListItemText primary={`(Job ${props.action.targetJob})`} />
+          <ListItemText primary={`(Job ${props.action.targetJobName})`} />
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
               <TrendingDown /> {props.action.timeImprovement}
@@ -150,7 +150,7 @@ function JobCard(props) {
               <AlarmIcon /> {props.length}
             </IconButton>
           }
-          title={props.id}
+          title={props.name}
         />
         <CardContent className={classes.content}>
           <List
@@ -225,6 +225,7 @@ function JobItem(props: Props) {
         actions={job.actions}
         id={job.id}
         machine={job.machine}
+        name={job.name}
         performSwapAction={props.performSwapAction}
         performMoveAction={props.performMoveAction}
         performAllocateAction={props.performAllocateAction}

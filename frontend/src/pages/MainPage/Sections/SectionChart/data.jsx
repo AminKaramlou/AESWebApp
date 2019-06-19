@@ -36,6 +36,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200,
     },
+    name: "This is job A....................................."
   },
   {
     length: 60,
@@ -46,6 +47,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200,
     },
+    name: "This is job B"
   },
   {
     length: 60,
@@ -56,6 +58,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200,
     },
+    name: "This is job C"
   },
   {
     length: 40,
@@ -66,6 +69,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200,
     },
+    name: "This is job D"
   },
 ];
 

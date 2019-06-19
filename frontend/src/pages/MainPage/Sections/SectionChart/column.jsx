@@ -17,18 +17,17 @@ const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
-  width: 420px;
-  max-width: 420px;
+  width: 820px;
+  max-width: 820px;
+  min-width: 820px;
 `;
 
 const Header = styled.div`
-  display: flex;
   align-items: center;
   justify-content: center;
   border-top-left-radius: ${borderRadius}px;
   border-top-right-radius: ${borderRadius}px;
-  background-color: #20948b;
-  transition: background-color 0.2s ease;
+  background-color: #78a5a3;
 `;
 
 type Props = {|
@@ -46,14 +45,9 @@ export default class Column extends Component<Props> {
     const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
-    const gridStyle = {
-      flexGrow: 1
-    }
     const gridItemStyle = {
       height: 0,
       paddingBottom: 100,
-      display:"flex",
-      flexGrow: 1
     };
 
 
@@ -62,17 +56,16 @@ export default class Column extends Component<Props> {
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <Container ref={provided.innerRef} {...provided.draggableProps}>
             <Header isDragging={snapshot.isDragging}>
-              <div className={gridStyle}>
                 <Grid container>
-                  <Grid item xs={12} s={12} style={gridItemStyle}>
+                  <Grid item xs={12} s={12}>
                     <Autocomplete
                       suggestions={this.props.allJobs.map(job => ({
-                        value: job.id,
-                        label: job.id
+                        value: job.name,
+                        label: job.name
                       }))}
                     />
                   </Grid>
-                  <Grid item xs={12} s={12} />
+                  <Grid item xs={12} s={12} >
                   <Title
                     isDragging={snapshot.isDragging}
                     {...provided.dragHandleProps}
@@ -81,14 +74,14 @@ export default class Column extends Component<Props> {
                     machineState={this.props.machineState}
                     jobs={this.props.jobs}
                   />
+                  </Grid>
                 </Grid>
-              </div>
             </Header>
             <JobList
               listId={title}
               listType="QUOTE"
               style={{
-                backgroundColor: "#20948b"
+                backgroundColor: "#78a5a3"
               }}
               jobs={jobs}
               internalScroll={this.props.isScrollable}
@@ -96,7 +89,8 @@ export default class Column extends Component<Props> {
               performSwapAction={this.props.performSwapAction}
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
-
+              addNewJob={this.props.addNewJob}
+              title={title}
             />
           </Container>
         )}

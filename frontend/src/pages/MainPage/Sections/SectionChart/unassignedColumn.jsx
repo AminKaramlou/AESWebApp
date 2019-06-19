@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import { grid, borderRadius } from "./constants";
+import { grid } from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
   DraggableProvided,
@@ -9,26 +9,14 @@ import type {
 } from "react-beautiful-dnd";
 import JobList from "./primatives/job-list";
 import type { Job } from "./types";
-import TimePicker from "rc-time-picker";
 import "rc-time-picker/assets/index.css";
-import Grid from "@material-ui/core/Grid";
 
 const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
-  width: 420px;
-  max-width: 420px;
-`;
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: ${borderRadius}px;
-  border-top-right-radius: ${borderRadius}px;
-  background-color: #20948b;
-  transition: background-color 0.2s ease;
+  width: 820px;
+  max-width: 820px;
 `;
 
 type Props = {|
@@ -53,7 +41,7 @@ export default class UnassignedColumn extends Component<Props> {
               listId="unassigned"
               listType="QUOTE"
               style={{
-                backgroundColor: "#20948b"
+                backgroundColor: "#78a5a3"
               }}
               jobs={jobs}
               internalScroll={this.props.isScrollable}

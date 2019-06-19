@@ -58,9 +58,10 @@ class MainPage extends React.Component {
             const personalisedAction1 = {
               type: "swap",
               targetMachine: machine2,
-              targetJob: action["job2"],
+              targetJobId: action["job2"],
               timeImprovement: action["time-improvement"],
-              reason: item["reason"]
+              reason: item["reason"],
+              targetJobName: newJobs[job2Index].name
             };
             newJobs[job1Index].actions.push(personalisedAction1);
 
@@ -70,9 +71,10 @@ class MainPage extends React.Component {
             const personalisedAction2 = {
               type: "swap",
               targetMachine: machine1,
-              targetJob: action["job1"],
+              targetJobId: action["job1"],
               timeImprovement: action["time-improvement"],
-              reason: item["reason"]
+              reason: item["reason"],
+              targetJobName: newJobs[job1Index].name
             };
             newJobs[job2Index].actions.push(personalisedAction2);
           }
@@ -240,8 +242,8 @@ class MainPage extends React.Component {
   };
 
   performAllocateAction = (machineId, jobId) => {
-    console.log(machineId)
-    console.log(jobId)
+    console.log(machineId);
+    console.log(jobId);
     const machine = this.state.machines.find(element => {
       return element.id === machineId;
     });
@@ -261,11 +263,15 @@ class MainPage extends React.Component {
     let unassignedJobs = [];
     this.state.unassignedJobs.forEach((j, index) => {
       if (j.id !== jobId) {
-        unassignedJobs.push(j)
+        unassignedJobs.push(j);
       }
-    })
+    });
     this.setState(
-      { machineJobMap: machineJobMap, jobs: newJobs , unassignedJobs: unassignedJobs},
+      {
+        machineJobMap: machineJobMap,
+        jobs: newJobs,
+        unassignedJobs: unassignedJobs
+      },
       this.updateAllInformation
     );
   };
@@ -336,14 +342,17 @@ class MainPage extends React.Component {
     );
   };
 
-  addNewJob = (length, assignee) => {
+  addNewJob = (length, assignee, name) => {
+    console.log(length)
+    console.log(assignee)
+    console.log(name)
     const machine = this.state.machines.find(element => {
       return element.name === assignee;
     });
     const newJob: Job = {
       length: length,
       id: String.fromCharCode(65 + this.state.jobs.length),
-      content: "Sometimes life is scary and dark",
+      name: name,
       machine: machine,
       colors: {
         soft: colors.Y50,
@@ -401,6 +410,7 @@ class MainPage extends React.Component {
           performSwapAction={this.performSwapAction}
           performMoveAction={this.performMoveAction}
           performAllocateAction={this.performAllocateAction}
+          addNewJob={this.addNewJob}
         />
       </div>
     );

@@ -5,7 +5,6 @@ import { colors } from "@atlaskit/theme";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import JobItem from "./job-item";
 import { grid } from "../constants";
-import Title from "./title";
 import type { Job } from "../types";
 import type {
   DroppableProvided,
@@ -17,6 +16,8 @@ import Grid from "@material-ui/core/Grid";
 import TimePicker from "rc-time-picker/es/TimePicker";
 import Button from "@material-ui/core/Button"
 import moment from "moment";
+import TextField from "@material-ui/core/TextField";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 
 const getBackgroundColor = (
@@ -121,11 +122,8 @@ type InnerListProps = {|
 
 function InnerList(props: InnerListProps) {
   const { jobs, dropProvided } = props;
-  const title = props.title ? <Title>{props.title}</Title> : null;
-
   return (
     <Container>
-      {title}
       <DropZone ref={dropProvided.innerRef}>
         <InnerJobList
           jobs={jobs}
@@ -140,6 +138,18 @@ function InnerList(props: InnerListProps) {
   );
 }
 
+const useStyles = makeStyles(theme => ({
+  textField: {
+    marginTop: -22,
+    marginLeft: 44,
+    width: "80%",
+  },
+  grid: {
+    marginTop: theme.spacing(3)
+  }
+}));
+
+
 export default function JobList(props: Props) {
   const {
     ignoreContainerClipping,
@@ -153,6 +163,20 @@ export default function JobList(props: Props) {
     jobs,
     title
   } = props;
+  const [values, setValues] = React.useState({
+    newJobName: '',
+    newJobLength: moment().minute(10)
+  });
+
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleLengthChange = name => event => {
+    setValues({ ...values, [name]: event });
+  };
+
+  const classes = useStyles();
 
   return (
     <Droppable
@@ -196,20 +220,35 @@ export default function JobList(props: Props) {
 
             />
           )}
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
+          <Grid container className={classes.grid}>
+            <Grid item xs={3}>
               <TimePicker
                 defaultValue={moment().minute(10)}
                 showHour={false}
                 showSecond={false}
                 disabledMinutes={disabledMinutes}
-                minuteStep={5}f
+                minuteStep={5}
+                onChange={handleLengthChange('newJobLength')}
+                value={values.newJobLength}
               />
             </Grid>
             <Grid item xs={6}>
+              <TextField
+                id="standard-name"
+                className={classes.textField}
+                label="Name"
+                placeholder="New job name"
+                value={values.newJobName}
+                onChange={handleChange('newJobName')}
+                margin="normal"
+                inputProps={{maxLength: 50}}
+              />
+            </Grid>
+            <Grid item xs={3}>
               <Button
-                size="small"
+                size="large"
                 color="primary"
+                onClick={() => props.addNewJob(values.newJobLength.minute(), title, values.newJobName)}
               >
                 Add job
               </Button>
