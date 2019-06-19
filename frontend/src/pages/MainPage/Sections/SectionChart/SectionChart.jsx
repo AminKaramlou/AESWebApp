@@ -70,8 +70,6 @@ export default class Board extends Component<Props, State> {
     const { containerHeight } = this.props;
     const unassignedJobs = this.props.unassignedJobs;
 
-    const gridContainerClasses=
-
     const board = (
       <Droppable
         droppableId="board"

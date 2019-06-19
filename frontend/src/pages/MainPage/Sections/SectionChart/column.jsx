@@ -38,30 +38,31 @@ type Props = {|
   isCombineEnabled?: boolean
 |};
 
-
 export default class Column extends Component<Props> {
-
   render() {
     const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
 
-
     return (
       <Draggable draggableId={title} index={index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-          <Container ref={provided.innerRef} {...provided.draggableProps}>
+          <Container
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
             <Header isDragging={snapshot.isDragging}>
-                <Grid container>
-                  <Grid item xs={12} s={12}>
-                    <Autocomplete
-                      suggestions={this.props.allJobs.map(job => ({
-                        value: job.name,
-                        label: job.name
-                      }))}
-                    />
-                  </Grid>
-                  <Grid item xs={12} s={12} >
+              <Grid container>
+                <Grid item xs={12} s={12}>
+                  <Autocomplete
+                    suggestions={this.props.allJobs.map(job => ({
+                      value: job.name,
+                      label: job.name
+                    }))}
+                  />
+                </Grid>
+                <Grid item xs={12} s={12}>
                   <Title
                     isDragging={snapshot.isDragging}
                     {...provided.dragHandleProps}
@@ -70,8 +71,8 @@ export default class Column extends Component<Props> {
                     machineState={this.props.machineState}
                     jobs={this.props.jobs}
                   />
-                  </Grid>
                 </Grid>
+              </Grid>
             </Header>
             <JobList
               listId={title}
