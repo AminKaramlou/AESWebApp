@@ -17,6 +17,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 820px;
   max-width: 820px;
+  min-width:820px;
 `;
 
 type Props = {|

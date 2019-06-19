@@ -119,6 +119,7 @@ class MainPage extends React.Component {
   }
 
   updateAllInformation() {
+    console.log("Updating");
     this.updateExplanation();
     this.updateMachineStates();
   }
@@ -343,9 +344,6 @@ class MainPage extends React.Component {
   };
 
   addNewJob = (length, assignee, name) => {
-    console.log(length)
-    console.log(assignee)
-    console.log(name)
     const machine = this.state.machines.find(element => {
       return element.name === assignee;
     });
@@ -375,24 +373,43 @@ class MainPage extends React.Component {
     );
   };
 
-  addNewResource = () => {
-    const newMachine: Machine = {
-      id: this.state.ordered.length + 1,
-      name: `Nurse ${this.state.ordered.length + 1}`
-    };
-    const machines = [...this.state.machines, newMachine];
-    const machineJobMap = {
-      ...this.state.machineJobMap,
-      [newMachine.name]: []
-    };
-    this.setState(
-      {
-        machines: machines,
-        machineJobMap: machineJobMap,
-        ordered: Object.keys(machineJobMap)
-      },
-      this.updateAllInformation
-    );
+  addNewResource = name => {
+    if (
+      this.state.machines.every((element, index) => {
+        return element.name !== name;
+      })
+    ) {
+      const newMachine: Machine = {
+        id: this.state.ordered.length + 1,
+        name: name,
+        state: "neutral",
+        completionTime: 0
+      };
+      const testJob = {
+        length: 20,
+        actions: [],
+        id: "Z",
+        machine: name,
+        colors: {
+          soft: colors.Y50,
+          hard: colors.Y200
+        },
+        name: "This is job Z....................................."
+      };
+      const machines = [...this.state.machines, newMachine];
+      const machineJobMap = {
+        ...this.state.machineJobMap,
+        [newMachine.name]: [testJob]
+      };
+      this.setState(
+        {
+          machines: machines,
+          machineJobMap: machineJobMap,
+          ordered: Object.keys(machineJobMap)
+        },
+        this.updateAllInformation
+      );
+    }
   };
 
   render() {

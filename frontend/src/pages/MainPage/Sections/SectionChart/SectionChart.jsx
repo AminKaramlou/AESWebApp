@@ -53,11 +53,24 @@ export default class Board extends Component<Props, State> {
   boardRef: ?HTMLElement;
   z;
 
+  constructor(props) {
+    super(props)
+    this.state= {
+      newMachineName: ""
+    }
+  }
+
+  handleChange(event) {
+    this.setState({newMachineName: event.target.value})
+  }
+
   render() {
     const columns: JobMap = this.props.machineJobMap;
     const ordered: string[] = this.props.ordered;
     const { containerHeight } = this.props;
     const unassignedJobs = this.props.unassignedJobs;
+
+    const gridContainerClasses=
 
     const board = (
       <Droppable
@@ -105,18 +118,21 @@ export default class Board extends Component<Props, State> {
               <Grid item xs={9}>
                 <TextField
                   id="standard-machine"
-                  label="machine"
+                  label="nurse"
                   placeholder="New nurse name"
                   margin="normal"
                   inputProps={{ maxLength: 50 }}
+                  onChange={(event) => this.handleChange(event)}
+                  value={this.state.newMachineName}
                 />
               </Grid>
               <Grid item xs={3}>
                 <Button
                   size="large"
                   color="primary"
+                  onClick={() => this.props.addNewResource(this.state.newMachineName)}
                 >
-                  Add job
+                  Add nurse
                 </Button>
               </Grid>
             </Grid>

@@ -45,10 +45,6 @@ export default class Column extends Component<Props> {
     const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
-    const gridItemStyle = {
-      height: 0,
-      paddingBottom: 100,
-    };
 
 
     return (
