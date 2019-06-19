@@ -32,7 +32,8 @@ const useStyles = makeStyles(theme => ({
   card: props => ({
     width: 800,
     height: props.length * 20,
-    borderColor: props.isDragging ? props.colors.hard : "white"
+    borderColor: props.isDragging ? props.colors.hard : "white",
+    boxShadow:"inset 0px 0px 0px 2px #78a5a3",
   }),
   avatar: props => ({
     backgroundColor: props.actions.length === 0 ? green[500] : red[500]
@@ -59,7 +60,17 @@ function ActionListItem(props) {
   if (props.action.type === "swap") {
     return (
       <Tooltip title={props.action.reason}>
-        <ListItem className={classes.listItem} onClick={() => props.performSwapAction(props.machine.id, props.action.targetMachine.id, props.id, props.action.targetJobId)}>
+        <ListItem
+          className={classes.listItem}
+          onClick={() =>
+            props.performSwapAction(
+              props.machine.id,
+              props.action.targetMachine.id,
+              props.id,
+              props.action.targetJobId
+            )
+          }
+        >
           <IconButton aria-label="Delete">
             <SwapHorizIcon />
           </IconButton>
@@ -67,8 +78,8 @@ function ActionListItem(props) {
             <Avatar
               src={
                 stateAvatars[props.action.targetMachine.state][
-                props.action.targetMachine.id - 1
-                  ]
+                  props.action.targetMachine.id - 1
+                ]
               }
             />
           </ListItemAvatar>
@@ -86,7 +97,16 @@ function ActionListItem(props) {
   if (props.action.type === "move") {
     return (
       <Tooltip title={props.action.reason}>
-        <ListItem className={classes.listItem} onClick={() => props.performMoveAction(props.machine.id, props.action.targetMachine.id, props.id)}>
+        <ListItem
+          className={classes.listItem}
+          onClick={() =>
+            props.performMoveAction(
+              props.machine.id,
+              props.action.targetMachine.id,
+              props.id
+            )
+          }
+        >
           <IconButton aria-label="Delete">
             <ArrowRightAlt />
           </IconButton>
@@ -94,8 +114,8 @@ function ActionListItem(props) {
             <Avatar
               src={
                 stateAvatars[props.action.targetMachine.state][
-                props.action.targetMachine.id - 1
-                  ]
+                  props.action.targetMachine.id - 1
+                ]
               }
             />
           </ListItemAvatar>
@@ -111,7 +131,12 @@ function ActionListItem(props) {
   if (props.action.type === "allocate") {
     return (
       <Tooltip title={props.action.reason}>
-        <ListItem className={classes.listItem} onClick={() => props.performAllocateAction(props.action.targetMachine.id, props.id)}>
+        <ListItem
+          className={classes.listItem}
+          onClick={() =>
+            props.performAllocateAction(props.action.targetMachine.id, props.id)
+          }
+        >
           <IconButton aria-label="Delete">
             <ArrowRightAlt />
           </IconButton>
@@ -119,8 +144,8 @@ function ActionListItem(props) {
             <Avatar
               src={
                 stateAvatars[props.action.targetMachine.state][
-                props.action.targetMachine.id - 1
-                  ]
+                  props.action.targetMachine.id - 1
+                ]
               }
             />
           </ListItemAvatar>
@@ -191,9 +216,7 @@ type Props = {
 };
 
 const Container = styled.div`
-  border: 1px solid transparent;
   background-color: transparent;
-  borderColor: props.isDragging ? props.colors.hard : "white"
 
 `;
 

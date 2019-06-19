@@ -138,7 +138,7 @@ export default class Board extends Component<Props, State> {
         <Global
           styles={css`
             body {
-              background: #f4cc70;
+              background: #dac3b3;
             }
           `}
         />

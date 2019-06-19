@@ -411,6 +411,7 @@ class MainPage extends React.Component {
           performMoveAction={this.performMoveAction}
           performAllocateAction={this.performAllocateAction}
           addNewJob={this.addNewJob}
+          addNewResource={this.addNewResource}
         />
       </div>
     );
