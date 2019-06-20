@@ -16,7 +16,7 @@ import {
   jobs,
   machines,
   machineJobMap
-} from "./Sections/SectionChart/data.jsx";
+} from "./Sections/SectionChart/scenarios/scenario1.jsx";
 import openSocket from "socket.io-client";
 import classNames from "classnames";
 import type { Job, Machine } from "./Sections/SectionChart/types";
@@ -113,6 +113,29 @@ class MainPage extends React.Component {
     });
   }
 
+  setPfd = (machineId, pfd) => {
+    console.log(machineId);
+    console.log(pfd);
+    let machines = this.state.machines
+    machines.forEach((m, i) => {
+      if (m.id === machineId) {
+        m.pfd = pfd
+      }
+    });
+
+    this.setState({machines: machines}, this.updateAllInformation)
+  }
+
+  setNfd = (machineId, nfd) => {
+    let machines = this.state.machines
+    machines.forEach((m, i) => {
+      if (m.id === machineId) {
+        m.nfd = nfd
+      }
+    })
+    this.setState({machines: machines}, this.updateAllInformation)
+  }
+
   componentDidMount(): void {
     this.updateAllInformation();
   }
@@ -123,7 +146,6 @@ class MainPage extends React.Component {
   }
 
   updateExplanation() {
-    console.log(this.state.jobs)
     socket.emit("get-explanation", {
       machines: this.state.machines,
       jobs: this.state.jobs,
@@ -273,8 +295,6 @@ class MainPage extends React.Component {
   };
 
   removeJob = (jobId, machine) => {
-    console.log(jobId);
-    console.log(machine);
     let unassignedJobs = this.state.unassignedJobs;
     let jobMap = this.state.machineJobMap;
     if (machine === "unassigned") {
@@ -290,11 +310,7 @@ class MainPage extends React.Component {
       }
       else {
         if (pastTargetJob) {
-          console.log("before")
-          console.log(j.id)
           j.id = String.fromCharCode(j.id.charCodeAt(0) - 1)
-          console.log("after")
-          console.log(j.id)
         }
         jobs.push(j)
       }
@@ -499,6 +515,8 @@ class MainPage extends React.Component {
           addNewJob={this.addNewJob}
           addNewResource={this.addNewResource}
           removeJob={this.removeJob}
+          setPfd={this.setPfd}
+          setNfd={this.setNfd}
         />
       </div>
     );

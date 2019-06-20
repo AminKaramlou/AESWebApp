@@ -11,6 +11,8 @@ export type Machine = {|
   id: Id,
   name: string,
   colors: MachineColors,
+  pfd: [],
+  nfd: [],
 |};
 
 export type Job = {|

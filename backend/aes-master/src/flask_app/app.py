@@ -13,10 +13,9 @@ CORS(app)
 
 @socketio.on('get-explanation')
 def handle_message(schedule_information):
+  print(schedule_information['machines'])
   m_text = str(len(schedule_information['machines']))
   p_text = "\n".join([job['id'] + ": " + str(job['length']) for job in schedule_information['jobs']]) + "\n"
-  nfd_text = ""
-  pfd_text = ""
 
   i = 1
   assignments = []
@@ -29,11 +28,39 @@ def handle_message(schedule_information):
     i += 1
 
   S_text = "\n".join(assignments) + "\n"
+
+  i = 1
+  pfds = []
+  for machine in schedule_information['machines']:
+    pfd = str(i) + ": "
+    for decision in machine['pfd']:
+      pfd = pfd + decision['value'] + " "
+    pfds.append(pfd)
+    i+= 1
+  pfd_text = "\n".join(pfds) + "\n"
+
+  i = 1
+  nfds = []
+  for machine in schedule_information['machines']:
+    nfd = str(i) + ": "
+    for decision in machine['nfd']:
+      nfd = nfd + decision['value'] + " "
+    nfds.append(nfd)
+    i+= 1
+  nfd_text = "\n".join(nfds) + "\n"
+
+  print("m_text")
   print(m_text)
+  print("p_text")
   print(p_text)
+  print("S_text")
   print(S_text)
+  print("pfd_text")
+  print(pfd_text)
+  print("nfd_text")
+  print(nfd_text)
   _, explanation = explain(m_text, p_text, nfd_text, pfd_text, S_text, options=
-  {'graphical': False, 'naive': False, 'fixed': False, 'partial': False})
+  {'graphical': False, 'naive': False, 'fixed': True, 'partial': False})
 
   result = []
   regex = '.*reduce by ([+-]?[0-9]*)'

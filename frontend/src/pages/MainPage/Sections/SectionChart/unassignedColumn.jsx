@@ -17,7 +17,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 820px;
   max-width: 820px;
-  min-width:820px;
+  min-width: 820px;
 `;
 
 type Props = {|
@@ -28,7 +28,6 @@ type Props = {|
   isCombineEnabled?: boolean
 |};
 
-
 export default class UnassignedColumn extends Component<Props> {
   render() {
     const jobs: Job[] = this.props.jobs;
@@ -37,7 +36,11 @@ export default class UnassignedColumn extends Component<Props> {
     return (
       <Draggable draggableId={this.props.title} index={index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-          <Container ref={provided.innerRef} {...provided.draggableProps}>
+          <Container
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
             <JobList
               listId="unassigned"
               listType="QUOTE"

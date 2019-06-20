@@ -109,6 +109,11 @@ export default class Board extends Component<Props, State> {
                 performAllocateAction={this.props.performAllocateAction}
                 addNewJob={this.props.addNewJob}
                 removeJob={this.props.removeJob}
+                setPfd={this.props.setPfd}
+                setNfd={this.props.setNfd}
+                pfd = {this.props.machines[index].pfd}
+                nfd = {this.props.machines[index].nfd}
+                machineId={this.props.machines[index].id}
               />
             ))}
 

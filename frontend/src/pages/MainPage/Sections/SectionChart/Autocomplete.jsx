@@ -233,15 +233,12 @@ const components = {
 function Autocomplete(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [negative, setNegative] = React.useState(null);
-  const [positive, setPositive] = React.useState(null);
-
   function handleChangePositive(value) {
-    setPositive(value);
+    props.setPfd(props.machineId, value);
   }
 
   function handleChangeNegative(value) {
-    setNegative(value)
+    props.setNfd(props.machineId, value)
   }
 
   const selectStyles = {
@@ -271,7 +268,7 @@ function Autocomplete(props) {
           }}
           options={props.suggestions}
           components={components}
-          value={negative}
+          value={props.nfd}
           onChange={handleChangeNegative}
           isMulti
         />
@@ -289,7 +286,7 @@ function Autocomplete(props) {
         }}
         options={props.suggestions}
         components={components}
-        value={positive}
+        value={props.pfd}
         onChange={handleChangePositive}
         isMulti
       />

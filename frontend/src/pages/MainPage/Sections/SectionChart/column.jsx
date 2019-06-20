@@ -12,6 +12,7 @@ import Title from "./primatives/title";
 import type { Job } from "./types";
 import Autocomplete from "./Autocomplete";
 import Grid from "@material-ui/core/Grid";
+import Board from "./SectionChart";
 
 const Container = styled.div`
   margin: ${grid}px;
@@ -43,6 +44,9 @@ export default class Column extends Component<Props> {
     const title: string = this.props.title;
     const jobs: Job[] = this.props.jobs;
     const index: number = this.props.index;
+    const pfd = this.props.pfd;
+    const nfd = this.props.nfd;
+    const machineId = this.props.machineId;
 
     return (
       <Draggable draggableId={title} index={index}>
@@ -56,8 +60,13 @@ export default class Column extends Component<Props> {
               <Grid container>
                 <Grid item xs={12} s={12}>
                   <Autocomplete
+                    pfd = {pfd}
+                    nfd = {nfd}
+                    machineId = {machineId}
+                    setPfd={this.props.setPfd}
+                    setNfd={this.props.setNfd}
                     suggestions={this.props.allJobs.map(job => ({
-                      value: job.name,
+                      value: job.id,
                       label: job.name
                     }))}
                   />
