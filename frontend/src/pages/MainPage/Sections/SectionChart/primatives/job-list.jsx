@@ -108,6 +108,7 @@ const InnerJobList = function InnerJobList(props: JobListProps) {
           performSwapAction={props.performSwapAction}
           performMoveAction={props.performMoveAction}
           performAllocateAction={props.performAllocateAction}
+          removeJob={props.removeJob}
         />
       )}
     </Draggable>
@@ -130,6 +131,7 @@ function InnerList(props: InnerListProps) {
           performSwapAction={props.performSwapAction}
           performMoveAction={props.performMoveAction}
           performAllocateAction={props.performAllocateAction}
+          removeJob={props.removeJob}
 
         />
         {dropProvided.placeholder}
@@ -177,7 +179,6 @@ export default function JobList(props: Props) {
   };
 
   const classes = useStyles();
-
   return (
     <Droppable
       droppableId={listId}
@@ -206,6 +207,7 @@ export default function JobList(props: Props) {
                 performSwapAction={props.performSwapAction}
                 performMoveAction={props.performMoveAction}
                 performAllocateAction={props.performAllocateAction}
+                removeJob={props.removeJob}
 
               />
             </ScrollContainer>
@@ -217,6 +219,7 @@ export default function JobList(props: Props) {
               performSwapAction={props.performSwapAction}
               performMoveAction={props.performMoveAction}
               performAllocateAction={props.performAllocateAction}
+              removeJob={props.removeJob}
 
             />
           )}

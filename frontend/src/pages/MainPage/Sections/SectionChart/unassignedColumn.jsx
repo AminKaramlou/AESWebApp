@@ -44,12 +44,14 @@ export default class UnassignedColumn extends Component<Props> {
               style={{
                 backgroundColor: "#78a5a3"
               }}
+              title={this.props.title}
               jobs={jobs}
               internalScroll={this.props.isScrollable}
               isCombineEnabled={Boolean(this.props.isCombineEnabled)}
               performSwapAction={this.props.performSwapAction}
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
+              removeJob={this.props.removeJob}
             />
           </Container>
         )}

@@ -82,16 +82,16 @@ export default class Board extends Component<Props, State> {
           <Container ref={provided.innerRef} {...provided.droppableProps}>
             <UnassignedColumn
               key="unassigned"
-              index={0}
+              index={9}
               title="unassigned"
               jobs={unassignedJobs}
               allJobs={this.props.jobs}
               isScrollable={this.props.withScrollableColumns}
               isCombineEnabled={this.props.isCombineEnabled}
-              avatar={stateAvatars[this.props.machines[0].state][0]}
               performSwapAction={this.props.performSwapAction}
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
+              removeJob={this.props.removeJob}
             />
             {ordered.map((key: string, index: number) => (
               <Column
@@ -108,6 +108,7 @@ export default class Board extends Component<Props, State> {
                 performMoveAction={this.props.performMoveAction}
                 performAllocateAction={this.props.performAllocateAction}
                 addNewJob={this.props.addNewJob}
+                removeJob={this.props.removeJob}
               />
             ))}
 

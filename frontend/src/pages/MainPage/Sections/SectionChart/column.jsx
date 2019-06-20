@@ -87,6 +87,7 @@ export default class Column extends Component<Props> {
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
               addNewJob={this.props.addNewJob}
+              removeJob={this.props.removeJob}
               title={title}
             />
           </Container>

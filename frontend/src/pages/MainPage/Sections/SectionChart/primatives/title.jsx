@@ -1,7 +1,4 @@
 // @flow
-import styled from "@emotion/styled";
-import { colors } from "@atlaskit/theme";
-import { grid } from "../constants";
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,13 +6,14 @@ import IconButton from "@material-ui/core/IconButton";
 import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
+import manager from "assets/img/emoji-avatars/Manager.png"
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin:"auto",
     marginTop: 10,
-    width: 150,
-    height: 150,
+    width: 220,
+    height: 300,
     maxWidth: "100%",
     maxHeight: "100%"
   },
@@ -56,7 +54,7 @@ function Title(props) {
   return (
     <Grid container>
       <Grid item xs={11}>
-        <Avatar alt="Nurse" src={props.image} className={classes.bigAvatar} />
+        <Avatar alt="Nurse" src={manager} className={classes.bigAvatar} />
       </Grid>
       <Grid item xs={1}>
         <Tooltip title="How are you?" placement="right">

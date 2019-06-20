@@ -51,9 +51,7 @@ export const reorderJobMap = ({
   // moving to different list
 
   // remove from original
-  console.log(current[0])
   current.splice(source.index, 1);
-  console.log(current)
   // insert into next
   next.splice(destination.index, 0, target);
   const result: JobMap = {
@@ -62,7 +60,6 @@ export const reorderJobMap = ({
     [destination.droppableId]: next,
   };
 
-  console.log(result)
 
   return {
     jobMap: result,

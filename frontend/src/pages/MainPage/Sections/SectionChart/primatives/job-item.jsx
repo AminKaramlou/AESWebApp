@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     width: 800,
     height: props.length * 20,
     borderColor: props.isDragging ? props.colors.hard : "white",
-    boxShadow:"inset 0px 0px 0px 2px #78a5a3",
+    boxShadow: "inset 0px 0px 0px 2px #78a5a3"
   }),
   avatar: props => ({
     backgroundColor: props.actions.length === 0 ? green[500] : red[500]
@@ -45,6 +45,11 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
     overflow: "scroll",
     padding: 0
+  },
+  iconButton: {
+    "&:hover": {
+      backgroundColor: "transparent"
+    }
   }
 }));
 
@@ -56,7 +61,8 @@ const ActionItemStyles = makeStyles(theme => ({
 }));
 
 function ActionListItem(props) {
-  console.log(props.machine)
+  const machine =
+    props.machine === "unassigned" ? props.machine : props.machine.id;
   const classes = ActionItemStyles(props);
   if (props.action.type === "swap") {
     return (
@@ -65,7 +71,7 @@ function ActionListItem(props) {
           className={classes.listItem}
           onClick={() =>
             props.performSwapAction(
-              props.machine.id,
+              machine,
               props.action.targetMachine.id,
               props.id,
               props.action.targetJobId
@@ -102,7 +108,7 @@ function ActionListItem(props) {
           className={classes.listItem}
           onClick={() =>
             props.performMoveAction(
-              props.machine.id,
+              machine,
               props.action.targetMachine.id,
               props.id
             )
@@ -171,8 +177,10 @@ function JobCard(props) {
             />
           }
           action={
-            <IconButton>
-              <DeleteIcon />
+            <IconButton classname={classes.iconButton}>
+              <DeleteIcon
+                onClick={() => props.removeJob(props.id, props.machine)}
+              />
               <AlarmIcon /> {props.length}
             </IconButton>
           }
@@ -218,7 +226,6 @@ type Props = {
 
 const Container = styled.div`
   background-color: transparent;
-
 `;
 
 // Previously this extended React.Component
@@ -253,6 +260,7 @@ function JobItem(props: Props) {
         performSwapAction={props.performSwapAction}
         performMoveAction={props.performMoveAction}
         performAllocateAction={props.performAllocateAction}
+        removeJob={props.removeJob}
       />
     </Container>
   );

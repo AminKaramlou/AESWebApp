@@ -19,7 +19,7 @@ import {
 } from "./Sections/SectionChart/data.jsx";
 import openSocket from "socket.io-client";
 import classNames from "classnames";
-import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
+import type { Job, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 
@@ -120,12 +120,10 @@ class MainPage extends React.Component {
   updateAllInformation() {
     this.updateExplanation();
     this.updateMachineStates();
-    console.log(this.state.machineJobMap)
   }
 
   updateExplanation() {
-    console.log("getting explanation")
-    console.log(this.state.machineJobMap)
+    console.log(this.state.jobs)
     socket.emit("get-explanation", {
       machines: this.state.machines,
       jobs: this.state.jobs,
@@ -208,10 +206,6 @@ class MainPage extends React.Component {
   };
 
   performMoveAction = (machine1Id, machine2Id, jobId) => {
-    console.log(this.state.machineJobMap)
-    console.log(machine1Id)
-    console.log(machine2Id)
-    console.log(jobId)
     const machine1 = this.state.machines.find(element => {
       return element.id === machine1Id;
     });
@@ -226,7 +220,6 @@ class MainPage extends React.Component {
     let newJobs = [];
     machineJobMap[machine1.name].forEach((j, index) => {
       if (j.id === jobId) {
-        console.log("Found the jobbbbbbbbbbbbbbb")
       } else {
         newJobs.push(j);
       }
@@ -240,7 +233,6 @@ class MainPage extends React.Component {
       }
       newJobs.push(j);
     });
-    console.log(machineJobMap)
     this.setState(
       { machineJobMap: machineJobMap, jobs: newJobs },
       this.updateAllInformation
@@ -280,8 +272,44 @@ class MainPage extends React.Component {
     );
   };
 
-  onDragEnd = (result: DropResult) => {
+  removeJob = (jobId, machine) => {
+    console.log(jobId);
+    console.log(machine);
+    let unassignedJobs = this.state.unassignedJobs;
+    let jobMap = this.state.machineJobMap;
+    if (machine === "unassigned") {
+      unassignedJobs = unassignedJobs.filter(j => j.id !== jobId);
+    } else {
+      jobMap[machine.name] = jobMap[machine.name].filter(j => j.id !== jobId);
+    }
+    let jobs = []
+    let pastTargetJob = false
+    this.state.jobs.forEach((j, index) => {
+      if (j.id === jobId) {
+        pastTargetJob = true
+      }
+      else {
+        if (pastTargetJob) {
+          console.log("before")
+          console.log(j.id)
+          j.id = String.fromCharCode(j.id.charCodeAt(0) - 1)
+          console.log("after")
+          console.log(j.id)
+        }
+        jobs.push(j)
+      }
+    });
+    this.setState(
+      {
+        jobs: jobs,
+        unassignedJobs: unassignedJobs,
+        machineJobMap: jobMap
+      },
+      this.updateAllInformation
+    );
+  };
 
+  onDragEnd = (result: DropResult) => {
     // dropped nowhere
     if (!result.destination) {
       return;
@@ -312,6 +340,62 @@ class MainPage extends React.Component {
 
       return;
     }
+
+    if (source.droppableId === "unassigned") {
+      let job = this.state.jobs.find((element, index) => {
+        return element.id === result.draggableId;
+      });
+      const machine = this.state.machines.find((element, index) => {
+        return element.name === destination.droppableId;
+      });
+      job.machine = machine;
+
+      const unassignedJobs = this.state.unassignedJobs.filter(
+        j => j.id !== job.id
+      );
+      const jobs = this.state.jobs.filter(j => j.id !== job.id).concat(job);
+
+      let machineJobMap = this.state.machineJobMap;
+      machineJobMap[machine.name].push(job);
+      this.setState(
+        {
+          machineJobMap: machineJobMap,
+          jobs: jobs,
+          unassignedJobs: unassignedJobs
+        },
+        this.updateAllInformation
+      );
+      return;
+    }
+
+    if (destination.droppableId === "unassigned") {
+      let job = this.state.jobs.find((element, index) => {
+        return element.id === result.draggableId;
+      });
+      const sourceMachine = this.state.machines.find((element, index) => {
+        return element.name === source.droppableId;
+      });
+      job.machine = "unassigned";
+
+      let unassignedJobs = this.state.unassignedJobs;
+      unassignedJobs.splice(destination.index, 0, job);
+      const jobs = this.state.jobs.filter(j => j.id !== job.id).concat(job);
+
+      let machineJobMap = this.state.machineJobMap;
+      machineJobMap[sourceMachine.name] = machineJobMap[
+        sourceMachine.name
+      ].filter(j => j.id !== job.id);
+      this.setState(
+        {
+          machineJobMap: machineJobMap,
+          jobs: jobs,
+          unassignedJobs: unassignedJobs
+        },
+        this.updateAllInformation
+      );
+      return;
+    }
+
     const data = reorderJobMap({
       jobMap: this.state.machineJobMap,
       source,
@@ -319,22 +403,21 @@ class MainPage extends React.Component {
     });
 
     let job = this.state.jobs.find((element, index) => {
-      return element.id === result.draggableId
-    })
+      return element.id === result.draggableId;
+    });
 
     const machine = this.state.machines.find((element, index) => {
-      return element.name === result.destination.droppableId
-    })
+      return element.name === destination.droppableId;
+    });
 
     job.machine = machine;
 
-    const jobs =   this.state.jobs.filter( j => j.id !== job.id).concat(job)
-
-    console.log(jobs)
+    const jobs = this.state.jobs.filter(j => j.id !== job.id).concat(job);
 
     this.setState(
       {
-        machineJobMap: data.jobMap
+        machineJobMap: data.jobMap,
+        jobs: jobs
       },
       this.updateAllInformation
     );
@@ -415,6 +498,7 @@ class MainPage extends React.Component {
           performAllocateAction={this.performAllocateAction}
           addNewJob={this.addNewJob}
           addNewResource={this.addNewResource}
+          removeJob={this.removeJob}
         />
       </div>
     );
