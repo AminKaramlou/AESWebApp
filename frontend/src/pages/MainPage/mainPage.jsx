@@ -94,7 +94,6 @@ class MainPage extends React.Component {
             newJobs[jobIndex].actions.push(personalisedAction);
           }
           if (action["type"] === "unallocated") {
-            console.log(action);
             const jobIndex = this.state.jobs.findIndex(
               x => x.id === action["job"]
             );
@@ -119,12 +118,14 @@ class MainPage extends React.Component {
   }
 
   updateAllInformation() {
-    console.log("Updating");
     this.updateExplanation();
     this.updateMachineStates();
+    console.log(this.state.machineJobMap)
   }
 
   updateExplanation() {
+    console.log("getting explanation")
+    console.log(this.state.machineJobMap)
     socket.emit("get-explanation", {
       machines: this.state.machines,
       jobs: this.state.jobs,
@@ -200,7 +201,6 @@ class MainPage extends React.Component {
       }
       newJobs.push(job);
     });
-    console.log(newJobs);
     this.setState(
       { machineJobMap: machineJobMap, jobs: newJobs },
       this.updateAllInformation
@@ -208,6 +208,10 @@ class MainPage extends React.Component {
   };
 
   performMoveAction = (machine1Id, machine2Id, jobId) => {
+    console.log(this.state.machineJobMap)
+    console.log(machine1Id)
+    console.log(machine2Id)
+    console.log(jobId)
     const machine1 = this.state.machines.find(element => {
       return element.id === machine1Id;
     });
@@ -222,6 +226,7 @@ class MainPage extends React.Component {
     let newJobs = [];
     machineJobMap[machine1.name].forEach((j, index) => {
       if (j.id === jobId) {
+        console.log("Found the jobbbbbbbbbbbbbbb")
       } else {
         newJobs.push(j);
       }
@@ -235,7 +240,7 @@ class MainPage extends React.Component {
       }
       newJobs.push(j);
     });
-    console.log(newJobs);
+    console.log(machineJobMap)
     this.setState(
       { machineJobMap: machineJobMap, jobs: newJobs },
       this.updateAllInformation
@@ -243,8 +248,6 @@ class MainPage extends React.Component {
   };
 
   performAllocateAction = (machineId, jobId) => {
-    console.log(machineId);
-    console.log(jobId);
     const machine = this.state.machines.find(element => {
       return element.id === machineId;
     });
@@ -278,24 +281,6 @@ class MainPage extends React.Component {
   };
 
   onDragEnd = (result: DropResult) => {
-    if (result.combine) {
-      if (result.type === "COLUMN") {
-        const shallow: string[] = [...this.state.ordered];
-        shallow.splice(result.source.index, 1);
-        this.setState({ ordered: shallow });
-        return;
-      }
-
-      const column: Job[] = this.state.machineJobMap[result.source.droppableId];
-      const withJobRemoved: Job[] = [...column];
-      withJobRemoved.splice(result.source.index, 1);
-      const machineJobMap: JobMap = {
-        ...this.state.machineJobMap,
-        [result.source.droppableId]: withJobRemoved
-      };
-      this.setState({ machineJobMap: machineJobMap });
-      return;
-    }
 
     // dropped nowhere
     if (!result.destination) {
@@ -327,13 +312,25 @@ class MainPage extends React.Component {
 
       return;
     }
-    console.log(this.state.machineJobMap);
     const data = reorderJobMap({
       jobMap: this.state.machineJobMap,
       source,
       destination
     });
-    console.log(data.jobMap);
+
+    let job = this.state.jobs.find((element, index) => {
+      return element.id === result.draggableId
+    })
+
+    const machine = this.state.machines.find((element, index) => {
+      return element.name === result.destination.droppableId
+    })
+
+    job.machine = machine;
+
+    const jobs =   this.state.jobs.filter( j => j.id !== job.id).concat(job)
+
+    console.log(jobs)
 
     this.setState(
       {
@@ -385,21 +382,10 @@ class MainPage extends React.Component {
         state: "neutral",
         completionTime: 0
       };
-      const testJob = {
-        length: 20,
-        actions: [],
-        id: "Z",
-        machine: name,
-        colors: {
-          soft: colors.Y50,
-          hard: colors.Y200
-        },
-        name: "This is job Z....................................."
-      };
       const machines = [...this.state.machines, newMachine];
       const machineJobMap = {
         ...this.state.machineJobMap,
-        [newMachine.name]: [testJob]
+        [newMachine.name]: []
       };
       this.setState(
         {

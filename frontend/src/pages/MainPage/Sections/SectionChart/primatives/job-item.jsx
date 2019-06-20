@@ -56,6 +56,7 @@ const ActionItemStyles = makeStyles(theme => ({
 }));
 
 function ActionListItem(props) {
+  console.log(props.machine)
   const classes = ActionItemStyles(props);
   if (props.action.type === "swap") {
     return (
