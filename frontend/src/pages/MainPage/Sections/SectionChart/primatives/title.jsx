@@ -6,11 +6,11 @@ import IconButton from "@material-ui/core/IconButton";
 import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
-import manager from "assets/img/emoji-avatars/Manager.png"
+import Box from "@material-ui/core/Box";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
-    margin:"auto",
+    margin: "auto",
     marginTop: 10,
     width: 220,
     height: 300,
@@ -18,33 +18,46 @@ const useStyles = makeStyles(theme => ({
     maxHeight: "100%"
   },
   button: {
-    position:"absolute",
+    position: "absolute",
     marginLeft: -320
   },
+  titleDiv: {
+    textAlign: "center",
+    marginTop: 30,
+    marginRight: 60,
+    marginBottom: 20,
+  }
 }));
 
-function speak(state, jobs) {
+function speak(state, jobs, isFemale) {
   let msg = new SpeechSynthesisUtterance();
   if (state === "sad") {
-    msg.text = "I am overworked ";
+    msg.text =
+      "I am sad because my colleagues jobs are not allocated efficiently ";
   }
-  if (state === "neutral") {
-    msg.text = "I am happy with how much work I have.";
+  if (state === "angry") {
+    msg.text = "I am angry because my jobs are not allocated efficiently";
   }
   if (state === "happy") {
-    msg.text = "I am underworked.";
+    msg.text =
+      "I am happy because we can take care of all the patients";
   }
-  let action = "";
-  for (let job of jobs) {
-    if (job.actions.length !== 0) {
-      action += `${job.actions[0].reason}`;
-      break;
-    }
+  if (state === "thinking") {
+    msg.text = "I think the schedule can still be improved";
   }
-  msg.text += action;
   let voices = window.speechSynthesis.getVoices();
-  console.log(voices);
-  msg.voice = voices[0];
+
+  window.speechSynthesis.onVoicesChanged = () => {
+
+  }
+
+  if (isFemale) {
+    msg.voice = voices[49]
+  }
+  else {
+    msg.voice = voices[50];
+  }
+
   speechSynthesis.speak(msg);
 }
 
@@ -54,23 +67,23 @@ function Title(props) {
   return (
     <Grid container>
       <Grid item xs={11}>
-        <Avatar alt="Nurse" src={manager} className={classes.bigAvatar} />
+        <Avatar alt="Nurse" src={props.image} className={classes.bigAvatar} />
       </Grid>
       <Grid item xs={1}>
         <Tooltip title="How are you?" placement="right">
-        <IconButton
-          className={classes.button}
-          aria-label="speak"
-          onClick={() => {
-            speak(props.machineState, props.jobs);
-          }}
-        >
-          <ChatBubbleOutline />
-        </IconButton>
+          <IconButton
+            className={classes.button}
+            aria-label="speak"
+            onClick={() => {
+              speak(props.machineState, props.jobs, props.isFemale);
+            }}
+          >
+            <ChatBubbleOutline />
+          </IconButton>
         </Tooltip>
       </Grid>
-      <Grid item xs={12}>
-        {props.title}
+      <Grid item xs={12} className={classes.titleDiv}>
+        <Box fontSize={50}>{props.title}</Box>
       </Grid>
     </Grid>
   );

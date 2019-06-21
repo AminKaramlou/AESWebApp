@@ -6,21 +6,21 @@ import type { Machine, Job, JobMap } from './types';
 const nurse1: Machine = {
   id: 1,
   name: 'Nurse 1',
-  state: 'neutral',
+  state: 'angry',
   completionTime: 0
 };
 
 const nurse2: Machine = {
   id: 2,
   name: 'Nurse 2',
-  state: 'neutral',
+  state: 'angry',
   completionTime: 0
 };
 
 const nurse3: Machine = {
   id: 3,
   name: 'Nurse 3',
-  state: 'neutral',
+  state: 'angry',
   completionTime: 0
 };
 

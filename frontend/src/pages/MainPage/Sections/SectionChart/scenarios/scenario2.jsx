@@ -6,22 +6,28 @@ import type { Machine, Job, JobMap } from './types';
 const nurse1: Machine = {
   id: 1,
   name: 'Nurse 1',
-  state: 'neutral',
-  completionTime: 0
+  state: 'angry',
+  completionTime: 0,
+  pfd: [],
+  nfd: []
 };
 
 const nurse2: Machine = {
   id: 2,
   name: 'Nurse 2',
-  state: 'neutral',
-  completionTime: 0
+  state: 'angry',
+  completionTime: 0,
+  pfd: [],
+  nfd: []
 };
 
 const nurse3: Machine = {
   id: 3,
   name: 'Nurse 3',
-  state: 'neutral',
-  completionTime: 0
+  state: 'angry',
+  completionTime: 0,
+  pfd: [],
+  nfd: []
 };
 
 export const machines: Machine[] = [nurse1, nurse2, nurse3];

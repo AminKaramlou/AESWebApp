@@ -3,26 +3,26 @@ import type { Machine, Job, JobMap } from "./types";
 
 const nurse1: Machine = {
   id: 1,
-  name: "Nurse 1",
-  state: "neutral",
+  name: "John",
+  state: "angry",
   completionTime: 0,
-  nfd: [{value:"A", label: "This is job A....................................."}],
+  nfd: [],
   pfd: []
 };
 
 const nurse2: Machine = {
   id: 2,
-  name: "Nurse 2",
-  state: "neutral",
+  name: "Fatima",
+  state: "angry",
   completionTime: 0,
   nfd: [],
-  pfd: [{value: "D", label: "This is job D"}, {value: "B", label: "This is job B"}]
+  pfd: []
 };
 
 const nurse3: Machine = {
   id: 3,
-  name: "Nurse 3",
-  state: "neutral",
+  name: "Ruben",
+  state: "angry",
   completionTime: 0,
   nfd: [],
   pfd: []
@@ -35,12 +35,12 @@ export const jobs: Job[] = [
     length: 10,
     actions: [],
     id: "A",
-    machine: nurse1,
+    machine: "unassigned",
     colors: {
       soft: colors.Y50,
       hard: colors.Y200
     },
-    name: "This is job A....................................."
+    name: "Take blood pressure"
   },
   {
     length: 30,
@@ -51,7 +51,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200
     },
-    name: "This is job B"
+    name: "Vaccination"
   },
   {
     length: 30,
@@ -62,7 +62,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200
     },
-    name: "This is job C"
+    name: "Administer medication"
   },
   {
     length: 20,
@@ -73,7 +73,7 @@ export const jobs: Job[] = [
       soft: colors.Y50,
       hard: colors.Y200
     },
-    name: "This is job D"
+    name: "Intravenous drip"
   }
 ];
 

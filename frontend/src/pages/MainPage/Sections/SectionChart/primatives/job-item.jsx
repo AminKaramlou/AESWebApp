@@ -18,6 +18,8 @@ import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
 import TrendingDown from "@material-ui/icons/TrendingDown";
 
+import ErrorOutline from "@material-ui/icons/ErrorOutline";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 import AlarmIcon from "@material-ui/icons/Alarm";
 
@@ -128,7 +130,8 @@ function ActionListItem(props) {
           </ListItemAvatar>
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
-              <TrendingDown /> {props.action.timeImprovement}
+              {props.action.timeImprovement === "" ? (<ErrorOutline />):
+                (<TrendingDown />)} {props.action.timeImprovement}
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>

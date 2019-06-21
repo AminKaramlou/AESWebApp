@@ -35,9 +35,11 @@ class MainPage extends React.Component {
       explanation: "Generating explanation...",
       unassignedJobs: jobs.filter(element => {
         return element.machine === "unassigned";
-      })
+      }),
+      managerIsThinking: true
     };
     socket.on("explanation", explanation => {
+      let managerIsThinking = false;
       this.setState({ explanation: explanation });
       let newJobs = this.state.jobs;
       newJobs.forEach((job, index) => {
@@ -46,6 +48,7 @@ class MainPage extends React.Component {
       explanation.forEach((item, index) => {
         item["actions"].forEach((action, i) => {
           if (action["type"] === "swap") {
+            managerIsThinking = true;
             const job1Index = this.state.jobs.findIndex(
               x => x.id === action["job1"]
             );
@@ -79,6 +82,7 @@ class MainPage extends React.Component {
             newJobs[job2Index].actions.push(personalisedAction2);
           }
           if (action["type"] === "move") {
+            managerIsThinking = true;
             const jobIndex = this.state.jobs.findIndex(
               x => x.id === action["job"]
             );
@@ -94,6 +98,7 @@ class MainPage extends React.Component {
             newJobs[jobIndex].actions.push(personalisedAction);
           }
           if (action["type"] === "unallocated") {
+            managerIsThinking = true;
             const jobIndex = this.state.jobs.findIndex(
               x => x.id === action["job"]
             );
@@ -109,32 +114,35 @@ class MainPage extends React.Component {
           }
         });
       });
-      this.setState({ jobs: newJobs }, this.forceUpdate);
+      this.setState(
+        { jobs: newJobs, managerIsThinking: managerIsThinking },
+        this.updateMachineStates
+      );
     });
   }
 
   setPfd = (machineId, pfd) => {
     console.log(machineId);
     console.log(pfd);
-    let machines = this.state.machines
+    let machines = this.state.machines;
     machines.forEach((m, i) => {
       if (m.id === machineId) {
-        m.pfd = pfd
+        m.pfd = pfd;
       }
     });
 
-    this.setState({machines: machines}, this.updateAllInformation)
-  }
+    this.setState({ machines: machines }, this.updateAllInformation);
+  };
 
   setNfd = (machineId, nfd) => {
-    let machines = this.state.machines
+    let machines = this.state.machines;
     machines.forEach((m, i) => {
       if (m.id === machineId) {
-        m.nfd = nfd
+        m.nfd = nfd;
       }
-    })
-    this.setState({machines: machines}, this.updateAllInformation)
-  }
+    });
+    this.setState({ machines: machines }, this.updateAllInformation);
+  };
 
   componentDidMount(): void {
     this.updateAllInformation();
@@ -142,7 +150,6 @@ class MainPage extends React.Component {
 
   updateAllInformation() {
     this.updateExplanation();
-    this.updateMachineStates();
   }
 
   updateExplanation() {
@@ -154,28 +161,25 @@ class MainPage extends React.Component {
   }
 
   updateMachineStates() {
-    let completion_times = [];
     let machines = this.state.machines;
     machines.forEach((machine, index) => {
-      let completion_time = 0;
-      this.state.machineJobMap[machine.name].forEach((job, index) => {
-        completion_time += job.length;
-      });
-      machine.completionTime = completion_time;
-      completion_times.push(completion_time);
-    });
-    const average_time =
-      completion_times.reduce((p, c) => p + c, 0) / completion_times.length;
-    machines.forEach((machine, index) => {
-      if (machine.completionTime >= 1.5 * average_time) {
+      if (
+        this.state.machineJobMap[machine.name].some((job, index) => {
+          return job.actions.length !== 0;
+        })
+      ) {
+        machine.state = "angry";
+      } else if (
+        this.state.jobs.some((job, index) => {
+          return job.actions.length !== 0;
+        })
+      ) {
         machine.state = "sad";
-      } else if (machine.completionTime <= 0.5 * average_time) {
-        machine.state = "happy";
       } else {
-        machine.state = "neutral";
+        machine.state = "happy";
       }
     });
-    this.setState({ machines: machines });
+    this.setState({ machines: machines }, this.forceUpdate);
   }
 
   performSwapAction = (machine1Id, machine2Id, job1Id, job2Id) => {
@@ -302,17 +306,16 @@ class MainPage extends React.Component {
     } else {
       jobMap[machine.name] = jobMap[machine.name].filter(j => j.id !== jobId);
     }
-    let jobs = []
-    let pastTargetJob = false
+    let jobs = [];
+    let pastTargetJob = false;
     this.state.jobs.forEach((j, index) => {
       if (j.id === jobId) {
-        pastTargetJob = true
-      }
-      else {
+        pastTargetJob = true;
+      } else {
         if (pastTargetJob) {
-          j.id = String.fromCharCode(j.id.charCodeAt(0) - 1)
+          j.id = String.fromCharCode(j.id.charCodeAt(0) - 1);
         }
-        jobs.push(j)
+        jobs.push(j);
       }
     });
     this.setState(
@@ -440,9 +443,13 @@ class MainPage extends React.Component {
   };
 
   addNewJob = (length, assignee, name) => {
-    const machine = this.state.machines.find(element => {
-      return element.name === assignee;
-    });
+    const machine =
+      assignee === "unassigned"
+        ? "unassigned"
+        : this.state.machines.find(element => {
+            return element.name === assignee;
+          });
+
     const newJob: Job = {
       length: length,
       id: String.fromCharCode(65 + this.state.jobs.length),
@@ -455,15 +462,22 @@ class MainPage extends React.Component {
       actions: []
     };
     const jobs = [...this.state.jobs, newJob];
-    const machineJobMap = {
-      ...this.state.machineJobMap,
-      [machine.name]: [...this.state.machineJobMap[machine.name], newJob]
-    };
+
+    let machineJobMap = this.state.machineJobMap;
+    let unassignedJobs = this.state.unassignedJobs;
+    if (machine === "unassigned") {
+      unassignedJobs.push(newJob);
+    } else {
+      machineJobMap = {
+        ...this.state.machineJobMap,
+        [machine.name]: [...this.state.machineJobMap[machine.name], newJob]
+      };
+    }
     this.setState(
       {
         jobs: jobs,
         machineJobMap: machineJobMap,
-        ordered: Object.keys(machineJobMap)
+        unassignedJobs: unassignedJobs
       },
       this.updateAllInformation
     );
@@ -478,7 +492,7 @@ class MainPage extends React.Component {
       const newMachine: Machine = {
         id: this.state.ordered.length + 1,
         name: name,
-        state: "neutral",
+        state: "angry",
         completionTime: 0
       };
       const machines = [...this.state.machines, newMachine];
@@ -517,6 +531,7 @@ class MainPage extends React.Component {
           removeJob={this.removeJob}
           setPfd={this.setPfd}
           setNfd={this.setNfd}
+          managerIsThinking={this.state.managerIsThinking}
         />
       </div>
     );

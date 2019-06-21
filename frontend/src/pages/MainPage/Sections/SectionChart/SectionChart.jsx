@@ -83,7 +83,8 @@ export default class Board extends Component<Props, State> {
             <UnassignedColumn
               key="unassigned"
               index={9}
-              title="unassigned"
+              listName="unassigned"
+              title="Alice"
               jobs={unassignedJobs}
               allJobs={this.props.jobs}
               isScrollable={this.props.withScrollableColumns}
@@ -91,7 +92,10 @@ export default class Board extends Component<Props, State> {
               performSwapAction={this.props.performSwapAction}
               performMoveAction={this.props.performMoveAction}
               performAllocateAction={this.props.performAllocateAction}
+              addNewJob={this.props.addNewJob}
               removeJob={this.props.removeJob}
+              avatar={this.props.managerIsThinking ? stateAvatars.manager[1] : stateAvatars.manager[0]}
+              machineState={this.props.managerIsThinking ? "thinking" : "happy"}
             />
             {ordered.map((key: string, index: number) => (
               <Column
