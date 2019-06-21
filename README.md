@@ -3,6 +3,19 @@
 
 
 Gatsby Material Kit React Starter is the adaptation of [Material Kit React](https://www.creative-tim.com/product/material-kit-react) to [Gatsby](https://www.gatsbyjs.org/).
+
+## Windows 
+
+* In /backend/aes-master/
+``` .\venv\Scripts\Activate.ps1 ```
+	to activate Python's virtual environment
+* In /backend/aes-master/src/flask_app/
+``` python -m flask run ```
+	to run flask
+* In /frontend/
+``` gatsby develop ```
+	to run gatsby
+* Then http://localhost:8000/
  
 
 ## License
