@@ -6,6 +6,12 @@ Gatsby Material Kit React Starter is the adaptation of [Material Kit React](http
 
 ## Windows 
 
+### Install
+
+TBD
+
+### To run
+
 * In /backend/aes-master/
 ``` .\venv\Scripts\Activate.ps1 ```
 	to activate Python's virtual environment
@@ -16,6 +22,14 @@ Gatsby Material Kit React Starter is the adaptation of [Material Kit React](http
 ``` gatsby develop ```
 	to run gatsby
 * Then http://localhost:8000/
+
+### Voice
+
+In /frontend/src/pages/MainPage/Sections/SectionChart/primatives/title.jsx modify ```speak``` function 
+
+```msg.text = "MESSAGE"```
+
+before ```speechSynthesis.speak(msg);``` on the lat line
  
 
 ## License
