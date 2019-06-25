@@ -29,6 +29,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import stateAvatars from "../avatars";
 import Tooltip from "@material-ui/core/Tooltip";
+import { colors } from "@atlaskit/theme";
 
 const useStyles = makeStyles(theme => ({
   card: props => ({
@@ -130,8 +131,12 @@ function ActionListItem(props) {
           </ListItemAvatar>
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
-              {props.action.timeImprovement === "" ? (<ErrorOutline />):
-                (<TrendingDown />)} {props.action.timeImprovement}
+              {props.action.timeImprovement === "" ? (
+                <ErrorOutline />
+              ) : (
+                <TrendingDown />
+              )}{" "}
+              {props.action.timeImprovement}
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
@@ -245,7 +250,10 @@ function JobItem(props: Props) {
     <Container
       isDragging={isDragging}
       isGroupedOver={isGroupedOver}
-      colors={job.colors}
+      colors={{
+        soft: colors.Y50,
+        hard: colors.Y200
+      }}
       length={job.length}
       ref={provided.innerRef}
       {...provided.draggableProps}
@@ -254,7 +262,10 @@ function JobItem(props: Props) {
       <JobCard
         isDragging={isDragging}
         isGroupedOver={isGroupedOver}
-        colors={job.colors}
+        colors={{
+          soft: colors.Y50,
+          hard: colors.Y200
+        }}
         length={job.length}
         actions={job.actions}
         id={job.id}

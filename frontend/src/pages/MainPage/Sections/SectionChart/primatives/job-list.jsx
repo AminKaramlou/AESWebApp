@@ -165,7 +165,6 @@ export default function JobList(props: Props) {
     jobs,
     title
   } = props;
-  console.log(title)
   const [values, setValues] = React.useState({
     newJobName: '',
     newJobLength: moment().minute(10)

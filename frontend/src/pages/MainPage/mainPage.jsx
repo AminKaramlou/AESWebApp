@@ -19,9 +19,10 @@ import {
 } from "./Sections/SectionChart/scenarios/scenario1.jsx";
 import openSocket from "socket.io-client";
 import classNames from "classnames";
-import type { Job, Machine } from "./Sections/SectionChart/types";
+import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
 import { colors } from "@atlaskit/theme";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
+import SpeedDial from "./speedDial";
 
 const socket = openSocket("http://localhost:5000");
 class MainPage extends React.Component {
@@ -122,8 +123,6 @@ class MainPage extends React.Component {
   }
 
   setPfd = (machineId, pfd) => {
-    console.log(machineId);
-    console.log(pfd);
     let machines = this.state.machines;
     machines.forEach((m, i) => {
       if (m.id === machineId) {
@@ -511,10 +510,73 @@ class MainPage extends React.Component {
     }
   };
 
+  loadScheduleFromFile = file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const schedule = JSON.parse(e.target.result);
+      let jobs = schedule.jobs;
+      let unassignedJobs = [];
+      const machines = schedule.machines;
+      jobs.forEach((j, index) => {
+        j.machine === "unassigned"
+          ? unassignedJobs.push(j)
+          : (j.machine = machines.find((m, index) => {
+              return m.id === j.machine;
+            }));
+      });
+
+      const getByMachine = (machine: Machine, items: Job[]): Job[] =>
+        items.filter((job: Job) => job.machine === machine);
+
+      const machineJobMap = machines.reduce(
+        (previous, machine) => ({
+          ...previous,
+          [machine.name]: getByMachine(machine, jobs)
+        }),
+        {}
+      );
+
+      this.setState(
+        {
+          machines: machines,
+          jobs: jobs,
+          machineJobMap: machineJobMap,
+          unassignedJobs: unassignedJobs,
+          ordered: Object.keys(machineJobMap)
+        },
+        this.updateAllInformation
+      );
+    };
+    reader.readAsText(file);
+  };
+
+  saveSchedule = () => {
+    const json = {
+      machines: this.state.machines,
+      jobs: this.state.jobs.map(j => ({
+        ...j,
+        machine: j.machine !== "unassigned" ? j.machine.id : j.machine
+      }))
+    };
+
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(json)], {
+      type: "application/json"
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = "schedule.json";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+
   render() {
     const { classes } = this.props;
     return (
       <div className={classNames(classes.content)}>
+        <SpeedDial
+          onFileUpload={this.loadScheduleFromFile}
+          onSaveClick={this.saveSchedule}
+        />
         <Board
           jobs={this.state.jobs}
           unassignedJobs={this.state.unassignedJobs}

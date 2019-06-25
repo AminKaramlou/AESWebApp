@@ -48,7 +48,6 @@ function speak(state, jobs, isFemale) {
   let voices = window.speechSynthesis.getVoices();
 
   window.speechSynthesis.onVoicesChanged = () => {
-
   }
 
   if (isFemale) {

@@ -1,0 +1,58 @@
+{
+  "machines": [
+    {
+      "id": 1,
+      "name": "Nurse 1",
+      "state": "angry",
+      "completionTime": "0",
+      "pfd": [],
+      "nfd": []
+    },
+    {
+      "id": 2,
+      "name": "Nurse 2",
+      "state": "angry",
+      "completionTime": "0",
+      "pfd": [],
+      "nfd": []
+    },
+    {
+      "id": 3,
+      "name": "Nurse 3",
+      "state": "angry",
+      "completionTime": "0",
+      "pfd": [],
+      "nfd": []
+    }
+  ],
+  "jobs": [
+    {
+      "length": 10,
+      "actions": [],
+      "id": "A",
+      "machine": 3,
+      "name": "This is job A....................................."
+    },
+    {
+      "length": 30,
+      "actions": [],
+      "id": "B",
+      "machine": 1,
+      "name": "This is job B"
+    },
+    {
+      "length": 30,
+      "actions": [],
+      "id": "C",
+      "machine": 2,
+      "name": "This is job C"
+    },
+    {
+      "length": 20,
+      "actions": [],
+      "id": "D",
+      "machine": "unassigned",
+      "name": "This is job D"
+    }
+  ]
+}

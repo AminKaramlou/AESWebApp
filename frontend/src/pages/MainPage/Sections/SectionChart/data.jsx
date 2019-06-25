@@ -110,12 +110,3 @@ export const machineJobMap: JobMap = machines.reduce(
   }),
   {},
 );
-
-export const generateJobMap = (jobCount: number): JobMap =>
-  machines.reduce(
-    (previous: JobMap, machine: Machine) => ({
-      ...previous,
-      [machine.name]: getJobs(jobCount / machines.length),
-    }),
-    {},
-  );
