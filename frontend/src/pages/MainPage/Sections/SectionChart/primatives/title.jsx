@@ -12,8 +12,8 @@ const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: "auto",
     marginTop: 10,
-    width: 220,
-    height: 300,
+    width: 400,
+    height: 500,
     maxWidth: "100%",
     maxHeight: "100%"
   },
@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
   },
   titleDiv: {
     textAlign: "center",
-    marginTop: 30,
-    marginBottom: 20
+    marginTop: 150,
+    marginBottom: 150
   }
 }));
 
@@ -74,7 +74,7 @@ function Title(props) {
         </Tooltip>
       </Grid>
       <Grid item xs={12} className={classes.titleDiv}>
-        <Box fontSize={50}>{props.title}</Box>
+        <Box fontSize={200}>{props.title}</Box>
       </Grid>
     </Grid>
   );

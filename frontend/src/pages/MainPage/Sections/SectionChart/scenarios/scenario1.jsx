@@ -2,7 +2,7 @@ import type { Machine, Job, JobMap } from "./types";
 
 const nurse1: Machine = {
   id: 1,
-  name: "John",
+  name: "Emma",
   state: "angry",
   completionTime: 0,
   nfd: [],
@@ -11,7 +11,7 @@ const nurse1: Machine = {
 
 const nurse2: Machine = {
   id: 2,
-  name: "Fatima",
+  name: "John",
   state: "angry",
   completionTime: 0,
   nfd: [],
@@ -20,7 +20,7 @@ const nurse2: Machine = {
 
 const nurse3: Machine = {
   id: 3,
-  name: "Ruben",
+  name: "Isabella",
   state: "angry",
   completionTime: 0,
   nfd: [],

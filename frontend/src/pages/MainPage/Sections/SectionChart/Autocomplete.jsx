@@ -11,8 +11,9 @@ import MenuItem from '@material-ui/core/MenuItem/index';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
+import {green, red} from "@material-ui/core/colors";
 
-const useStyles = makeStyles(theme => ({
+const nfdStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
@@ -30,12 +31,51 @@ const useStyles = makeStyles(theme => ({
   },
   chip: {
     margin: theme.spacing(0.5, 0.25),
+    background: red[500]
   },
-  chipFocused: {
-    backgroundColor: emphasize(
-      theme.palette.type === 'light' ? theme.palette.grey[300] : theme.palette.grey[700],
-      0.08,
-    ),
+  noOptionsMessage: {
+    padding: theme.spacing(1, 2),
+  },
+  singleValue: {
+    fontSize: 16,
+  },
+  placeholder: {
+    position: 'absolute',
+    left: 2,
+    bottom: 6,
+    fontSize: 16,
+  },
+  paper: {
+    position: 'absolute',
+    zIndex: 1,
+    marginTop: theme.spacing(1),
+    left: 0,
+    right: 0,
+  },
+  divider: {
+    height: theme.spacing(2),
+  },
+}));
+
+const pfdStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  input: {
+    display: 'flex',
+    padding: 0,
+    height: 'auto',
+  },
+  valueContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flex: 1,
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  chip: {
+    margin: theme.spacing(0.5, 0.25),
+    background: green[500]
   },
   noOptionsMessage: {
     padding: theme.spacing(1, 2),
@@ -189,11 +229,10 @@ function MultiValue(props) {
     <Chip
       tabIndex={-1}
       label={props.children}
-      className={clsx(props.selectProps.classes.chip, {
-        [props.selectProps.classes.chipFocused]: props.isFocused,
-      })}
+      className={clsx(props.selectProps.classes.chip, )}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
+      size="small"
     />
   );
 }
@@ -231,7 +270,8 @@ const components = {
 };
 
 function Autocomplete(props) {
-  const classes = useStyles();
+  const pfdClasses = pfdStyles();
+  const nfdClasses = nfdStyles();
   const theme = useTheme();
   function handleChangePositive(value) {
     props.setPfd(props.machineId, value);
@@ -241,10 +281,19 @@ function Autocomplete(props) {
     props.setNfd(props.machineId, value)
   }
 
-  const selectStyles = {
+  const nfdSelectStyles = {
     input: base => ({
       ...base,
-      color: theme.palette.text.primary,
+      color: red,
+      '& input': {
+        font: 'inherit',
+      },
+    }),
+  };
+  const pfdSelectStyles = {
+    input: base => ({
+      ...base,
+      color: "green",
       '& input': {
         font: 'inherit',
       },
@@ -252,11 +301,11 @@ function Autocomplete(props) {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={nfdClasses.root}>
       <NoSsr>
         <Select
-          classes={classes}
-          styles={selectStyles}
+          classes={nfdClasses}
+          styles={nfdSelectStyles}
           inputId="react-select-multiple"
           TextFieldProps={{
             label: 'Cannot do jobs',
@@ -273,8 +322,8 @@ function Autocomplete(props) {
           isMulti
         />
                 <Select
-        classes={classes}
-        styles={selectStyles}
+        classes={pfdClasses}
+        styles={pfdSelectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{
           label: 'Must do jobs',
