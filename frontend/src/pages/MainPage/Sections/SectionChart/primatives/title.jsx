@@ -24,8 +24,7 @@ const useStyles = makeStyles(theme => ({
   titleDiv: {
     textAlign: "center",
     marginTop: 30,
-    marginRight: 60,
-    marginBottom: 20,
+    marginBottom: 20
   }
 }));
 
@@ -39,21 +38,18 @@ function speak(state, jobs, isFemale) {
     msg.text = "I am angry because my jobs are not allocated efficiently";
   }
   if (state === "happy") {
-    msg.text =
-      "I am happy because we can take care of all the patients";
+    msg.text = "I am happy because we can take care of all the patients";
   }
   if (state === "thinking") {
     msg.text = "I think the schedule can still be improved";
   }
   let voices = window.speechSynthesis.getVoices();
 
-  window.speechSynthesis.onVoicesChanged = () => {
-  }
+  window.speechSynthesis.onVoicesChanged = () => {};
 
   if (isFemale) {
-    msg.voice = voices[49]
-  }
-  else {
+    msg.voice = voices[49];
+  } else {
     msg.voice = voices[50];
   }
 
@@ -65,20 +61,16 @@ function Title(props) {
 
   return (
     <Grid container>
-      <Grid item xs={11}>
-        <Avatar alt="Nurse" src={props.image} className={classes.bigAvatar} />
-      </Grid>
-      <Grid item xs={1}>
+      <Grid item xs={12}>
         <Tooltip title="How are you?" placement="right">
-          <IconButton
-            className={classes.button}
-            aria-label="speak"
+          <Avatar
+            alt="Nurse"
+            src={props.image}
+            className={classes.bigAvatar}
             onClick={() => {
               speak(props.machineState, props.jobs, props.isFemale);
             }}
-          >
-            <ChatBubbleOutline />
-          </IconButton>
+          />
         </Tooltip>
       </Grid>
       <Grid item xs={12} className={classes.titleDiv}>
