@@ -19,8 +19,7 @@ import {
 } from "./Sections/SectionChart/scenarios/scenario1.jsx";
 import openSocket from "socket.io-client";
 import classNames from "classnames";
-import type { Job, JobMap, Machine } from "./Sections/SectionChart/types";
-import { colors } from "@atlaskit/theme";
+import type { Job, Machine } from "./Sections/SectionChart/types";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 import SpeedDial from "./speedDial";
 
@@ -441,7 +440,7 @@ class MainPage extends React.Component {
     );
   };
 
-  addNewJob = (length, assignee, name) => {
+  addNewJob = (length, assignee, name, jobType) => {
     const machine =
       assignee === "unassigned"
         ? "unassigned"
@@ -454,11 +453,8 @@ class MainPage extends React.Component {
       id: String.fromCharCode(65 + this.state.jobs.length),
       name: name,
       machine: machine,
-      colors: {
-        soft: colors.Y50,
-        hard: colors.Y200
-      },
-      actions: []
+      actions: [],
+      type: jobType
     };
     const jobs = [...this.state.jobs, newJob];
 

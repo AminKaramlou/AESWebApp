@@ -1,4 +1,3 @@
-import { colors } from "@atlaskit/theme";
 import type { Machine, Job, JobMap } from "./types";
 
 const nurse1: Machine = {
@@ -36,44 +35,32 @@ export const jobs: Job[] = [
     actions: [],
     id: "A",
     machine: "unassigned",
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200
-    },
-    name: "Take blood pressure"
+    name: "Take blood pressure",
+    type: "test"
   },
   {
     length: 30,
     id: "B",
     actions: [],
     machine: nurse1,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200
-    },
-    name: "Vaccination"
+    name: "Vaccination",
+    type: "injection"
   },
   {
     length: 30,
     id: "C",
     actions: [],
     machine: nurse2,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200
-    },
-    name: "Administer medication"
+    name: "Administer Ibuprofen",
+    type: "medicine"
   },
   {
     length: 20,
     id: "D",
     actions: [],
     machine: nurse3,
-    colors: {
-      soft: colors.Y50,
-      hard: colors.Y200
-    },
-    name: "Intravenous drip"
+    name: "Intravenous drip",
+    type: "medicine"
   }
 ];
 

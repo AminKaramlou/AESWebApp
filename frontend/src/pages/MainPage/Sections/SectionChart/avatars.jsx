@@ -13,6 +13,10 @@ import sad3 from "assets/img/argopt-icons/sad-3.png";
 import happyManager from "assets/img/argopt-icons/happy-manager.png";
 import thinkingManager from "assets/img/argopt-icons/thinking-manager.png";
 
+import injectionImage from "assets/img/job-icons/injection.png"
+import pillImage from "assets/img/job-icons/pill.png"
+import checklistImage from "assets/img/job-icons/checklist.png"
+
 const happyAvatarsArray = [
   happy1,
   happy2,
@@ -28,11 +32,15 @@ const sadAvatarsArray = [sad1, sad2, sad3];
 
 const managerAvatarsArray = [happyManager, thinkingManager];
 
-const stateAvatars = {
+export const stateAvatars = {
   'sad': sadAvatarsArray,
   'happy': happyAvatarsArray,
   'angry': angryAvatarsArray,
   'manager': managerAvatarsArray
 };
 
-export default stateAvatars;
+export const jobAvatars = {
+  'injection': injectionImage,
+  'medicine': pillImage,
+  'test': checklistImage,
+};

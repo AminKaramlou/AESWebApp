@@ -31,28 +31,32 @@
       "actions": [],
       "id": "A",
       "machine": 3,
-      "name": "This is job A....................................."
+      "name": "This is job A.....................................",
+      "type": "injection"
     },
     {
       "length": 30,
       "actions": [],
       "id": "B",
       "machine": 1,
-      "name": "This is job B"
+      "name": "This is job B",
+      "type": "medicine"
     },
     {
       "length": 30,
       "actions": [],
       "id": "C",
       "machine": 2,
-      "name": "This is job C"
+      "name": "This is job C",
+      "type": "test"
     },
     {
       "length": 20,
       "actions": [],
       "id": "D",
       "machine": "unassigned",
-      "name": "This is job D"
+      "name": "This is job D",
+      "type": "injection"
     }
   ]
 }

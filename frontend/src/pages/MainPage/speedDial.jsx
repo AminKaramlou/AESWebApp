@@ -16,11 +16,6 @@ const styles = theme => ({
   }
 });
 
-const actions = [
-  { icon: <SaveIcon />, name: "Save" },
-  { icon: <CloudUploadIcon />, name: "Upload" }
-];
-
 class SpeedDials extends React.Component {
   state = {
     open: false,

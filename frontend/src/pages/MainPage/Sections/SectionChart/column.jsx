@@ -12,7 +12,6 @@ import Title from "./primatives/title";
 import type { Job } from "./types";
 import Autocomplete from "./Autocomplete";
 import Grid from "@material-ui/core/Grid";
-import Board from "./SectionChart";
 
 const Container = styled.div`
   margin: ${grid}px;

@@ -10,7 +10,7 @@ export type MachineColors = {|
 export type Machine = {|
   id: Id,
   name: string,
-  colors: MachineColors,
+  completionTime: number,
   pfd: [],
   nfd: [],
 |};
@@ -22,6 +22,7 @@ export type Job = {|
   status: string,
   actions: [],
   name: string,
+  type: string
 |};
 
 export type JobMap = {

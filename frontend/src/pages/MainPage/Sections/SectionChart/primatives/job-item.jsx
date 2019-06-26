@@ -23,11 +23,10 @@ import ErrorOutline from "@material-ui/icons/ErrorOutline";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AlarmIcon from "@material-ui/icons/Alarm";
 
-import injectionImg from "assets/img/injection.png";
 import { green } from "@material-ui/core/colors";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import stateAvatars from "../avatars";
+import {stateAvatars, jobAvatars} from "../avatars";
 import Tooltip from "@material-ui/core/Tooltip";
 import { colors } from "@atlaskit/theme";
 
@@ -179,8 +178,8 @@ function JobCard(props) {
           className={classes.header}
           avatar={
             <Avatar
-              alt="injection"
-              src={injectionImg}
+              alt="Job type"
+              src={props.icon}
               className={classes.avatar}
             />
           }
@@ -271,6 +270,7 @@ function JobItem(props: Props) {
         id={job.id}
         machine={job.machine}
         name={job.name}
+        icon={jobAvatars[job.type]}
         performSwapAction={props.performSwapAction}
         performMoveAction={props.performMoveAction}
         performAllocateAction={props.performAllocateAction}
