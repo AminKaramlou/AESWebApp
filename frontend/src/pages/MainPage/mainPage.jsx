@@ -515,13 +515,16 @@ class MainPage extends React.Component {
         id: this.state.ordered.length + 1,
         name: name,
         state: "angry",
-        completionTime: 0
+        completionTime: 0,
+        nfd: [],
+        pfd: []
       };
       const machines = [...this.state.machines, newMachine];
       const machineJobMap = {
         ...this.state.machineJobMap,
         [newMachine.name]: []
       };
+      console.log(machines)
       this.setState(
         {
           machines: machines,

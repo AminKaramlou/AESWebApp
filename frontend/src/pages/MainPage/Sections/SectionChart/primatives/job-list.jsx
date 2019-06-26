@@ -12,7 +12,6 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
-import Grid from "@material-ui/core/Grid";
 import TimePicker from "rc-time-picker/es/TimePicker";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
@@ -37,6 +36,32 @@ const getBackgroundColor = (
 
 const disabledMinutes = () => {
   return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+};
+const disabledHours = () => {
+  return [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ];
 };
 
 const Wrapper = styled.div`
@@ -143,12 +168,9 @@ function InnerList(props: InnerListProps) {
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    flexWrap: "wrap",
+    flexWrap: "wrap"
   },
-  formControl: {
-    margin: theme.spacing(1),
-    flexDirection: "row"
-  }
+  formControl: {}
 }));
 
 export default function JobList(props: Props) {
@@ -166,7 +188,7 @@ export default function JobList(props: Props) {
   } = props;
   const [values, setValues] = React.useState({
     newJobName: "",
-    newJobLength: moment().minute(10),
+    newJobLength: moment({ hour:0, minute:10 }),
     newJobType: "injection"
   });
 
@@ -224,13 +246,14 @@ export default function JobList(props: Props) {
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl} fullWidth={true}>
               <TimePicker
-                defaultValue={moment().minute(10)}
-                showHour={false}
+                defaultValue={moment({ hour: 0, minute: 10 })}
                 showSecond={false}
                 disabledMinutes={disabledMinutes}
+                disabledHours={disabledHours}
                 minuteStep={5}
                 onChange={handleLengthChange("newJobLength")}
                 value={values.newJobLength}
+                hideDisabledOptions={true}
               />
               <TextField
                 id="standard-name"
@@ -258,7 +281,8 @@ export default function JobList(props: Props) {
                 color="primary"
                 onClick={() =>
                   props.addNewJob(
-                    values.newJobLength.minute(),
+                    values.newJobLength.hour() * 60 +
+                      values.newJobLength.minute(),
                     title,
                     values.newJobName,
                     values.newJobType

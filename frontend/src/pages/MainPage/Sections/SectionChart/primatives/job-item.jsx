@@ -188,7 +188,7 @@ function JobCard(props) {
               <DeleteIcon
                 onClick={() => props.removeJob(props.id, props.machine)}
               />
-              <AlarmIcon /> {props.length}
+              <AlarmIcon /> {props.length} mins
             </IconButton>
           }
           title={props.name}

@@ -9,7 +9,6 @@ import Paper from '@material-ui/core/Paper/index';
 import Chip from '@material-ui/core/Chip/index';
 import MenuItem from '@material-ui/core/MenuItem/index';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { emphasize } from '@material-ui/core/styles/colorManipulator';
 import PropTypes from 'prop-types';
 import {green, red} from "@material-ui/core/colors";
 

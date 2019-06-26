@@ -2,8 +2,6 @@
 import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
-import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import Box from "@material-ui/core/Box";
@@ -74,7 +72,7 @@ function Title(props) {
         </Tooltip>
       </Grid>
       <Grid item xs={12} className={classes.titleDiv}>
-        <Box fontSize={200}>{props.title}</Box>
+        <Box fontSize={150}>{props.title}</Box>
       </Grid>
     </Grid>
   );
