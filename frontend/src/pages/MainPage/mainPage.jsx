@@ -119,6 +119,33 @@ class MainPage extends React.Component {
         this.updateMachineStates
       );
     });
+
+    socket.on("optimal-schedule", opt_schedule => {
+      let jobs = [];
+      let machineJobMap = [];
+
+      opt_schedule.forEach((item, index) => {
+        let machine = this.state.machines.find((m, i) => {
+          return m.id === item.machineId;
+        });
+        machineJobMap[machine.name] = []
+        item.jobIds.forEach((jobId, i) => {
+          let job = this.state.jobs.find((j, i) => {
+            return j.id === jobId;
+          });
+          job.actions = [];
+          job.machine = machine;
+          machineJobMap[machine.name].push(job);
+          jobs.push(job);
+        });
+      });
+
+      this.setState({
+        unassignedJobs: [],
+        jobs: jobs,
+        machineJobMap: machineJobMap
+      });
+    });
   }
 
   setPfd = (machineId, pfd) => {
@@ -565,6 +592,14 @@ class MainPage extends React.Component {
     element.click();
   };
 
+  onOptimiseClick = () => {
+    socket.emit("get-optimal-schedule", {
+      machines: this.state.machines,
+      jobs: this.state.jobs,
+      machineJobMap: this.state.machineJobMap
+    });
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -572,6 +607,7 @@ class MainPage extends React.Component {
         <SpeedDial
           onFileUpload={this.loadScheduleFromFile}
           onSaveClick={this.saveSchedule}
+          onOptimiseClick={this.onOptimiseClick}
         />
         <Board
           jobs={this.state.jobs}

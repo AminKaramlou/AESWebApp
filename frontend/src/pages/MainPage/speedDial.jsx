@@ -7,6 +7,7 @@ import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
 import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import SearchIcon from "@material-ui/icons/Search";
 
 const styles = theme => ({
   speedDial: {
@@ -81,6 +82,15 @@ class SpeedDials extends React.Component {
           icon={<CloudUploadIcon />}
           tooltipTitle={"Upload"}
           onClick={e => this.upload.click()}
+        />
+        <SpeedDialAction
+          key={"Optimise"}
+          icon={<SearchIcon />}
+          tooltipTitle={"Optimise"}
+          onClick={e => {
+            this.props.onOptimiseClick();
+            this.handleClick();
+          }}
         />
         ))}
       </SpeedDial>
