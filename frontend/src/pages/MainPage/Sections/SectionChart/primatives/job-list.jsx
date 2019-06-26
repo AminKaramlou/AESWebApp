@@ -20,6 +20,7 @@ import TextField from "@material-ui/core/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import FormControl from "@material-ui/core/FormControl";
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -140,13 +141,13 @@ function InnerList(props: InnerListProps) {
 }
 
 const useStyles = makeStyles(theme => ({
-  textField: {
-    marginTop: -22,
-    marginLeft: 44,
-    width: "80%"
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
   },
-  grid: {
-    marginTop: theme.spacing(3)
+  formControl: {
+    margin: theme.spacing(1),
+    flexDirection: "row"
   }
 }));
 
@@ -220,8 +221,8 @@ export default function JobList(props: Props) {
               removeJob={props.removeJob}
             />
           )}
-          <Grid container className={classes.grid}>
-            <Grid item xs={2}>
+          <form className={classes.root} autoComplete="off">
+            <FormControl className={classes.formControl} fullWidth={true}>
               <TimePicker
                 defaultValue={moment().minute(10)}
                 showHour={false}
@@ -231,11 +232,8 @@ export default function JobList(props: Props) {
                 onChange={handleLengthChange("newJobLength")}
                 value={values.newJobLength}
               />
-            </Grid>
-            <Grid item xs={4}>
               <TextField
                 id="standard-name"
-                className={classes.textField}
                 label="Name"
                 placeholder="New job name"
                 value={values.newJobName}
@@ -243,8 +241,6 @@ export default function JobList(props: Props) {
                 margin="normal"
                 inputProps={{ maxLength: 50 }}
               />
-            </Grid>
-            <Grid item xs={3}>
               <Select
                 value={values.newJobType}
                 onChange={handleChange("newJobType")}
@@ -257,8 +253,6 @@ export default function JobList(props: Props) {
                 <MenuItem value={"medicine"}>Administer medication</MenuItem>
                 <MenuItem value={"test"}>Perform test</MenuItem>
               </Select>
-            </Grid>
-            <Grid item xs={3}>
               <Button
                 size="large"
                 color="primary"
@@ -273,8 +267,8 @@ export default function JobList(props: Props) {
               >
                 Add job
               </Button>
-            </Grid>
-          </Grid>
+            </FormControl>
+          </form>
         </Wrapper>
       )}
     </Droppable>

@@ -125,7 +125,7 @@ class MainPage extends React.Component {
     let machines = this.state.machines;
     machines.forEach((m, i) => {
       if (m.id === machineId) {
-        m.pfd = pfd;
+        pfd ? (m.pfd = pfd) : (m.pfd = []);
       }
     });
 
@@ -136,7 +136,7 @@ class MainPage extends React.Component {
     let machines = this.state.machines;
     machines.forEach((m, i) => {
       if (m.id === machineId) {
-        m.nfd = nfd;
+        nfd ? (m.nfd = nfd) : (m.nfd = []);
       }
     });
     this.setState({ machines: machines }, this.updateAllInformation);
