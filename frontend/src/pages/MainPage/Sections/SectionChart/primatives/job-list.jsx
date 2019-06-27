@@ -21,6 +21,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import Box from "@material-ui/core/Box";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -190,7 +191,7 @@ export default function JobList(props: Props) {
   const [values, setValues] = React.useState({
     newJobName: "",
     newJobLength: moment({ hour: 0, minute: 10 }),
-    newJobType: "injection"
+    newJobType: ""
   });
 
   const handleChange = name => event => {
@@ -258,7 +259,7 @@ export default function JobList(props: Props) {
               />
               <TextField
                 id="standard-name"
-                label="Name"
+                label="New job name"
                 placeholder="New job name"
                 value={values.newJobName}
                 onChange={handleChange("newJobName")}
@@ -267,6 +268,7 @@ export default function JobList(props: Props) {
               />
               <Select
                 value={values.newJobType}
+                placeholder="New job type"
                 onChange={handleChange("newJobType")}
                 inputProps={{
                   name: "Job type",
@@ -276,6 +278,7 @@ export default function JobList(props: Props) {
                 <MenuItem value={"injection"}>Injection</MenuItem>
                 <MenuItem value={"medicine"}>Administer medication</MenuItem>
                 <MenuItem value={"test"}>Perform test</MenuItem>
+                <FormHelperText> New job type </FormHelperText>
               </Select>
               <Button
                 size="large"
@@ -290,7 +293,7 @@ export default function JobList(props: Props) {
                   )
                 }
               >
-                <Box fontSize={fontSizeAverage}>Add job</Box>
+                <Box fontSize={fontSizeAverage}>Add new job</Box>
               </Button>
             </FormControl>
           </form>
