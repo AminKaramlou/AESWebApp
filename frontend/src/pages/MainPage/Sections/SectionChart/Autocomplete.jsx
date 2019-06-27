@@ -11,6 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem/index';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import {green, red} from "@material-ui/core/colors";
+import {fontSizeAverage} from "./constants";
 
 const nfdStyles = makeStyles(theme => ({
   root: {
@@ -307,10 +308,10 @@ function Autocomplete(props) {
           styles={nfdSelectStyles}
           inputId="react-select-multiple"
           TextFieldProps={{
-            label: 'Cannot do jobs',
+            label: "Jobs which this nurse cannot do",
             InputLabelProps: {
               htmlFor: 'react-select-multiple',
-              shrink: true,
+              shrink: true
             },
             placeholder: 'Select jobs which this nurse cannot do',
           }}
@@ -325,7 +326,7 @@ function Autocomplete(props) {
         styles={pfdSelectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{
-          label: 'Must do jobs',
+          label: 'Jobs which this nurse must do',
           InputLabelProps: {
             htmlFor: 'react-select-multiple',
             shrink: true,

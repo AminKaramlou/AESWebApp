@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { colors } from "@atlaskit/theme";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import JobItem from "./job-item";
-import { grid } from "../constants";
+import { fontSizeAverage, grid } from "../constants";
 import type { Job } from "../types";
 import type {
   DroppableProvided,
@@ -20,6 +20,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import Box from "@material-ui/core/Box";
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -188,7 +189,7 @@ export default function JobList(props: Props) {
   } = props;
   const [values, setValues] = React.useState({
     newJobName: "",
-    newJobLength: moment({ hour:0, minute:10 }),
+    newJobLength: moment({ hour: 0, minute: 10 }),
     newJobType: "injection"
   });
 
@@ -289,7 +290,7 @@ export default function JobList(props: Props) {
                   )
                 }
               >
-                Add job
+                <Box fontSize={fontSizeAverage}>Add job</Box>
               </Button>
             </FormControl>
           </form>

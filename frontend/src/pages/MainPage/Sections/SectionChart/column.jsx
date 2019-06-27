@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import { grid, borderRadius } from "./constants";
+import { grid, borderRadius, cardWidth } from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
   DraggableProvided,
@@ -17,9 +17,9 @@ const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
-  width: 820px;
-  max-width: 820px;
-  min-width: 820px;
+  width: ${cardWidth + 20}px;
+  max-width: ${cardWidth + 20}px;
+  min-width: ${cardWidth + 20}px;
 `;
 
 const Header = styled.div`
@@ -59,9 +59,9 @@ export default class Column extends Component<Props> {
               <Grid container>
                 <Grid item xs={12} s={12}>
                   <Autocomplete
-                    pfd = {pfd}
-                    nfd = {nfd}
-                    machineId = {machineId}
+                    pfd={pfd}
+                    nfd={nfd}
+                    machineId={machineId}
                     setPfd={this.props.setPfd}
                     setNfd={this.props.setNfd}
                     suggestions={this.props.allJobs.map(job => ({

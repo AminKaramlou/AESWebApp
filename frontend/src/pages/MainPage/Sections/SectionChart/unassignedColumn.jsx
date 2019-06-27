@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import {borderRadius, grid} from "./constants";
+import {borderRadius, cardWidth, grid} from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
   DraggableProvided,
@@ -16,9 +16,9 @@ const Container = styled.div`
   margin: ${grid}px;
   display: flex;
   flex-direction: column;
-  width: 820px;
-  max-width: 820px;
-  min-width: 820px;
+  width: ${cardWidth + 20}px;
+  max-width: ${cardWidth + 20}px;
+  min-width: ${cardWidth + 20}px;
 `;
 
 type Props = {|
@@ -35,6 +35,7 @@ const Header = styled.div`
   border-top-left-radius: ${borderRadius}px;
   border-top-right-radius: ${borderRadius}px;
   background-color: #78a5a3;
+  padding-top:105px;
 `;
 
 export default class UnassignedColumn extends Component<Props> {

@@ -26,19 +26,32 @@ import AlarmIcon from "@material-ui/icons/Alarm";
 import { green } from "@material-ui/core/colors";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import {stateAvatars, jobAvatars} from "../avatars";
+import { stateAvatars, jobAvatars } from "../avatars";
 import Tooltip from "@material-ui/core/Tooltip";
 import { colors } from "@atlaskit/theme";
+import {
+  bigIconSize,
+  cardHeightMultiplier,
+  cardWidth,
+  fontSizeAverage,
+  fontSizeMassive,
+  fontSizeSmall,
+  smallIconSize
+} from "../constants";
+import Box from "@material-ui/core/Box";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 const useStyles = makeStyles(theme => ({
   card: props => ({
-    width: 800,
-    height: props.length * 20,
+    width: cardWidth,
+    height: props.length * cardHeightMultiplier,
     borderColor: props.isDragging ? props.colors.hard : "white",
     boxShadow: "inset 0px 0px 0px 2px #78a5a3"
   }),
   avatar: props => ({
-    backgroundColor: props.actions.length === 0 ? green[500] : red[500]
+    backgroundColor: props.actions.length === 0 ? green[500] : red[500],
+    width: bigIconSize,
+    height: bigIconSize
   }),
   header: {
     paddingBottom: 0
@@ -48,19 +61,37 @@ const useStyles = makeStyles(theme => ({
     overflow: "scroll",
     padding: 0
   },
-  iconButton: {
-    "&:hover": {
-      backgroundColor: "transparent"
-    }
+  icon: {
+    width: bigIconSize,
+    height: bigIconSize
+  },
+  cardTitle: {
+    fontSize: fontSizeSmall
   }
 }));
 
 const ActionItemStyles = makeStyles(theme => ({
   listItem: {
     padding: 0,
-    height: 60
+    height: 150,
+    fontSize: fontSizeSmall
+  },
+  icon: {
+    width: bigIconSize,
+    height: bigIconSize
+  },
+  text: {
+    fontSize: fontSizeSmall,
+    marginLeft: 30
   }
 }));
+
+const LargeTooltip = withStyles(theme => ({
+  tooltip: {
+    fontSize: fontSizeAverage,
+    minWidth: 800
+  }
+}))(Tooltip);
 
 function ActionListItem(props) {
   const machine =
@@ -68,7 +99,7 @@ function ActionListItem(props) {
   const classes = ActionItemStyles(props);
   if (props.action.type === "swap") {
     return (
-      <Tooltip title={props.action.reason}>
+      <LargeTooltip title={props.action.reason}>
         <ListItem
           className={classes.listItem}
           onClick={() =>
@@ -81,10 +112,11 @@ function ActionListItem(props) {
           }
         >
           <IconButton aria-label="Delete">
-            <SwapHorizIcon />
+            <SwapHorizIcon className={classes.icon} />
           </IconButton>
           <ListItemAvatar>
             <Avatar
+              className={classes.icon}
               src={
                 stateAvatars[props.action.targetMachine.state][
                   props.action.targetMachine.id - 1
@@ -92,20 +124,28 @@ function ActionListItem(props) {
               }
             />
           </ListItemAvatar>
-          <ListItemText primary={`(Job ${props.action.targetJobName})`} />
+          <ListItemText
+            disableTypography
+            className={classes.text}
+            primary={props.action.targetJobName}
+          />
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
-              <TrendingDown /> {props.action.timeImprovement}
+              <AlarmIcon className={classes.icon} />
+              <TrendingDown className={classes.icon} />
+              <Box fontSize={fontSizeSmall}>
+                {props.action.timeImprovement} mins
+              </Box>
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-      </Tooltip>
+      </LargeTooltip>
     );
   }
 
   if (props.action.type === "move") {
     return (
-      <Tooltip title={props.action.reason}>
+      <LargeTooltip title={props.action.reason}>
         <ListItem
           className={classes.listItem}
           onClick={() =>
@@ -117,10 +157,11 @@ function ActionListItem(props) {
           }
         >
           <IconButton aria-label="Delete">
-            <ArrowRightAlt />
+            <ArrowRightAlt className={classes.icon} />
           </IconButton>
           <ListItemAvatar>
             <Avatar
+              className={classes.icon}
               src={
                 stateAvatars[props.action.targetMachine.state][
                   props.action.targetMachine.id - 1
@@ -130,21 +171,26 @@ function ActionListItem(props) {
           </ListItemAvatar>
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
-              {props.action.timeImprovement === "" ? (
-                <ErrorOutline />
-              ) : (
-                <TrendingDown />
-              )}{" "}
-              {props.action.timeImprovement}
+              {props.action.timeImprovement === "" ?
+                <ErrorOutline className={classes.icon} />
+               :
+                <React.Fragment>
+                  <AlarmIcon className={classes.icon} />
+                  <TrendingDown className={classes.icon} />
+                  <Box fontSize={fontSizeSmall}>
+                    {props.action.timeImprovement} mins
+                  </Box>
+                </React.Fragment>
+              }
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-      </Tooltip>
+      </LargeTooltip>
     );
   }
   if (props.action.type === "allocate") {
     return (
-      <Tooltip title={props.action.reason}>
+      <LargeTooltip title={props.action.reason}>
         <ListItem
           className={classes.listItem}
           onClick={() =>
@@ -152,10 +198,11 @@ function ActionListItem(props) {
           }
         >
           <IconButton aria-label="Delete">
-            <ArrowRightAlt />
+            <ArrowRightAlt className={classes.icon} />
           </IconButton>
           <ListItemAvatar>
             <Avatar
+              className={classes.icon}
               src={
                 stateAvatars[props.action.targetMachine.state][
                   props.action.targetMachine.id - 1
@@ -164,7 +211,7 @@ function ActionListItem(props) {
             />
           </ListItemAvatar>
         </ListItem>
-      </Tooltip>
+      </LargeTooltip>
     );
   }
 }
@@ -184,14 +231,16 @@ function JobCard(props) {
             />
           }
           action={
-            <IconButton classname={classes.iconButton}>
+            <IconButton>
               <DeleteIcon
+                className={classes.icon}
                 onClick={() => props.removeJob(props.id, props.machine)}
               />
-              <AlarmIcon /> {props.length} mins
+              <AlarmIcon className={classes.icon} />
+              <Box fontSize={fontSizeSmall}>{props.length} mins</Box>
             </IconButton>
           }
-          title={props.name}
+          title={<Box fontSize={fontSizeAverage}> {props.name} </Box>}
         />
         <CardContent className={classes.content}>
           <List
@@ -202,7 +251,7 @@ function JobCard(props) {
                 id="list-subheader"
                 disableSticky={true}
               >
-                Suggested Actions
+                <Box fontSize={fontSizeSmall}>Suggested Actions</Box>
               </ListSubheader>
             }
             className={classes.root}

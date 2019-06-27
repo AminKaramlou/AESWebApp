@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import Box from "@material-ui/core/Box";
+import withStyles from "@material-ui/core/styles/withStyles";
+import {fontSizeAverage} from "../constants";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -25,6 +27,13 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 150
   }
 }));
+
+const LargeTooltip = withStyles(theme => ({
+  tooltip: {
+    fontSize: fontSizeAverage,
+    minWidth:800
+  },
+}))(Tooltip);
 
 function speak(state, jobs, isFemale) {
   let msg = new SpeechSynthesisUtterance();
@@ -60,7 +69,7 @@ function Title(props) {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <Tooltip title="How are you?" placement="right">
+        <LargeTooltip title="How are you?" placement="right">
           <Avatar
             alt="Nurse"
             src={props.image}
@@ -69,7 +78,7 @@ function Title(props) {
               speak(props.machineState, props.jobs, props.isFemale);
             }}
           />
-        </Tooltip>
+        </LargeTooltip>
       </Grid>
       <Grid item xs={12} className={classes.titleDiv}>
         <Box fontSize={150}>{props.title}</Box>
