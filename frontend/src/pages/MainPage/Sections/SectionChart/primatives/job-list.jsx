@@ -172,7 +172,17 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexWrap: "wrap"
   },
-  formControl: {}
+  formControl: {},
+  input: {
+    fontSize: fontSizeAverage
+  },
+  label: {
+    fontSIze: fontSizeAverage
+  },
+  timePicker: {
+    fontSize: fontSizeAverage,
+    height: "auto"
+  }
 }));
 
 export default function JobList(props: Props) {
@@ -248,6 +258,7 @@ export default function JobList(props: Props) {
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl} fullWidth={true}>
               <TimePicker
+                clockClassName={classes.timePicker}
                 defaultValue={moment({ hour: 0, minute: 10 })}
                 showSecond={false}
                 disabledMinutes={disabledMinutes}
@@ -259,26 +270,44 @@ export default function JobList(props: Props) {
               />
               <TextField
                 id="standard-name"
-                label="New job name"
+                label={
+                  <Box fontSize={fontSizeAverage} className={classes.label}>
+                    New job name
+                  </Box>
+                }
                 placeholder="New job name"
                 value={values.newJobName}
                 onChange={handleChange("newJobName")}
                 margin="normal"
-                inputProps={{ maxLength: 50 }}
+                inputProps={{
+                  maxLength: 30,
+                  className: classes.input
+                }}
+                InputLabelProps={{ classes: classes.label }}
               />
               <Select
+                displayEmpty
                 value={values.newJobType}
                 placeholder="New job type"
                 onChange={handleChange("newJobType")}
                 inputProps={{
                   name: "Job type",
-                  id: "job-type"
+                  id: "job-type",
+                  className: classes.input
                 }}
               >
-                <MenuItem value={"injection"}>Injection</MenuItem>
-                <MenuItem value={"medicine"}>Administer medication</MenuItem>
-                <MenuItem value={"test"}>Perform test</MenuItem>
-                <FormHelperText> New job type </FormHelperText>
+                <MenuItem value="" disabled>
+                  <Box fontSize={fontSizeAverage}>New job type</Box>
+                </MenuItem>
+                <MenuItem value={"injection"}>
+                  <Box fontSize={fontSizeAverage}>Injection</Box>
+                </MenuItem>
+                <MenuItem value={"medicine"}>
+                  <Box fontSize={fontSizeAverage}>Administer medication</Box>
+                </MenuItem>
+                <MenuItem value={"test"}>
+                  <Box fontSize={fontSizeAverage}>Perform test</Box>
+                </MenuItem>
               </Select>
               <Button
                 size="large"
