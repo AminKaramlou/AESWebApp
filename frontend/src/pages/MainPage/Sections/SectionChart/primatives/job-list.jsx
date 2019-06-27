@@ -275,7 +275,6 @@ export default function JobList(props: Props) {
                     New job name
                   </Box>
                 }
-                placeholder="New job name"
                 value={values.newJobName}
                 onChange={handleChange("newJobName")}
                 margin="normal"

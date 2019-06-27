@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
-import {fontSizeAverage} from "../constants";
+import { fontSizeAverage } from "../constants";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
@@ -31,29 +31,14 @@ const useStyles = makeStyles(theme => ({
 const LargeTooltip = withStyles(theme => ({
   tooltip: {
     fontSize: fontSizeAverage,
-    minWidth:800
-  },
+    minWidth: 800
+  }
 }))(Tooltip);
 
-function speak(state, jobs, isFemale) {
+function speak(isFemale, text) {
   let msg = new SpeechSynthesisUtterance();
-  if (state === "sad") {
-    msg.text =
-      "I am sad because my colleagues jobs are not allocated efficiently ";
-  }
-  if (state === "angry") {
-    msg.text = "I am angry because my jobs are not allocated efficiently";
-  }
-  if (state === "happy") {
-    msg.text = "I am happy because we can take care of all the patients";
-  }
-  if (state === "thinking") {
-    msg.text = "I think the schedule can still be improved";
-  }
+  msg.text = text;
   let voices = window.speechSynthesis.getVoices();
-
-  window.speechSynthesis.onVoicesChanged = () => {};
-
   if (isFemale) {
     msg.voice = voices[49];
   } else {
@@ -65,17 +50,35 @@ function speak(state, jobs, isFemale) {
 
 function Title(props) {
   const classes = useStyles();
+  const state = props.machineState;
+  let text = "";
+  if (state === "sad") {
+    text = "I am sad because my colleagues jobs are not allocated efficiently ";
+  }
+  if (state === "angry") {
+    text = "I am angry because my jobs are not allocated efficiently";
+  }
+  if (state === "happy") {
+    if (props.title === "Alice") {
+      text = "I am happy because all the nurses have the right amount of work";
+    } else {
+      text = "I am happy because we can take care of all the patients";
+    }
+  }
+  if (state === "thinking") {
+    text = "I think the schedule can still be improved";
+  }
 
   return (
     <Grid container>
       <Grid item xs={12}>
-        <LargeTooltip title="How are you?" placement="right">
+        <LargeTooltip title={text} placement="right">
           <Avatar
             alt="Nurse"
             src={props.image}
             className={classes.bigAvatar}
             onClick={() => {
-              speak(props.machineState, props.jobs, props.isFemale);
+              speak(props.isFemale, text);
             }}
           />
         </LargeTooltip>

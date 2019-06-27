@@ -11,6 +11,8 @@ import mainPageStyle from "assets/jss/material-kit-react/views/mainPage.jsx";
 
 import type { DropResult, DraggableLocation } from "react-beautiful-dnd/types";
 
+import SimpleAppBar from "./simpleAppBar";
+
 import Board from "./Sections/SectionChart/SectionChart.jsx";
 import {
   jobs,
@@ -36,7 +38,8 @@ class MainPage extends React.Component {
       unassignedJobs: jobs.filter(element => {
         return element.machine === "unassigned";
       }),
-      managerIsThinking: true
+      managerIsThinking: true,
+      statusBarText: ""
     };
     socket.on("explanation", explanation => {
       let managerIsThinking = false;
@@ -45,6 +48,8 @@ class MainPage extends React.Component {
       newJobs.forEach((job, index) => {
         job.actions = [];
       });
+      let firstExplanation = true;
+      let appBarText = "The schedule is good."
       explanation.forEach((item, index) => {
         item["actions"].forEach((action, i) => {
           if (action["type"] === "swap") {
@@ -58,25 +63,44 @@ class MainPage extends React.Component {
             const machine2 = this.state.machines.find(element => {
               return element.id === action["machine2"];
             });
+
+            const reason1 = `Swapping ${newJobs[job1Index].name} with ${
+              newJobs[job2Index].name
+            } will reduce completion time by ${
+              action["time-improvement"]
+            } minutes.`;
+
             const personalisedAction1 = {
               type: "swap",
               targetMachine: machine2,
               targetJobId: action["job2"],
               timeImprovement: action["time-improvement"],
-              reason: item["reason"],
+              reason: reason1,
               targetJobName: newJobs[job2Index].name
             };
             newJobs[job1Index].actions.push(personalisedAction1);
 
+            if (firstExplanation) {
+              appBarText = reason1
+              firstExplanation = false;
+            }
+
             const machine1 = this.state.machines.find(element => {
               return element.id === action["machine1"];
             });
+
+            const reason2 = `Swapping ${newJobs[job2Index].name} with ${
+              newJobs[job1Index].name
+            } will reduce completion time by ${
+              action["time-improvement"]
+            } minutes.`;
+
             const personalisedAction2 = {
               type: "swap",
               targetMachine: machine1,
               targetJobId: action["job1"],
               timeImprovement: action["time-improvement"],
-              reason: item["reason"],
+              reason: reason2,
               targetJobName: newJobs[job1Index].name
             };
             newJobs[job2Index].actions.push(personalisedAction2);
@@ -89,13 +113,23 @@ class MainPage extends React.Component {
             const machine = this.state.machines.find(element => {
               return element.id === action["end-machine"];
             });
+
+            const reason = `Moving  ${newJobs[jobIndex].name} to ${
+              machine.name
+            } will reduce completion time by ${
+              action["time-improvement"]
+            } minutes.`;
             const personalisedAction = {
               type: "move",
               targetMachine: machine,
               timeImprovement: action["time-improvement"],
-              reason: item["reason"]
+              reason: reason
             };
             newJobs[jobIndex].actions.push(personalisedAction);
+            if (firstExplanation) {
+              appBarText = reason
+              firstExplanation = false;
+            }
           }
           if (action["type"] === "unallocated") {
             managerIsThinking = true;
@@ -105,17 +139,24 @@ class MainPage extends React.Component {
             const machine = this.state.machines.find(element => {
               return element.id === action["machine"];
             });
+            const reason = `${
+              newJobs[jobIndex].name
+            } is not allocated to any nurse.`;
             const personalisedAction = {
               type: "allocate",
               targetMachine: machine,
-              reason: item["reason"]
+              reason: reason
             };
             newJobs[jobIndex].actions.push(personalisedAction);
+            if (firstExplanation) {
+              appBarText = reason
+              firstExplanation = false;
+            }
           }
         });
       });
       this.setState(
-        { jobs: newJobs, managerIsThinking: managerIsThinking },
+        { jobs: newJobs, managerIsThinking: managerIsThinking, statusBarText: appBarText },
         this.updateMachineStates
       );
     });
@@ -128,7 +169,7 @@ class MainPage extends React.Component {
         let machine = this.state.machines.find((m, i) => {
           return m.id === item.machineId;
         });
-        machineJobMap[machine.name] = []
+        machineJobMap[machine.name] = [];
         item.jobIds.forEach((jobId, i) => {
           let job = this.state.jobs.find((j, i) => {
             return j.id === jobId;
@@ -524,7 +565,7 @@ class MainPage extends React.Component {
         ...this.state.machineJobMap,
         [newMachine.name]: []
       };
-      console.log(machines)
+      console.log(machines);
       this.setState(
         {
           machines: machines,
@@ -607,6 +648,7 @@ class MainPage extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classNames(classes.content)}>
+        <SimpleAppBar text={this.state.statusBarText} />
         <SpeedDial
           onFileUpload={this.loadScheduleFromFile}
           onSaveClick={this.saveSchedule}

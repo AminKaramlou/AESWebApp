@@ -11,6 +11,7 @@ import {stateAvatars} from "./avatars.jsx";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import {backgroundColor} from "./constants";
 
 const ParentContainer = styled.div`
   height: ${({ height }) => height};
@@ -19,7 +20,7 @@ const ParentContainer = styled.div`
 `;
 
 const Container = styled.div`
-  background-color: #dac3b3;
+  background-color: ${backgroundColor};
   min-height: 100vh;
   /* like display:flex but will allow bleeding over the window width */
   min-width: 100vw;
@@ -161,7 +162,7 @@ export default class Board extends Component<Props, State> {
         <Global
           styles={css`
             body {
-              background: #dac3b3;
+              background: ${backgroundColor};
             }
           `}
         />

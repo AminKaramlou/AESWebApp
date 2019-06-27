@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import {borderRadius, cardWidth, grid} from "./constants";
+import {borderRadius, cardColor, cardWidth, grid} from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
   DraggableProvided,
@@ -65,7 +65,7 @@ export default class UnassignedColumn extends Component<Props> {
                 listId="unassigned"
                 listType="QUOTE"
                 style={{
-                  backgroundColor: "#78a5a3"
+                  backgroundColor: cardColor
                 }}
                 title={this.props.listName}
                 jobs={jobs}

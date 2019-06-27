@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from "react";
 import styled from "@emotion/styled";
-import { grid, borderRadius, cardWidth } from "./constants";
+import {grid, borderRadius, cardWidth, cardColor} from "./constants";
 import { Draggable } from "react-beautiful-dnd";
 import type {
   DraggableProvided,
@@ -27,7 +27,7 @@ const Header = styled.div`
   justify-content: center;
   border-top-left-radius: ${borderRadius}px;
   border-top-right-radius: ${borderRadius}px;
-  background-color: #78a5a3;
+  background-color: ${cardColor};
 `;
 
 type Props = {|
@@ -78,7 +78,7 @@ export default class Column extends Component<Props> {
                     image={this.props.avatar}
                     machineState={this.props.machineState}
                     jobs={this.props.jobs}
-                    isFemale={this.props.title !== "John" ? true : false}
+                    isFemale={this.props.title !== "John" && this.props.title!=="Ruban" ? true : false}
                   />
                 </Grid>
               </Grid>
@@ -87,7 +87,7 @@ export default class Column extends Component<Props> {
               listId={title}
               listType="QUOTE"
               style={{
-                backgroundColor: "#78a5a3"
+                backgroundColor: cardColor
               }}
               jobs={jobs}
               internalScroll={this.props.isScrollable}

@@ -10,3 +10,5 @@ export const bigIconSize = 100;
 export const smallIconSize = 50;
 export const cardWidth = 1400;
 export const cardHeightMultiplier = 40;
+export const backgroundColor = "#f5ca99"
+export const cardColor = "#78a5a3"
