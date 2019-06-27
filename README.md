@@ -15,13 +15,27 @@ TBD
 * In /backend/aes-master/
 ``` .\venv\Scripts\Activate.ps1 ```
 	to activate Python's virtual environment
-* In /backend/aes-master/src/flask_app/
+* cd to src/flask_app/ and run flask
 ``` python -m flask run ```
-	to run flask
-* In /frontend/
+* In /frontend/ (on new terminal)
 ``` gatsby develop ```
 	to run gatsby
 * Then http://localhost:8000/
+
+### Some fixes
+
+* If venv complains about python, 
+``` python -m venv venv ```
+
+then in /backend/aes-master/
+
+``` pip install -r requirements.txt ```
+
+``` yarn add @material-ui/lab ```
+
+``` yarn add react react-dom ```
+
+``` yarn add rc-time-picker ```
 
 ### Voice
 
@@ -29,7 +43,7 @@ In /frontend/src/pages/MainPage/Sections/SectionChart/primatives/title.jsx modif
 
 ```msg.text = "MESSAGE"```
 
-before ```speechSynthesis.speak(msg);``` on the lat line
+before ```speechSynthesis.speak(msg);``` on the last line
  
 
 ## License
