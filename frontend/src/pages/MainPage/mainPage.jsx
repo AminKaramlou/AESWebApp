@@ -39,7 +39,8 @@ class MainPage extends React.Component {
         return element.machine === "unassigned";
       }),
       managerIsThinking: true,
-      statusBarText: ""
+      statusBarText: "",
+      showExplanations: true
     };
     socket.on("explanation", explanation => {
       let managerIsThinking = false;
@@ -644,15 +645,20 @@ class MainPage extends React.Component {
     });
   };
 
+  toggleExplanation = () => {
+    this.setState({showExplanations: !this.state.showExplanations})
+  }
+
   render() {
     const { classes } = this.props;
     return (
       <div className={classNames(classes.content)}>
-        <SimpleAppBar text={this.state.statusBarText} />
+        <SimpleAppBar text={this.state.statusBarText} showExplanations={this.state.showExplanations} />
         <SpeedDial
           onFileUpload={this.loadScheduleFromFile}
           onSaveClick={this.saveSchedule}
           onOptimiseClick={this.onOptimiseClick}
+          onToggleExplanationsClick={this.toggleExplanation}
         />
         <Board
           jobs={this.state.jobs}
@@ -671,6 +677,7 @@ class MainPage extends React.Component {
           setPfd={this.setPfd}
           setNfd={this.setNfd}
           managerIsThinking={this.state.managerIsThinking}
+          showExplanations = {this.state.showExplanations}
         />
       </div>
     );

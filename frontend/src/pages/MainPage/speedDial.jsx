@@ -8,6 +8,7 @@ import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SearchIcon from "@material-ui/icons/Search";
+import ToggleOnIcon from "@material-ui/icons/ToggleOn"
 
 const styles = theme => ({
   speedDial: {
@@ -89,6 +90,15 @@ class SpeedDials extends React.Component {
           tooltipTitle={"Optimise"}
           onClick={e => {
             this.props.onOptimiseClick();
+            this.handleClick();
+          }}
+        />
+        <SpeedDialAction
+          key={"Toggle explanations"}
+          icon={<ToggleOnIcon />}
+          tooltipTitle={"Toggle explanations"}
+          onClick={e => {
+            this.props.onToggleExplanationsClick();
             this.handleClick();
           }}
         />

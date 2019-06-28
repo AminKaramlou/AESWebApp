@@ -96,6 +96,7 @@ export default class Board extends Component<Props, State> {
               removeJob={this.props.removeJob}
               avatar={this.props.managerIsThinking ? stateAvatars.manager[1] : stateAvatars.manager[0]}
               machineState={this.props.managerIsThinking ? "thinking" : "happy"}
+              showExplanations={this.props.showExplanations}
             />
             {ordered.map((key: string, index: number) => (
               <Column
@@ -118,6 +119,7 @@ export default class Board extends Component<Props, State> {
                 pfd = {this.props.machines[index].pfd}
                 nfd = {this.props.machines[index].nfd}
                 machineId={this.props.machines[index].id}
+                showExplanations={this.props.showExplanations}
               />
             ))}
 

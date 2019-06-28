@@ -49,7 +49,11 @@ const useStyles = makeStyles(theme => ({
     boxShadow: "inset 0px 0px 0px 2px #78a5a3"
   }),
   avatar: props => ({
-    backgroundColor: props.actions.length === 0 ? green[500] : red[500],
+    backgroundColor: !props.showExplanations
+      ? "transparent"
+      : props.actions.length === 0
+      ? green[500]
+      : red[500],
     width: bigIconSize,
     height: bigIconSize
   }),
@@ -171,9 +175,9 @@ function ActionListItem(props) {
           </ListItemAvatar>
           <ListItemSecondaryAction>
             <IconButton edge="end" aria-label="Delete">
-              {props.action.timeImprovement === "" ?
+              {props.action.timeImprovement === "" ? (
                 <ErrorOutline className={classes.icon} />
-               :
+              ) : (
                 <React.Fragment>
                   <AlarmIcon className={classes.icon} />
                   <TrendingDown className={classes.icon} />
@@ -181,7 +185,7 @@ function ActionListItem(props) {
                     {props.action.timeImprovement} mins
                   </Box>
                 </React.Fragment>
-              }
+              )}
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
@@ -256,16 +260,20 @@ function JobCard(props) {
             }
             className={classes.root}
           >
-            {props.actions.map((key: string, index: number) => (
-              <ActionListItem
-                action={key}
-                performSwapAction={props.performSwapAction}
-                performMoveAction={props.performMoveAction}
-                performAllocateAction={props.performAllocateAction}
-                id={props.id}
-                machine={props.machine}
-              />
-            ))}
+            {props.showExplanations &&
+              <div>
+                {props.actions.map((key: string, index: number) => (
+                  <ActionListItem
+                    action={key}
+                    performSwapAction={props.performSwapAction}
+                    performMoveAction={props.performMoveAction}
+                    performAllocateAction={props.performAllocateAction}
+                    id={props.id}
+                    machine={props.machine}
+                  />
+                ))}
+              </div>
+            }
           </List>
         </CardContent>
       </Card>
@@ -324,6 +332,7 @@ function JobItem(props: Props) {
         performMoveAction={props.performMoveAction}
         performAllocateAction={props.performAllocateAction}
         removeJob={props.removeJob}
+        showExplanations={props.showExplanations}
       />
     </Container>
   );

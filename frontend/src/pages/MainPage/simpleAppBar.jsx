@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 import {
   backgroundColor,
   cardColor,
@@ -14,13 +14,13 @@ const useStyles = makeStyles({
   root: {
     flexGrow: 1,
     height: 400,
-    verticalAlign:"center",
+    verticalAlign: "center"
   },
   appBar: {
     height: "100%",
-    verticalAlign:"center",
+    verticalAlign: "center",
     textAlign: "center",
-    backgroundColor:  `#2b616d`,
+    backgroundColor: `#2b616d`
   }
 });
 
@@ -32,7 +32,11 @@ export default function SimpleAppBar(props) {
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" color="black">
-            <Box fontSize={fontSizeMassive}> {props.text}</Box>
+            {props.showExplanations ? (
+              <Box fontSize={fontSizeMassive}> {props.text}</Box>
+            ) : (
+              <Box fontSize={fontSizeMassive}> Explanations are turned off</Box>
+            )}
           </Typography>
         </Toolbar>
       </AppBar>

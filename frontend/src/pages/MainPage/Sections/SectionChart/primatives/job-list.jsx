@@ -137,6 +137,7 @@ const InnerJobList = function InnerJobList(props: JobListProps) {
           performMoveAction={props.performMoveAction}
           performAllocateAction={props.performAllocateAction}
           removeJob={props.removeJob}
+          showExplanations={props.showExplanations}
         />
       )}
     </Draggable>
@@ -160,6 +161,7 @@ function InnerList(props: InnerListProps) {
           performMoveAction={props.performMoveAction}
           performAllocateAction={props.performAllocateAction}
           removeJob={props.removeJob}
+          showExplanations={props.showExplanations}
         />
         {dropProvided.placeholder}
       </DropZone>
@@ -242,6 +244,7 @@ export default function JobList(props: Props) {
                 performMoveAction={props.performMoveAction}
                 performAllocateAction={props.performAllocateAction}
                 removeJob={props.removeJob}
+                showExplanations={props.showExplanations}
               />
             </ScrollContainer>
           ) : (
@@ -253,6 +256,7 @@ export default function JobList(props: Props) {
               performMoveAction={props.performMoveAction}
               performAllocateAction={props.performAllocateAction}
               removeJob={props.removeJob}
+              showExplanations={props.showExplanations}
             />
           )}
           <form className={classes.root} autoComplete="off">

@@ -98,6 +98,7 @@ export default class Column extends Component<Props> {
               addNewJob={this.props.addNewJob}
               removeJob={this.props.removeJob}
               title={title}
+              showExplanations={this.props.showExplanations}
             />
           </Container>
         )}

@@ -76,6 +76,7 @@ export default class UnassignedColumn extends Component<Props> {
                 performAllocateAction={this.props.performAllocateAction}
                 addNewJob={this.props.addNewJob}
                 removeJob={this.props.removeJob}
+                showExplanations={this.props.showExplanations}
               />
             </Header>
           </Container>
