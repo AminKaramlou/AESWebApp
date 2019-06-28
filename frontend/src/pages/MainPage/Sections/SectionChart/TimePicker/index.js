@@ -37,6 +37,10 @@ const StyledTimePicker = styled(TimePicker)`
       height: 0;
     }
   }
+  
+  .rc-time-picker-panel-select li {
+  margin-top:50px;
+  }
 `;
 
 export default StyledTimePicker;

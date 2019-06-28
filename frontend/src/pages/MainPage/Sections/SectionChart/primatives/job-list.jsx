@@ -244,10 +244,6 @@ export default function JobList(props: Props) {
           )}
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl} fullWidth={true}>
-              <StyledTimePicker
-                onChange={handleLengthChange("newJobLength")}
-                value={values.newJobLength}
-              />
               <TextField
                 id="standard-name"
                 label={
@@ -289,6 +285,10 @@ export default function JobList(props: Props) {
                   <Box fontSize={fontSizeAverage}>Perform test</Box>
                 </MenuItem>
               </Select>
+              <StyledTimePicker
+                onChange={handleLengthChange("newJobLength")}
+                value={values.newJobLength}
+              />
               <Button
                 size="large"
                 color="primary"
