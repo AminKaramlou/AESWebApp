@@ -12,7 +12,6 @@ import type {
   DraggableProvided,
   DraggableStateSnapshot
 } from "react-beautiful-dnd";
-import TimePicker from "rc-time-picker/es/TimePicker";
 import Button from "@material-ui/core/Button";
 import moment from "moment";
 import TextField from "@material-ui/core/TextField";
@@ -22,6 +21,9 @@ import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import Box from "@material-ui/core/Box";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import "rc-time-picker/assets/index.css";
+import StyledTimePicker from "../TimePicker/index"
+
 
 const getBackgroundColor = (
   isDraggingOver: boolean,
@@ -34,36 +36,6 @@ const getBackgroundColor = (
     return colors.T50;
   }
   return colors.N30;
-};
-
-const disabledMinutes = () => {
-  return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-};
-const disabledHours = () => {
-  return [
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24
-  ];
 };
 
 const Wrapper = styled.div`
@@ -197,32 +169,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StyledTimePicker = styled(TimePicker)`
-  & .rc-time-picker-panel-select-option-selected {
-    background-color: #edeffe;
-    font-weight: normal;
-  }
-
-  & .rc-time-picker-clear,
-  & .rc-time-picker-clear-icon:after {
-    font-size: 15px;
-  }
-
-  & .rc-time-picker-panel-select,
-  & .rc-time-picker-input,
-  & .rc-time-picker-panel-input {
-    font-family: "Consolas", sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-
-    ::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-    }
-  }
-`;
-
-
 
 export default function JobList(props: Props) {
   const {
@@ -299,14 +245,8 @@ export default function JobList(props: Props) {
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl} fullWidth={true}>
               <StyledTimePicker
-                defaultValue={moment({ hour: 0, minute: 10 })}
-                showSecond={false}
-                disabledMinutes={disabledMinutes}
-                disabledHours={disabledHours}
-                minuteStep={5}
                 onChange={handleLengthChange("newJobLength")}
                 value={values.newJobLength}
-                hideDisabledOptions={true}
               />
               <TextField
                 id="standard-name"
