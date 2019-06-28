@@ -12,15 +12,19 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import {green, red} from "@material-ui/core/colors";
 import {fontSizeAverage} from "./constants";
+import Box from "@material-ui/core/Box";
 
 const nfdStyles = makeStyles(theme => ({
   root: {
+    margin: 50,
     flexGrow: 1,
   },
+
   input: {
     display: 'flex',
     padding: 0,
     height: 'auto',
+    marginTop:50,
   },
   valueContainer: {
     display: 'flex',
@@ -31,7 +35,8 @@ const nfdStyles = makeStyles(theme => ({
   },
   chip: {
     margin: theme.spacing(0.5, 0.25),
-    background: red[500]
+    background: red[500],
+    fontSize: fontSizeAverage,
   },
   noOptionsMessage: {
     padding: theme.spacing(1, 2),
@@ -55,16 +60,22 @@ const nfdStyles = makeStyles(theme => ({
   divider: {
     height: theme.spacing(2),
   },
+  select: {
+    marginBottom: 50
+  }
 }));
 
 const pfdStyles = makeStyles(theme => ({
   root: {
+    margin: 50,
     flexGrow: 1,
   },
+
   input: {
     display: 'flex',
     padding: 0,
     height: 'auto',
+    marginTop:50,
   },
   valueContainer: {
     display: 'flex',
@@ -75,7 +86,8 @@ const pfdStyles = makeStyles(theme => ({
   },
   chip: {
     margin: theme.spacing(0.5, 0.25),
-    background: green[500]
+    background: green[500],
+    fontSize: fontSizeAverage
   },
   noOptionsMessage: {
     padding: theme.spacing(1, 2),
@@ -232,7 +244,7 @@ function MultiValue(props) {
       className={clsx(props.selectProps.classes.chip, )}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
-      size="small"
+      size="medium"
     />
   );
 }
@@ -291,6 +303,7 @@ function Autocomplete(props) {
     }),
   };
   const pfdSelectStyles = {
+    marginTop:50,
     input: base => ({
       ...base,
       color: "green",
@@ -304,11 +317,12 @@ function Autocomplete(props) {
     <div className={nfdClasses.root}>
       <NoSsr>
         <Select
+          className={nfdClasses.select}
           classes={nfdClasses}
           styles={nfdSelectStyles}
           inputId="react-select-multiple"
           TextFieldProps={{
-            label: "Jobs which this nurse cannot do",
+            label: <Box fontSize={fontSizeAverage}>Jobs which this nurse cannot do</Box>,
             InputLabelProps: {
               htmlFor: 'react-select-multiple',
               shrink: true
@@ -326,7 +340,7 @@ function Autocomplete(props) {
         styles={pfdSelectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{
-          label: 'Jobs which this nurse must do',
+          label: <Box fontSize={fontSizeAverage}>Jobs which this nurse must do</Box>,
           InputLabelProps: {
             htmlFor: 'react-select-multiple',
             shrink: true,

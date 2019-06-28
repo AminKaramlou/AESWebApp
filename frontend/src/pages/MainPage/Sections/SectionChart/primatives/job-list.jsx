@@ -20,7 +20,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import Box from "@material-ui/core/Box";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import "rc-time-picker/assets/index.css";
 import StyledTimePicker from "../TimePicker/index"
 
