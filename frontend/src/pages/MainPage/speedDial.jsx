@@ -8,7 +8,7 @@ import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SearchIcon from "@material-ui/icons/Search";
-import ToggleOnIcon from "@material-ui/icons/ToggleOn"
+import ToggleOnIcon from "@material-ui/icons/ToggleOn";
 
 const styles = theme => ({
   speedDial: {
@@ -46,6 +46,7 @@ class SpeedDials extends React.Component {
 
     return (
       <SpeedDial
+        classes={{ fab: { width: 200, height: 200 } }}
         ariaLabel="SpeedDial example"
         className={speedDialClassName}
         hidden={hidden}

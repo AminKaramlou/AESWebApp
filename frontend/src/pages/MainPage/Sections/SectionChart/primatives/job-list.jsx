@@ -183,9 +183,46 @@ const useStyles = makeStyles(theme => ({
   },
   timePicker: {
     fontSize: fontSizeAverage,
-    height: "auto"
+    height: "100"
+  },
+  timePickerPopup: {
+    fontSize: fontSizeAverage,
+  },
+  select: {
+    marginBottom: "50px",
+    marginTop: 30
+  },
+  selectBox: {
+    marginBottom: 20
   }
 }));
+
+const StyledTimePicker = styled(TimePicker)`
+  & .rc-time-picker-panel-select-option-selected {
+    background-color: #edeffe;
+    font-weight: normal;
+  }
+
+  & .rc-time-picker-clear,
+  & .rc-time-picker-clear-icon:after {
+    font-size: 15px;
+  }
+
+  & .rc-time-picker-panel-select,
+  & .rc-time-picker-input,
+  & .rc-time-picker-panel-input {
+    font-family: "Consolas", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+
+    ::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+`;
+
+
 
 export default function JobList(props: Props) {
   const {
@@ -261,8 +298,7 @@ export default function JobList(props: Props) {
           )}
           <form className={classes.root} autoComplete="off">
             <FormControl className={classes.formControl} fullWidth={true}>
-              <TimePicker
-                clockClassName={classes.timePicker}
+              <StyledTimePicker
                 defaultValue={moment({ hour: 0, minute: 10 })}
                 showSecond={false}
                 disabledMinutes={disabledMinutes}
@@ -289,6 +325,7 @@ export default function JobList(props: Props) {
                 InputLabelProps={{ classes: classes.label }}
               />
               <Select
+                className={classes.select}
                 displayEmpty
                 value={values.newJobType}
                 placeholder="New job type"
@@ -300,13 +337,13 @@ export default function JobList(props: Props) {
                 }}
               >
                 <MenuItem value="" disabled>
-                  <Box fontSize={fontSizeAverage}>New job type</Box>
+                  <Box className={classes.selectBox} fontSize={fontSizeAverage}>New job type</Box>
                 </MenuItem>
                 <MenuItem value={"injection"}>
-                  <Box fontSize={fontSizeAverage}>Injection</Box>
+                  <Box className={classes.selectBox} fontSize={fontSizeAverage}>Injection</Box>
                 </MenuItem>
                 <MenuItem value={"medicine"}>
-                  <Box fontSize={fontSizeAverage}>Administer medication</Box>
+                  <Box className={classes.selectBox} fontSize={fontSizeAverage}>Administer medication</Box>
                 </MenuItem>
                 <MenuItem value={"test"}>
                   <Box fontSize={fontSizeAverage}>Perform test</Box>

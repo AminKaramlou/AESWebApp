@@ -13,14 +13,14 @@ import Box from "@material-ui/core/Box";
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    height: 400,
-    verticalAlign: "center"
+    alignItems: "center",
+    verticalAlign: "middle"
   },
   appBar: {
-    height: "100%",
-    verticalAlign: "center",
-    textAlign: "center",
-    backgroundColor: `#2b616d`
+    height: "12vh",
+    backgroundColor: `#2b616d`,
+    alignItems: "center",
+    verticalAlign: "middle"
   }
 });
 
@@ -29,9 +29,9 @@ export default function SimpleAppBar(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" color="black">
+          <Typography variant="h6" color="black" align="center">
             {props.showExplanations ? (
               <Box fontSize={fontSizeMassive}> {props.text}</Box>
             ) : (
