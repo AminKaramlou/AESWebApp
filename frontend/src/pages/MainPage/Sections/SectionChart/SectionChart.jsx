@@ -11,7 +11,9 @@ import {stateAvatars} from "./avatars.jsx";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import {backgroundColor} from "./constants";
+import {backgroundColor, fontSizeAverage} from "./constants";
+import Box from "@material-ui/core/Box";
+import FormControl from "@material-ui/core/FormControl";
 
 const ParentContainer = styled.div`
   height: ${({ height }) => height};
@@ -122,31 +124,24 @@ export default class Board extends Component<Props, State> {
                 showExplanations={this.props.showExplanations}
               />
             ))}
-
             {provided.placeholder}
-            <Grid container>
-              <Grid item xs={9}>
-                <TextField
+            <FormControl fullWidth={true} style={{width: 1000}}>
+            <TextField
                   id="standard-machine"
-                  label="nurse"
                   placeholder="New nurse name"
                   margin="normal"
-                  inputProps={{ maxLength: 50 }}
+                  inputProps={{ maxLength: 50, style: {fontSize: fontSizeAverage} }}
                   onChange={(event) => this.handleChange(event)}
                   value={this.state.newMachineName}
                 />
-              </Grid>
-              <Grid item xs={3}>
                 <Button
                   size="large"
                   color="primary"
                   onClick={() => this.props.addNewResource(this.state.newMachineName)}
                 >
-                  Add nurse
+                  <Box fontSize={fontSizeAverage}>Add nurse</Box>
                 </Button>
-              </Grid>
-            </Grid>
-
+            </FormControl>
           </Container>
         )}
       </Droppable>

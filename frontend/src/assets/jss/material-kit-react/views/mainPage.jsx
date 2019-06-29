@@ -36,7 +36,7 @@ const mainPageStyle = theme => ({
     position: "relative",
     zIndex: "3",
     flexGrow: 1,
-    marginTop: "15vh"
+    marginTop: "15vh",
   },
   toolbar: theme.mixins.toolbar,
 })

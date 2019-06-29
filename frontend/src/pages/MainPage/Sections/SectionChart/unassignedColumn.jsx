@@ -35,7 +35,7 @@ const Header = styled.div`
   border-top-left-radius: ${borderRadius}px;
   border-top-right-radius: ${borderRadius}px;
   background-color: #78a5a3;
-  padding-top:105px;
+  padding-top:150px;
 `;
 
 export default class UnassignedColumn extends Component<Props> {
