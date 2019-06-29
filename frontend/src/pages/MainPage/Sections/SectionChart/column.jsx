@@ -78,7 +78,7 @@ export default class Column extends Component<Props> {
                     image={this.props.avatar}
                     machineState={this.props.machineState}
                     jobs={this.props.jobs}
-                    isFemale={this.props.title !== "John" && this.props.title!=="Ruban" ? true : false}
+                    isFemale={this.props.isFemale}
                   />
                 </Grid>
               </Grid>

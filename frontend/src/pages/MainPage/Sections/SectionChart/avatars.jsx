@@ -62,7 +62,8 @@ export const stateAvatars = {
   'sad': sadAvatarsArray,
   'happy': happyAvatarsArray,
   'angry': angryAvatarsArray,
-  'manager': managerAvatarsArray
+  'manager': managerAvatarsArray,
+  'isFemaleNurse': [1,3,5,7]
 };
 
 export const jobAvatars = {
