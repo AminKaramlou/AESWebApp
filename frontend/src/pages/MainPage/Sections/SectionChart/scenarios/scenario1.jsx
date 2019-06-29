@@ -2,7 +2,7 @@ import type { Machine, Job, JobMap } from "./types";
 
 const nurse1: Machine = {
   id: 1,
-  name: "Emma",
+  name: "John",
   state: "angry",
   completionTime: 0,
   nfd: [],
@@ -11,7 +11,7 @@ const nurse1: Machine = {
 
 const nurse2: Machine = {
   id: 2,
-  name: "John",
+  name: "Mai",
   state: "angry",
   completionTime: 0,
   nfd: [],
@@ -20,10 +20,10 @@ const nurse2: Machine = {
 
 const nurse3: Machine = {
   id: 3,
-  name: "Isabella",
+  name: "Ruban",
   state: "angry",
   completionTime: 0,
-  nfd: [],
+  nfd: [{"value":"C","label":"Intravenous drip"}],
   pfd: []
 };
 
@@ -31,36 +31,36 @@ export const machines: Machine[] = [nurse1, nurse2, nurse3];
 
 export const jobs: Job[] = [
   {
-    length: 10,
+    length: 30,
     actions: [],
     id: "A",
-    machine: "unassigned",
-    name: "Take blood pressure",
-    type: "test"
+    machine: nurse1,
+    name: "Measles Vaccination",
+    type: "injection"
   },
   {
     length: 30,
     id: "B",
     actions: [],
-    machine: nurse1,
-    name: "Vaccination",
-    type: "injection"
-  },
-  {
-    length: 30,
-    id: "C",
-    actions: [],
     machine: nurse2,
-    name: "Administer Ibuprofen",
+    name: "Administer antibiotics",
     type: "medicine"
   },
   {
     length: 20,
-    id: "D",
+    id: "C",
     actions: [],
     machine: nurse3,
     name: "Intravenous drip",
     type: "medicine"
+  },
+  {
+    length: 10,
+    id: "D",
+    actions: [],
+    machine: "unassigned",
+    name: "Blood test",
+    type: "test"
   }
 ];
 
