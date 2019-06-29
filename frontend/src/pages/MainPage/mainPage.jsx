@@ -115,11 +115,13 @@ class MainPage extends React.Component {
               return element.id === action["end-machine"];
             });
 
-            const reason = `Moving  ${newJobs[jobIndex].name} to ${
+            const reason = action["time-improvement"] !== "" ? `Moving  ${newJobs[jobIndex].name} to ${
               machine.name
             } will reduce completion time by ${
               action["time-improvement"]
-            } minutes.`;
+            } minutes.` : `Moving  ${newJobs[jobIndex].name} to ${
+              machine.name
+            } will satisfy a constraint.`;
             const personalisedAction = {
               type: "move",
               targetMachine: machine,
