@@ -6,14 +6,14 @@ import Grid from "@material-ui/core/Grid";
 import Tooltip from "@material-ui/core/Tooltip";
 import Box from "@material-ui/core/Box";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { fontSizeAverage } from "../constants";
+import {cardWidth, fontSizeAverage, fontSizeMassive} from "../constants";
 
 const useStyles = makeStyles(theme => ({
   bigAvatar: {
     margin: "auto",
     marginTop: 10,
-    width: 400,
-    height: 500,
+    width: 200,
+    height: 250,
     maxWidth: "100%",
     maxHeight: "100%"
   },
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 const LargeTooltip = withStyles(theme => ({
   tooltip: {
     fontSize: fontSizeAverage,
-    minWidth: 800
+    minWidth: cardWidth
   }
 }))(Tooltip);
 
@@ -84,7 +84,7 @@ function Title(props) {
         </LargeTooltip>
       </Grid>
       <Grid item xs={12} className={classes.titleDiv}>
-        <Box fontSize={150}>{props.title}</Box>
+        <Box fontSize={fontSizeMassive}>{props.title}</Box>
       </Grid>
     </Grid>
   );

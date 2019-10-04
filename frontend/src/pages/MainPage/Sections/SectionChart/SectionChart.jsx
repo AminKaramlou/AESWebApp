@@ -126,7 +126,7 @@ export default class Board extends Component<Props, State> {
               />
             ))}
             {provided.placeholder}
-            <FormControl fullWidth={true} style={{width: 1000}}>
+            <FormControl fullWidth={true} style={{width: 500}}>
             <TextField
                   id="standard-machine"
                   placeholder="New nurse name"

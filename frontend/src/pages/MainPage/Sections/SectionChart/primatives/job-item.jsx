@@ -77,7 +77,6 @@ const useStyles = makeStyles(theme => ({
 const ActionItemStyles = makeStyles(theme => ({
   listItem: {
     padding: 0,
-    height: 150,
     fontSize: fontSizeSmall
   },
   icon: {
@@ -93,7 +92,7 @@ const ActionItemStyles = makeStyles(theme => ({
 const LargeTooltip = withStyles(theme => ({
   tooltip: {
     fontSize: fontSizeAverage,
-    minWidth: 800
+    minWidth: cardWidth
   }
 }))(Tooltip);
 
