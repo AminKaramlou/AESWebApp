@@ -25,7 +25,7 @@ import type { Job, Machine } from "./Sections/SectionChart/types";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 import SpeedDial from "./speedDial";
 
-const socket = justAName("https://aes-web-app-backend.herokuapp.com/", {transports:['websocket']});
+const socket = justAName("https://aes-web-app-backend.herokuapp.com/", {transports:['websocket'], upgrade:false});
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
