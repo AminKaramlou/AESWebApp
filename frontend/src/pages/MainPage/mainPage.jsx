@@ -19,13 +19,13 @@ import {
   machines,
   machineJobMap
 } from "./Sections/SectionChart/scenarios/scenario1.jsx";
-import openSocket from "socket.io-client";
+import justAName from "socket.io-client";
 import classNames from "classnames";
 import type { Job, Machine } from "./Sections/SectionChart/types";
 import reorder, { reorderJobMap } from "./Sections/SectionChart/reorder";
 import SpeedDial from "./speedDial";
 
-const socket = openSocket("http://localhost:5000");
+const socket = justAName("https://aes-web-app-backend.herokuapp.com/");
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
