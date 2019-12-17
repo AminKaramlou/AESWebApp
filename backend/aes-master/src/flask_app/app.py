@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, Response
-from flask_cors import CORS
 from flask_socketio import SocketIO,send, emit
 from src.interface import explain, optimal_schedule
 from string import ascii_uppercase
@@ -9,10 +8,7 @@ import pyutilib.subprocess.GlobalData
 pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-
-
-CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on('get-explanation')
 def handle_message(schedule_information):
