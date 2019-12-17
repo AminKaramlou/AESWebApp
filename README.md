@@ -1,49 +1,117 @@
-# [Gatsby Material Kit React Starter](https://amazing-jones-e61bda.netlify.com/)
+### [Gatsby Material Kit React Starter](https://amazing-jones-e61bda.netlify.com/)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWebCu%2Fgatsby-material-kit-react.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FWebCu%2Fgatsby-material-kit-react?ref=badge_shield)
 
 
 Gatsby Material Kit React Starter is the adaptation of [Material Kit React](https://www.creative-tim.com/product/material-kit-react) to [Gatsby](https://www.gatsbyjs.org/).
 
+# Interactive Schedule Explainer for Nurse Rostering 
+
+A proof-of-concept tool for explaining nurse rostering, based on the ArgOpt paradigm ([K. Čyras, D. Letsios, R. Misener, F. Toni: Argumentation for Explainable Scheduling. 2019, AAAI](https://aaai.org/ojs/index.php/AAAI/article/view/4126)), built upon [ArgOpt implementation](https://github.com/mylestunglee/aes).
+
+Participated at [The Great Exhibition Road Festival](https://www.greatexhibitionroadfestival.co.uk/) and competed in [British Computer Society (BCS) Specialist Group on AI (SGAI) Machine Intelligence Competition](http://www.bcs-sgai.org/micomp/).
+
+See [video](https://www.youtube.com/watch?v=pVXj_whrTkA) introducing the tool. 
+
 ## Windows 
 
 ### Install
 
-TBD
+Requirements:
+- [yarn](https://yarnpkg.com/lang/en/docs/install/#windows-stable)
+- [Node.js](https://nodejs.org/en/download/)
+- virtualenv (```pip install virtualenv```)
+- GLPK solver (`apt install glpk-utils`)
+- python GLPK module (`apt install python-glpk`)
 
-### To run
+* In ./
+```
+	npm install
+	npm install gatsby
+	cd backend/aes-master/
+	virtualenv venv
+	venv/Scripts/activate
+	pip install -r requirements.txt
+	pip install pyutilib
+	pip install matplotlib
+	pip install tornado
+	cd ../../frontend	
+	yarn add react react-dom	
+```
+
+### Deploy
 
 * In /backend/aes-master/
-``` .\venv\Scripts\Activate.ps1 ```
-	to activate Python's virtual environment
-* cd to src/flask_app/ and run flask
-``` python -m flask run ```
-* In /frontend/ (on new terminal)
+```
+	venv/Scripts/activate
+	cd src/flask-app/
+	python -m flask run
+```
+
+to activate Python's virtual environment and run flask
+
+* In /frontend/ (on a new terminal)
 ``` gatsby develop ```
 	to run gatsby
-* Then http://localhost:8000/
+
+* Access web app on http://localhost:8000/
+
+* Deactivate Python's venv after use
+``` deactivate ```
 
 ### Some fixes
 
-* If venv complains about python, 
-``` python -m venv venv ```
+* If venv complains about python: 
+```
+	python -m venv venv
+	cd backend/aes-master/
+	pip install -r requirements.txt
+```
 
-then in /backend/aes-master/
+* In venv:
+```
+	yarn add @material-ui/lab
+	yarn add rc-time-picker
+```
 
-``` pip install -r requirements.txt ```
+## MacOS
 
-``` yarn add @material-ui/lab ```
+### Install
 
-``` yarn add react react-dom ```
+Requirements:
+- [yarn](https://yarnpkg.com/en/docs/install#mac-stable)
+- [Node.js](https://nodejs.org/en/download/)
+- virtualenv (```pip install virtualenv```)
+- GLPK solver (`brew install glpk`)
 
-``` yarn add rc-time-picker ```
+* In ./
+```
+	npm install
+	npm install gatsby
+	cd backend/aes-master/
+	python3 -m venv venv
+	source venv/bin/activate
+	pip install -r requirements.txt
+```
 
-### Voice
+### Deploy
 
-In /frontend/src/pages/MainPage/Sections/SectionChart/primatives/title.jsx modify ```speak``` function 
+* In /backend/aes-master/
+```
+	source venv/bin/activate
+	cd src/flask-app/
+	python -m flask run
+```
 
-```msg.text = "MESSAGE"```
+to activate Python's virtual environment and run flask
 
-before ```speechSynthesis.speak(msg);``` on the last line
+* In /frontend/ (on a new terminal)
+``` gatsby develop ```
+	to run gatsby
+
+* Access web app on http://localhost:8000/
+
+* Deactivate Python's venv after use
+``` deactivate ```
  
 
 ## License
