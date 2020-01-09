@@ -17,24 +17,29 @@ See [video](https://www.youtube.com/watch?v=pVXj_whrTkA) introducing the tool.
 ### Install
 
 Requirements:
-- [yarn](https://yarnpkg.com/lang/en/docs/install/#windows-stable)
+- [Python 3](https://www.python.org/downloads/windows/)
 - [Node.js](https://nodejs.org/en/download/)
-- virtualenv (```pip install virtualenv```)
-- GLPK solver (`apt install glpk-utils`)
-- python GLPK module (`apt install python-glpk`)
+- [yarn](https://yarnpkg.com/lang/en/docs/install/#windows-stable)
+- [GLPK solver](http://winglpk.sourceforge.net/) 
+	1. download and extract the source (.zip) with executables (to e.g. ..\glpk-4.65)
+	2. add the directory path (e.g. ..\glpk-4.65\w64) with the relevant version executables to PATH (PC > Properties > Advanced System Settings (System Properties) > Advanced > Environment Variables > Path > Edit > New)
+	3. `glpsol` to check if the solver works
+- flask (`pip install flask`)
+- virtualenv (`pip install virtualenv`)
+- pyutilib (`pip install pyutilib`)
+- matplotlib (`pip install matplotlib`)
+
 
 * In ./
 ```
 	npm install
-	npm install gatsby
+	npm install -g gatsby-cli
+	yarn install
 	cd backend/aes-master/
 	virtualenv venv
 	venv/Scripts/activate
 	pip install -r requirements.txt
-	pip install pyutilib
-	pip install matplotlib
-	pip install tornado
-	cd ../../frontend	
+	cd ../../frontend
 	yarn add react react-dom	
 ```
 
@@ -50,7 +55,9 @@ Requirements:
 to activate Python's virtual environment and run flask
 
 * In /frontend/ (on a new terminal)
+
 ``` gatsby develop ```
+
 	to run gatsby
 
 * Access web app on http://localhost:8000/
@@ -80,8 +87,9 @@ to activate Python's virtual environment and run flask
 Requirements:
 - [yarn](https://yarnpkg.com/en/docs/install#mac-stable)
 - [Node.js](https://nodejs.org/en/download/)
-- virtualenv (```pip install virtualenv```)
 - GLPK solver (`brew install glpk`)
+- flask (`pip install flask`)
+- virtualenv (`pip install virtualenv`)
 
 * In ./
 ```
