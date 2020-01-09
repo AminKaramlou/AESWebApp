@@ -14,6 +14,8 @@ See [video](https://www.youtube.com/watch?v=pVXj_whrTkA) introducing the tool.
 
 ## Windows 
 
+The following assumes execution via [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-5.1) ([see e.g.](https://www.varonis.com/blog/windows-powershell-tutorials/) for a basic tutorial)
+
 ### Install
 
 Requirements:
@@ -21,11 +23,12 @@ Requirements:
 - [Node.js](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/lang/en/docs/install/#windows-stable)
 - [GLPK solver](http://winglpk.sourceforge.net/) 
-	1. download and extract the source (.zip) with executables (to e.g. ..\glpk-4.65)
-	2. add the directory path (e.g. ..\glpk-4.65\w64) with the relevant version executables to PATH (PC > Properties > Advanced System Settings (System Properties) > Advanced > Environment Variables > Path > Edit > New)
+	1. download and extract the source (.zip) with executables (to e.g. `..\glpk-4.65`)
+	2. add the directory path (e.g. `..\glpk-4.65\w64`) with the relevant version executables to PATH (PC > Properties > Advanced System Settings (System Properties) > Advanced > Environment Variables > Path > Edit > New)
 	3. `glpsol` to check if the solver works
 - flask (`pip install flask`)
 - virtualenv (`pip install virtualenv`)
+	+ to run the virtual environment script you'll need to have PowerShell Execution Policy set correctly, e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 - pyutilib (`pip install pyutilib`)
 - matplotlib (`pip install matplotlib`)
 
