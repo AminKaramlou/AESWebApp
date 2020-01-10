@@ -26,11 +26,12 @@ Requirements:
 	1. download and extract the source (.zip) with executables (to e.g. `..\glpk-4.65`)
 	2. add the directory path (e.g. `..\glpk-4.65\w64`) with the relevant version executables to PATH (PC > Properties > Advanced System Settings (System Properties) > Advanced > Environment Variables > Path > Edit > New)
 	3. `glpsol` to check if the solver works
+	4. this may still not be enough for Python to be able to use GLPK, so the easiest fix is to locate the appropriate version of `glpsol.exe` (e.g. in `..\glpk-4.65\w64`) and copy it to Python's Scripts directory (e.g. `C:\Program Files (x86)\Python38-32\Scripts\`)
 - flask (`pip install flask`)
 - virtualenv (`pip install virtualenv`)
 	+ to run the virtual environment script you'll need to have PowerShell Execution Policy set correctly, e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-- pyutilib (`pip install pyutilib`)
-- matplotlib (`pip install matplotlib`)
+- pillow (`pip install pillow`)
+- pyomo (`pip install pyomo`)
 
 
 * In ./
@@ -61,7 +62,7 @@ to activate Python's virtual environment and run flask
 
 ``` gatsby develop ```
 
-	to run gatsby
+to run gatsby
 
 * Access web app on http://localhost:8000/
 
@@ -70,18 +71,28 @@ to activate Python's virtual environment and run flask
 
 ### Some fixes
 
-* If venv complains about python: 
+- To rebuild the virtual environment: 
 ```
 	python -m venv venv
 	cd backend/aes-master/
 	pip install -r requirements.txt
 ```
 
-* In venv:
+- (2020-01-10) While installing from `requirements.txt` issues with `greenlet` may persist on e.g. Python 3.8. 
+This may be because the required wheel is not on PyPi and has to build locally from the source. 
+The latter requires a C compiler to develop Python extensions, e.g. Visual C++. 
+However, another solution is to [get the latest precompiled greenlet wheel](https://www.lfd.uci.edu/~gohlke/pythonlibs/#greenlet) (e.g. greenlet-0.4.15-cp38-cp38-win32.whl) 
+and install if from the virtual environment 
+`pip install ..\greenlet-0.4.15-cp38-cp38-win32.whl`
+just for this project.
+
+- The virtual environment may complain about lacking packages, such as tornado, matplotlib etc. Just install them
 ```
-	yarn add @material-ui/lab
-	yarn add rc-time-picker
+	pip install tornado
+	pip install matplotlib
+	pip install pyutilib
 ```
+
 
 ## MacOS
 
