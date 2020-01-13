@@ -99,20 +99,25 @@ just for this project.
 ### Install
 
 Requirements:
+- [Python 3](https://www.python.org/downloads/mac-osx/)
 - [yarn](https://yarnpkg.com/en/docs/install#mac-stable)
 - [Node.js](https://nodejs.org/en/download/)
-- GLPK solver (`brew install glpk`)
+- [GLPK solver](http://winglpk.sourceforge.net/) 
+	+ Using [Homebrew](https://brew.sh/) ([see e.g.](http://osxdaily.com/2018/03/07/how-install-homebrew-mac-os/) for how to), `brew install glpk`
 - flask (`pip install flask`)
 - virtualenv (`pip install virtualenv`)
 
 * In ./
 ```
 	npm install
-	npm install gatsby
+	npm install -g gatsby-cli
+	yarn install
 	cd backend/aes-master/
 	python3 -m venv venv
 	source venv/bin/activate
 	pip install -r requirements.txt
+	cd ../../frontend
+	yarn add react react-dom
 ```
 
 ### Deploy
@@ -128,7 +133,8 @@ to activate Python's virtual environment and run flask
 
 * In /frontend/ (on a new terminal)
 ``` gatsby develop ```
-	to run gatsby
+
+to run gatsby
 
 * Access web app on http://localhost:8000/
 
